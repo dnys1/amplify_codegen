@@ -1,9 +1,12 @@
+import 'package:amplify_codegen/src/generator/types.dart';
+import 'package:amplify_codegen/src/helpers/field.dart';
 import 'package:amplify_codegen/src/models/auth_rule.dart';
 import 'package:amplify_codegen/src/models/model.dart';
 import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
 
+/// Parses [schema] into a list of [Model] objects.
 List<Model> parseSchema(String schema) {
   final doc = parseString(schema);
   final models = <Model>[];
@@ -17,7 +20,9 @@ List<Model> parseSchema(String schema) {
       b
         ..name = definition.name.value
         ..authRules.addAll(authRules)
-        ..fields.addAll(definition.modelFields);
+        ..fields.addAll(definition.modelFields)
+        ..isCustom = definition.directives
+            .every((directive) => directive.name.value != 'model');
     });
     models.add(model);
   }
@@ -40,6 +45,20 @@ extension ModelFields on ObjectTypeDefinitionNode {
             ..authRules.addAll(field.directives.authRules);
 
           _buildTypeFor(f.metadata, field.type);
+
+          f.metadata
+            ..isBelongsTo = field.isBelongsTo
+            ..isHasOne = field.isHasOne
+            ..isHasMany = field.isHasMany;
+
+          if (field.isBelongsTo) {
+            f.metadata.targetName = f.metadata.modelName;
+          }
+          if (field.isHasOne || field.isHasMany) {
+            f.metadata
+              ..associatedName = ''
+              ..associatedType = f.metadata.modelName;
+          }
         },
       );
     }
@@ -49,17 +68,18 @@ extension ModelFields on ObjectTypeDefinitionNode {
 void _buildTypeFor(ModelFieldMetadataBuilder builder, TypeNode node) {
   if (node is NamedTypeNode) {
     builder.isList = false;
-    builder.type = ModelFieldType.values.firstWhere(
+    builder.type = AWSType.values.firstWhere(
       (el) => el.name == node.name.value,
       orElse: () {
         builder.modelName = node.name.value;
-        return ModelFieldType.Model;
+        return AWSType.Model;
       },
     );
     return;
   } else if (node is ListTypeNode) {
     builder.isList = true;
     _buildTypeFor(builder, node.type);
+    return;
   }
   throw ArgumentError(node.runtimeType);
 }

@@ -1,0 +1,156 @@
+/*
+* Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License").
+* You may not use this file except in compliance with the License.
+* A copy of the License is located at
+*
+*  http://aws.amazon.com/apache2.0
+*
+* or in the "license" file accompanying this file. This file is distributed
+* on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+* express or implied. See the License for the specific language governing
+* permissions and limitations under the License.
+*/
+
+// NOTE: This file is generated and may not follow lint rules defined in your app
+// Generated files can be excluded from analysis in analysis_options.yaml
+// For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
+
+library models.multi_type_model;
+
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
+/// This is an auto generated class representing the MultiTypeModel type in your schema.
+@immutable
+class MultiTypeModel extends Model {
+  factory MultiTypeModel(
+      {String? id,
+      String? stringValue,
+      String? altStringValue,
+      int? intValue,
+      int? altIntValue}) {
+    return MultiTypeModel._internal(
+        id: id ?? UUID.getUUID(),
+        stringValue: stringValue,
+        altStringValue: altStringValue,
+        intValue: intValue,
+        altIntValue: altIntValue);
+  }
+
+  const MultiTypeModel._internal(
+      {required this.id,
+      String? stringValue,
+      String? altStringValue,
+      int? intValue,
+      int? altIntValue})
+      : _stringValue = stringValue,
+        _altStringValue = altStringValue,
+        _intValue = intValue,
+        _altIntValue = altIntValue;
+
+  factory MultiTypeModel.fromJson(Map<String, Object?> json) {
+    return MultiTypeModel._internal(
+        id: (json['id'] as String),
+        stringValue: (json['stringValue'] as String?),
+        altStringValue: (json['altStringValue'] as String?),
+        intValue: (json['intValue'] as int?),
+        altIntValue: (json['altIntValue'] as int?));
+  }
+
+  static const _MultiTypeModelModelType classType = _MultiTypeModelModelType();
+
+  final String id;
+
+  final String? _stringValue;
+
+  final String? _altStringValue;
+
+  final int? _intValue;
+
+  final int? _altIntValue;
+
+  static final schema =
+      Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
+    modelSchemaDefinition.name = 'MultiTypeModel';
+    modelSchemaDefinition.pluralName = 'MultiTypeModels';
+    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField();
+  });
+
+  String? get stringValue => _stringValue;
+  String? get altStringValue => _altStringValue;
+  int? get intValue => _intValue;
+  int? get altIntValue => _altIntValue;
+  bool equals(Object? other) {
+    return this == other;
+  }
+
+  @override
+  bool operator ==(Object? other) =>
+      identical(this, other) ||
+      other is MultiTypeModel &&
+          id == other.id &&
+          _stringValue == other._stringValue &&
+          _altStringValue == other._altStringValue &&
+          _intValue == other._intValue &&
+          _altIntValue == other._altIntValue;
+  @override
+  int get hashCode => toString().hashCode;
+  @override
+  String toString() {
+    final buffer = StringBuffer();
+
+    buffer.write('MultiTypeModel {');
+    buffer.write('id=$id, ');
+    buffer.write('stringValue=$_stringValue, ');
+    buffer.write('altStringValue=$_altStringValue, ');
+    buffer.write('intValue=$_intValue, ');
+    buffer.write('altIntValue=$_altIntValue');
+    buffer.write('}');
+
+    return buffer.toString();
+  }
+
+  MultiTypeModel copyWith(
+      {String? id,
+      String? stringValue,
+      String? altStringValue,
+      int? intValue,
+      int? altIntValue}) {
+    return MultiTypeModel(
+        id: id ?? this.id,
+        stringValue: stringValue ?? this.stringValue,
+        altStringValue: altStringValue ?? this.altStringValue,
+        intValue: intValue ?? this.intValue,
+        altIntValue: altIntValue ?? this.altIntValue);
+  }
+
+  @override
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'stringValue': _stringValue,
+        'altStringValue': _altStringValue,
+        'intValue': _intValue,
+        'altIntValue': _altIntValue
+      };
+  @override
+  _MultiTypeModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+}
+
+class _MultiTypeModelModelType extends ModelType<MultiTypeModel> {
+  const _MultiTypeModelModelType();
+
+  @override
+  MultiTypeModel fromJson(Map<String, Object?> jsonData) {
+    return MultiTypeModel.fromJson(jsonData);
+  }
+}

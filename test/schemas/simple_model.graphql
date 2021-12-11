@@ -1,4 +1,5 @@
-type Todo @model {
-  id: ID!
-  content: String
+type SimpleModel @model {
+    id: ID!
+    name: String
+    bar: String
 }

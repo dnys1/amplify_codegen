@@ -1,0 +1,10 @@
+type authorBook
+  @model
+  @key(name: "byAuthor", fields: ["author_id"])
+  @key(name: "byBook", fields: ["book_id"]) {
+  id: ID!
+  author_id: ID!
+  book_id: ID!
+  author: String
+  book: String
+}

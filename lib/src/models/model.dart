@@ -49,7 +49,7 @@ abstract class ModelField implements Built<ModelField, ModelFieldBuilder> {
   static Serializer<ModelField> get serializer => _$modelFieldSerializer;
 }
 
-enum ModelFieldType {
+enum AWSType {
   ID,
   String,
   Int,
@@ -69,9 +69,15 @@ enum ModelFieldType {
 
 abstract class ModelFieldMetadata
     implements Built<ModelFieldMetadata, ModelFieldMetadataBuilder> {
-  ModelFieldType get type;
+  AWSType get type;
   bool get isList;
+  bool get isHasOne;
+  bool get isHasMany;
+  bool get isBelongsTo;
   String? get modelName;
+  String? get targetName;
+  String? get associatedName;
+  String? get associatedType;
 
   factory ModelFieldMetadata(
           [void Function(ModelFieldMetadataBuilder) updates]) =
@@ -91,21 +97,21 @@ abstract class ModelFieldMetadata
       _$modelFieldMetadataSerializer;
 }
 
-class ModelFieldTypeSerializer extends PrimitiveSerializer<ModelFieldType> {
+class AWSTypeSerializer extends PrimitiveSerializer<AWSType> {
   @override
-  Iterable<Type> get types => [ModelFieldType];
+  Iterable<Type> get types => [AWSType];
 
   @override
-  String get wireName => 'ModelFieldType';
+  String get wireName => 'AWSType';
 
   @override
-  ModelFieldType deserialize(Serializers serializers, Object serialized,
+  AWSType deserialize(Serializers serializers, Object serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    return ModelFieldType.values.byName(serialized as String);
+    return AWSType.values.byName(serialized as String);
   }
 
   @override
-  Object serialize(Serializers serializers, ModelFieldType object,
+  Object serialize(Serializers serializers, AWSType object,
       {FullType specifiedType = FullType.unspecified}) {
     return object.name;
   }

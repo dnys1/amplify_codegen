@@ -12,4 +12,5 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
+  amplify_lints: ^1.0.0
   lints: ^1.0.0

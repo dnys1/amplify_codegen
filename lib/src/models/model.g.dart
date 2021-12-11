@@ -155,15 +155,45 @@ class _$ModelFieldMetadataSerializer
     final result = <Object?>[
       'type',
       serializers.serialize(object.type,
-          specifiedType: const FullType(ModelFieldType)),
+          specifiedType: const FullType(AWSType)),
       'isList',
       serializers.serialize(object.isList, specifiedType: const FullType(bool)),
+      'isHasOne',
+      serializers.serialize(object.isHasOne,
+          specifiedType: const FullType(bool)),
+      'isHasMany',
+      serializers.serialize(object.isHasMany,
+          specifiedType: const FullType(bool)),
+      'isBelongsTo',
+      serializers.serialize(object.isBelongsTo,
+          specifiedType: const FullType(bool)),
     ];
     Object? value;
     value = object.modelName;
     if (value != null) {
       result
         ..add('modelName')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
+    value = object.targetName;
+    if (value != null) {
+      result
+        ..add('targetName')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
+    value = object.associatedName;
+    if (value != null) {
+      result
+        ..add('associatedName')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
+    value = object.associatedType;
+    if (value != null) {
+      result
+        ..add('associatedType')
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
@@ -184,14 +214,38 @@ class _$ModelFieldMetadataSerializer
       switch (key) {
         case 'type':
           result.type = serializers.deserialize(value,
-              specifiedType: const FullType(ModelFieldType)) as ModelFieldType;
+              specifiedType: const FullType(AWSType)) as AWSType;
           break;
         case 'isList':
           result.isList = serializers.deserialize(value,
               specifiedType: const FullType(bool)) as bool;
           break;
+        case 'isHasOne':
+          result.isHasOne = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
+        case 'isHasMany':
+          result.isHasMany = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
+        case 'isBelongsTo':
+          result.isBelongsTo = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
         case 'modelName':
           result.modelName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String?;
+          break;
+        case 'targetName':
+          result.targetName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String?;
+          break;
+        case 'associatedName':
+          result.associatedName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String?;
+          break;
+        case 'associatedType':
+          result.associatedType = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
       }
@@ -478,22 +532,48 @@ class ModelFieldBuilder implements Builder<ModelField, ModelFieldBuilder> {
 
 class _$ModelFieldMetadata extends ModelFieldMetadata {
   @override
-  final ModelFieldType type;
+  final AWSType type;
   @override
   final bool isList;
   @override
+  final bool isHasOne;
+  @override
+  final bool isHasMany;
+  @override
+  final bool isBelongsTo;
+  @override
   final String? modelName;
+  @override
+  final String? targetName;
+  @override
+  final String? associatedName;
+  @override
+  final String? associatedType;
 
   factory _$ModelFieldMetadata(
           [void Function(ModelFieldMetadataBuilder)? updates]) =>
       (new ModelFieldMetadataBuilder()..update(updates)).build();
 
   _$ModelFieldMetadata._(
-      {required this.type, required this.isList, this.modelName})
+      {required this.type,
+      required this.isList,
+      required this.isHasOne,
+      required this.isHasMany,
+      required this.isBelongsTo,
+      this.modelName,
+      this.targetName,
+      this.associatedName,
+      this.associatedType})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(type, 'ModelFieldMetadata', 'type');
     BuiltValueNullFieldError.checkNotNull(
         isList, 'ModelFieldMetadata', 'isList');
+    BuiltValueNullFieldError.checkNotNull(
+        isHasOne, 'ModelFieldMetadata', 'isHasOne');
+    BuiltValueNullFieldError.checkNotNull(
+        isHasMany, 'ModelFieldMetadata', 'isHasMany');
+    BuiltValueNullFieldError.checkNotNull(
+        isBelongsTo, 'ModelFieldMetadata', 'isBelongsTo');
   }
 
   @override
@@ -511,13 +591,31 @@ class _$ModelFieldMetadata extends ModelFieldMetadata {
     return other is ModelFieldMetadata &&
         type == other.type &&
         isList == other.isList &&
-        modelName == other.modelName;
+        isHasOne == other.isHasOne &&
+        isHasMany == other.isHasMany &&
+        isBelongsTo == other.isBelongsTo &&
+        modelName == other.modelName &&
+        targetName == other.targetName &&
+        associatedName == other.associatedName &&
+        associatedType == other.associatedType;
   }
 
   @override
   int get hashCode {
-    return $jf(
-        $jc($jc($jc(0, type.hashCode), isList.hashCode), modelName.hashCode));
+    return $jf($jc(
+        $jc(
+            $jc(
+                $jc(
+                    $jc(
+                        $jc(
+                            $jc($jc($jc(0, type.hashCode), isList.hashCode),
+                                isHasOne.hashCode),
+                            isHasMany.hashCode),
+                        isBelongsTo.hashCode),
+                    modelName.hashCode),
+                targetName.hashCode),
+            associatedName.hashCode),
+        associatedType.hashCode));
   }
 
   @override
@@ -525,7 +623,13 @@ class _$ModelFieldMetadata extends ModelFieldMetadata {
     return (newBuiltValueToStringHelper('ModelFieldMetadata')
           ..add('type', type)
           ..add('isList', isList)
-          ..add('modelName', modelName))
+          ..add('isHasOne', isHasOne)
+          ..add('isHasMany', isHasMany)
+          ..add('isBelongsTo', isBelongsTo)
+          ..add('modelName', modelName)
+          ..add('targetName', targetName)
+          ..add('associatedName', associatedName)
+          ..add('associatedType', associatedType))
         .toString();
   }
 }
@@ -534,17 +638,43 @@ class ModelFieldMetadataBuilder
     implements Builder<ModelFieldMetadata, ModelFieldMetadataBuilder> {
   _$ModelFieldMetadata? _$v;
 
-  ModelFieldType? _type;
-  ModelFieldType? get type => _$this._type;
-  set type(ModelFieldType? type) => _$this._type = type;
+  AWSType? _type;
+  AWSType? get type => _$this._type;
+  set type(AWSType? type) => _$this._type = type;
 
   bool? _isList;
   bool? get isList => _$this._isList;
   set isList(bool? isList) => _$this._isList = isList;
 
+  bool? _isHasOne;
+  bool? get isHasOne => _$this._isHasOne;
+  set isHasOne(bool? isHasOne) => _$this._isHasOne = isHasOne;
+
+  bool? _isHasMany;
+  bool? get isHasMany => _$this._isHasMany;
+  set isHasMany(bool? isHasMany) => _$this._isHasMany = isHasMany;
+
+  bool? _isBelongsTo;
+  bool? get isBelongsTo => _$this._isBelongsTo;
+  set isBelongsTo(bool? isBelongsTo) => _$this._isBelongsTo = isBelongsTo;
+
   String? _modelName;
   String? get modelName => _$this._modelName;
   set modelName(String? modelName) => _$this._modelName = modelName;
+
+  String? _targetName;
+  String? get targetName => _$this._targetName;
+  set targetName(String? targetName) => _$this._targetName = targetName;
+
+  String? _associatedName;
+  String? get associatedName => _$this._associatedName;
+  set associatedName(String? associatedName) =>
+      _$this._associatedName = associatedName;
+
+  String? _associatedType;
+  String? get associatedType => _$this._associatedType;
+  set associatedType(String? associatedType) =>
+      _$this._associatedType = associatedType;
 
   ModelFieldMetadataBuilder();
 
@@ -553,7 +683,13 @@ class ModelFieldMetadataBuilder
     if ($v != null) {
       _type = $v.type;
       _isList = $v.isList;
+      _isHasOne = $v.isHasOne;
+      _isHasMany = $v.isHasMany;
+      _isBelongsTo = $v.isBelongsTo;
       _modelName = $v.modelName;
+      _targetName = $v.targetName;
+      _associatedName = $v.associatedName;
+      _associatedType = $v.associatedType;
       _$v = null;
     }
     return this;
@@ -578,7 +714,16 @@ class ModelFieldMetadataBuilder
                 type, 'ModelFieldMetadata', 'type'),
             isList: BuiltValueNullFieldError.checkNotNull(
                 isList, 'ModelFieldMetadata', 'isList'),
-            modelName: modelName);
+            isHasOne: BuiltValueNullFieldError.checkNotNull(
+                isHasOne, 'ModelFieldMetadata', 'isHasOne'),
+            isHasMany: BuiltValueNullFieldError.checkNotNull(
+                isHasMany, 'ModelFieldMetadata', 'isHasMany'),
+            isBelongsTo: BuiltValueNullFieldError.checkNotNull(
+                isBelongsTo, 'ModelFieldMetadata', 'isBelongsTo'),
+            modelName: modelName,
+            targetName: targetName,
+            associatedName: associatedName,
+            associatedType: associatedType);
     replace(_$result);
     return _$result;
   }

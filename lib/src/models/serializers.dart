@@ -20,5 +20,5 @@ part 'serializers.g.dart';
 ])
 final Serializers serializers = (_$serializers.toBuilder()
       ..addPlugin(StandardJsonPlugin())
-      ..add(ModelFieldTypeSerializer()))
+      ..add(AWSTypeSerializer()))
     .build();
