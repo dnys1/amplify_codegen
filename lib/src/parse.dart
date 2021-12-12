@@ -1,30 +1,35 @@
 import 'package:amplify_codegen/src/helpers/field.dart';
+import 'package:amplify_codegen/src/helpers/model.dart';
 import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/helpers/types.dart';
 import 'package:amplify_codegen/src/models/auth_rule.dart';
 import 'package:amplify_codegen/src/models/model.dart';
+import 'package:amplify_codegen/src/parser/connection.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
 
-late Set<String> _modelNames;
+late Map<String, ObjectTypeDefinitionNode> _models;
 
 /// Parses [schema] into a list of [Model] objects.
 Map<String, Model> parseSchema(String schema) {
   const rootTypes = ['Query', 'Mutation', 'Subscription'];
   final doc = parseString(schema);
-  final models = <Model>[];
+  final models = <String, Model>{};
 
-  _modelNames = doc.definitions
-      .where((definition) =>
-          definition is ObjectTypeDefinitionNode &&
-          !rootTypes.contains(definition.name.value))
-      .map((el) => (el as ObjectTypeDefinitionNode).name.value)
-      .toSet();
+  _models = Map.fromEntries(
+    doc.definitions
+        .where((definition) =>
+            definition is ObjectTypeDefinitionNode &&
+            !rootTypes.contains(definition.name.value))
+        .map((el) => MapEntry((el as ObjectTypeDefinitionNode).name.value, el)),
+  );
 
   for (var definition in doc.definitions) {
     final isModel = definition is ObjectTypeDefinitionNode &&
-        _modelNames.contains(definition.name.value);
+        _models.keys.contains(definition.name.value);
     if (!isModel) {
       continue;
     }
@@ -47,13 +52,15 @@ Map<String, Model> parseSchema(String schema) {
       b
         ..name = definition.name.value
         ..authRules.addAll(authRules)
-        ..fields.addAll(
-            definition.modelFields(primaryKey: v1PrimaryKey, isCustom: isCustom)
-              ..sorted((a, b) {
-                if (a.isPrimaryKey) return -1;
-                if (b.isPrimaryKey) return 1;
-                return a.dartName.compareTo(b.dartName);
-              }))
+        ..fields.addAll(definition.modelFields(
+          primaryKey: v1PrimaryKey,
+          isCustom: isCustom,
+          models: _models,
+        )..sorted((a, b) {
+            if (a.isPrimaryKey) return -1;
+            if (b.isPrimaryKey) return 1;
+            return a.dartName.compareTo(b.dartName);
+          }))
         ..isCustom = isCustom;
 
       // Inject ID field, if unspecified
@@ -70,7 +77,7 @@ Map<String, Model> parseSchema(String schema) {
         }));
       }
     });
-    models.add(model);
+    models[model.name] = model;
   }
 
   // Second pass to establish hasMany/hasOne/belongsTo relationships
@@ -85,242 +92,168 @@ Map<String, Model> parseSchema(String schema) {
       continue;
     }
     final nodeFields = definition.fields;
-    final model =
-        models.singleWhere((model) => model.name == definition.name.value);
-    models.remove(model);
+    final model = models[definition.name.value]!;
+    final newFields = <ModelField>[];
     final updatedModel = model.rebuild((m) {
-      final oldFields = m.fields.build();
-      m.fields.clear();
-      for (var field in oldFields) {
-        m.fields.add(field.rebuild((field) {
-          final nodeField =
-              nodeFields.singleWhereOrNull((f) => f.wireName == field.name);
-          if (nodeField == null || !nodeField.hasRelationship) {
-            field
-              ..isBelongsTo = false
-              ..isHasMany = false
-              ..isHasOne = false;
-            return;
-          }
+      m.fields.map((field) => field.rebuild((field) {
+            final nodeField =
+                nodeFields.singleWhereOrNull((f) => f.wireName == field.name);
 
-          // Get the field name of the current model field.
-          final relationFieldName = nodeField.relationshipField;
+            // Node field will be null for injected fields such as `createdAt`.
+            // These fields will not have relationships.
+            if (nodeField == null || !nodeField.hasRelationship) {
+              return;
+            }
 
-          // Get the model referred to by this relationship.
-          final relationModel =
-              models.singleWhere((m) => m.name == nodeField.type.typeName);
+            final isV1 = nodeField.hasDirective('connection');
 
-          // Get the foreign field of the relationship.
-          final foreignModelField = relationModel.fields.firstWhereOrNull((f) {
-            return f.type.modelName == m.name;
-          });
+            // Get the connected field in the current model, if any.
+            final connectionFields = nodeField.connectionFields;
+            final connectionName = nodeField.connectionName;
 
-          // For hasOne relationships, use the ID field as the associated field.
-          final foreignIdField =
-              relationModel.fields.singleWhere((f) => f.isPrimaryKey);
+            // Get the model referred to by this relationship.
+            var relatedModel = models[nodeField.type.typeName]!;
+            final relatedModelNode = _models[nodeField.type.typeName]!;
 
-          // One-way relationship
-          final isHasOne =
-              foreignModelField == null && relationFieldName != null;
-          if (isHasOne) {
-            field
-              ..isBelongsTo = false
-              ..isHasMany = false
-              ..isHasOne = true;
-            field
-              ..associatedType = relationModel.name
-              ..associatedName = foreignModelField?.name ?? foreignIdField.name;
-            return;
-          }
+            String? relatedFieldName;
+            FieldDefinitionNode? relatedFieldNode;
+            ModelField? relatedField;
+            // Get foreign field via key/index.
+            if (connectionFields != null) {
+              final indexName = nodeField.indexName;
+              final indexFields = relatedModelNode.indexFields[indexName];
+              final connectedFieldName =
+                  indexFields?.firstOrNull ?? relatedModel.primaryKeyField.name;
 
-          final isBelongsTo = foreignModelField == null ||
-              foreignModelField.type.isList && !field.type.isList!;
-          if (isBelongsTo) {
-            // belongsTo
-            field
-              ..isBelongsTo = true
-              ..isHasMany = false
-              ..isHasOne = false;
-            field.targetName = relationFieldName ?? 'id';
-          } else {
+              if (isV1) {
+                relatedFieldNode =
+                    relatedModelNode.fields.firstWhereOrNull((f) {
+                  return f.relationshipDirective
+                          ?.argumentNamed('fields')
+                          ?.stringListValue
+                          .first ==
+                      connectedFieldName;
+                });
+
+                relatedFieldNode ??= relatedModelNode.fields
+                    .singleWhere((f) => f.wireName == connectedFieldName);
+              } else {
+                relatedFieldNode ??= relatedModelNode.fields
+                    .singleWhereOrNull((f) => f.wireName == connectedFieldName);
+                relatedFieldNode ??=
+                    relatedModelNode.fields.singleWhereOrNull((f) {
+                  if (nodeField.isHasOne) {
+                    return f.isBelongsTo && f.type.typeName == m.name;
+                  }
+                  if (nodeField.isHasMany) {
+                    return f.isBelongsTo && f.type.typeName == m.name;
+                  }
+                  if (nodeField.isBelongsTo) {
+                    return (f.isHasOne || f.isHasMany) &&
+                        f.type.typeName == m.name;
+                  }
+                  return false;
+                });
+              }
+            } else if (connectionName != null) {
+              relatedFieldNode = relatedModelNode.fields.singleWhere(
+                (f) =>
+                    f.relationshipDirective
+                        ?.argumentNamed(isV1 ? 'name' : 'indexName')
+                        ?.stringValue ==
+                    connectionName,
+              );
+            }
+
+            relatedFieldName = relatedFieldNode?.name.value ??
+                makeConnectionAttributeName(model.name, field.name!);
+            relatedField = relatedModel.maybeFieldNamed(relatedFieldName) ??
+                ModelField((f) => f
+                  ..name = relatedFieldName
+                  ..type.awsType = AWSType.ID
+                  ..type.isRequired = false
+                  ..type.isList = false);
+
+            final isNewField =
+                relatedModel.maybeFieldNamed(relatedFieldName) == null;
+            if (isNewField) {
+              relatedModel =
+                  relatedModel.rebuild((m) => m..fields.add(relatedField!));
+              models[relatedModel.name] = relatedModel;
+            }
+
             // hasMany
-            field
-              ..isBelongsTo = false
-              ..isHasMany = true
-              ..isHasOne = false;
-            field
-              ..associatedType = relationModel.name
-              ..associatedName = foreignModelField.name;
-          }
-        }));
-      }
+            final isHasMany =
+                // V1
+                field.type.isList! && !relatedField.type.isList ||
+                    // V2
+                    nodeField.hasDirective('hasMany');
+            if (isHasMany) {
+              field
+                ..isBelongsTo = false
+                ..isHasMany = true
+                ..isHasOne = false
+                ..associatedType = relatedModel.name
+                ..associatedName = relatedFieldName;
+              return;
+            }
+
+            // hasOne
+            final isHasOne =
+                // V1
+                (!field.type.isRequired! && relatedField.type.isRequired) ||
+                    // V2
+                    nodeField.hasDirective('hasOne');
+            if (isHasOne) {
+              field
+                ..isBelongsTo = false
+                ..isHasMany = false
+                ..isHasOne = true
+                ..associatedType = relatedModel.name
+                ..associatedName = relatedFieldName;
+              return;
+            }
+
+            // belongsTo
+            final isBelongsTo =
+                // V1
+                relatedField.type.isList ||
+                    isNewField ||
+                    (field.type.isRequired! && !relatedField.type.isRequired) ||
+                    // V2
+                    nodeField.hasDirective('belongsTo');
+            if (isBelongsTo) {
+              var targetName = connectionFields?.single;
+
+              // Create the field if it doesn't already exist.
+              if (targetName == null) {
+                targetName =
+                    makeConnectionAttributeName(model.name, field.name!);
+                if (model.maybeFieldNamed(targetName) == null) {
+                  newFields.add(ModelField(
+                    (f) => f
+                      ..name = targetName
+                      ..type.awsType = AWSType.ID
+                      ..type.isList = false
+                      ..type.isRequired = false,
+                  ));
+                }
+              }
+
+              field
+                ..isBelongsTo = true
+                ..isHasMany = false
+                ..isHasOne = false
+                ..targetName = targetName;
+              return;
+            }
+
+            throw StateError('Invalid connection type');
+          }));
     });
-    models.add(updatedModel);
+    models[model.name] =
+        updatedModel.rebuild((b) => b.fields.addAll(newFields));
   }
 
-  return Map.fromEntries(models.map((m) => MapEntry(m.name, m)));
-}
-
-extension ModelFields on ObjectTypeDefinitionNode {
-  /// Returns whether `this` is a [Model].
-  bool get isModel =>
-      directives.any((directive) => directive.name.value == 'model');
-
-  /// Returns all fields as [ModelField] objects.
-  Iterable<ModelField> modelFields({
-    required String? primaryKey,
-    required bool isCustom,
-  }) sync* {
-    for (var field in fields) {
-      yield ModelField(
-        (f) {
-          f
-            ..name = field.name.value
-            ..type.isRequired = field.type.isNonNull
-            ..isReadOnly = false
-            ..authRules.addAll(field.directives.authRules);
-
-          _buildTypeFor(f.type, field.type);
-
-          final isPrimaryKey =
-              field.wireName == primaryKey || field.isPrimaryKey;
-          if (isPrimaryKey) {
-            primaryKey ??= field.wireName;
-          }
-          f
-            ..isPrimaryKey = isPrimaryKey
-            ..isBelongsTo = field.isBelongsTo
-            ..isHasOne = field.isHasOne
-            ..isHasMany = field.isHasMany;
-
-          if (field.isBelongsTo) {
-            f.targetName = f.type.modelName;
-          }
-          if (field.isHasOne || field.isHasMany) {
-            f
-              ..associatedName = ''
-              ..associatedType = f.type.modelName;
-          }
-        },
-      );
-    }
-
-    if (!isCustom) {
-      // createdAt
-      yield ModelField(
-        (f) => f
-          ..name = 'createdAt'
-          ..isReadOnly = true
-          ..type.isRequired = false
-          ..type.isList = false
-          ..type.awsType = AWSType.AWSDateTime,
-      );
-
-      // updatedAt
-      yield ModelField(
-        (f) => f
-          ..name = 'updatedAt'
-          ..isReadOnly = true
-          ..type.isRequired = false
-          ..type.isList = false
-          ..type.awsType = AWSType.AWSDateTime,
-      );
-    }
-  }
-}
-
-TypeInfoBuilder _buildTypeFor(TypeInfoBuilder builder, TypeNode node) {
-  if (node is NamedTypeNode) {
-    builder.isList ??= false;
-    builder.isRequired = node.isNonNull;
-    builder.awsType = AWSType.values.firstWhere(
-      (el) => el.name == node.name.value,
-      orElse: () {
-        final modelName = node.name.value;
-        builder.modelName = modelName;
-        builder.isEnum = !_modelNames.contains(modelName);
-        return AWSType.Model;
-      },
-    );
-    return builder;
-  } else if (node is ListTypeNode) {
-    builder.isList ??= true;
-    builder.isRequired = node.isNonNull;
-
-    final valueBuilder = _buildTypeFor(builder.listType, node.type);
-    builder
-      ..modelName = valueBuilder.modelName
-      ..isEnum = valueBuilder.isEnum;
-
-    return builder;
-  }
-  throw ArgumentError(node.runtimeType);
-}
-
-extension AuthRules on List<DirectiveNode> {
-  DirectiveNode? get authRuleDirective {
-    return firstWhereOrNull((node) => node.name.value == 'auth');
-  }
-
-  Iterable<AuthRule> get authRules sync* {
-    final directive = authRuleDirective;
-    if (directive == null) {
-      return;
-    }
-    final rulesArg = directive.arguments.single.value as ListValueNode;
-    final ruleValues = rulesArg.values.cast<ObjectValueNode>();
-    for (var ruleValue in ruleValues) {
-      final rule = AuthRuleBuilder();
-      for (var field in ruleValue.fields) {
-        final node = field.value;
-        switch (field.name.value) {
-          case 'allow':
-            rule.allow = AuthStrategy.deserialize(_valueOf(node))!;
-            break;
-          case 'provider':
-            rule.provider = AuthProvider.deserialize(_valueOf(node))!;
-            break;
-          case 'ownerField':
-            rule.ownerField = _valueOf(node);
-            break;
-          case 'identityClaim':
-            rule.identityClaim = _valueOf(node);
-            break;
-          case 'groupClaim':
-            rule.groupClaim = _valueOf(node);
-            break;
-          case 'groups':
-            rule.groups.addAll(_listValueOf(node));
-            break;
-          case 'groupsField':
-            rule.groupsField = _valueOf(node);
-            break;
-          case 'operations':
-            rule.operations.addAll((node as ListValueNode).values.map((node) {
-              return ModelOperation.deserialize(_valueOf(node))!;
-            }));
-            break;
-          default:
-            throw StateError('Unknown key: ${field.name.value}');
-        }
-      }
-      yield rule.build();
-    }
-  }
-}
-
-String _valueOf(ValueNode node) {
-  if (node is EnumValueNode) {
-    return node.name.value;
-  } else if (node is StringValueNode) {
-    return node.value;
-  }
-  throw ArgumentError(node.runtimeType);
-}
-
-List<String> _listValueOf(ValueNode node) {
-  if (node is! ListValueNode) {
-    throw ArgumentError(node.runtimeType);
-  }
-  return node.values.map(_valueOf).toList();
+  return models;
 }
