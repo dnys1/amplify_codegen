@@ -21,8 +21,9 @@
 
 library models.model_nested_custom_type;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
 import 'all_scalar_types_custom_type.dart';
 import 'all_scalar_types_list_custom_type.dart';
 

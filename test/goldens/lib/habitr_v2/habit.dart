@@ -21,11 +21,12 @@
 
 library models.habit;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
 import 'category.dart';
-import 'user.dart';
 import 'comment.dart';
+import 'user.dart';
 
 /// This is an auto generated class representing the Habit type in your schema.
 @immutable

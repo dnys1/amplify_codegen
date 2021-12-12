@@ -21,8 +21,9 @@
 
 library models.all_scalar_types_custom_type;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
 import 'enum_model.dart';
 import 'simple_custom_type.dart';
 

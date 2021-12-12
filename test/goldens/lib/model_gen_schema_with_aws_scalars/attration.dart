@@ -21,8 +21,9 @@
 
 library models.attration;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
 import 'status.dart';
 
 /// This is an auto generated class representing the Attration type in your schema.

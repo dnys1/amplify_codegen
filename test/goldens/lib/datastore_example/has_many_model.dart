@@ -21,8 +21,9 @@
 
 library models.has_many_model;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
 import 'has_many_child_model.dart';
 
 /// This is an auto generated class representing the HasManyModel type in your schema.

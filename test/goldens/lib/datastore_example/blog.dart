@@ -21,8 +21,9 @@
 
 library models.blog;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
 import 'post.dart';
 
 /// This is an auto generated class representing the Blog type in your schema.

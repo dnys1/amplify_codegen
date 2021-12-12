@@ -22,16 +22,18 @@
 library models.model_provider;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'author_book.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+
 import 'author_book.dart';
+import 'author_book.dart';
+
 export 'author_book.dart';
 
 class ModelProvider extends ModelProviderInterface {
   static final instance = ModelProvider();
 
   @override
-  String get version => '5bbc0f1774f54e7121b9fc254b976c5ec2e875a8';
+  String get version => '85630d6ccc4e16e4fac8594c686b3089a61a3771';
   @override
   List<ModelSchema> get modelSchemas => [AuthorBook.schema];
   @override

@@ -21,10 +21,11 @@
 
 library models.vote_result;
 
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+
 import 'habit.dart';
 import 'user.dart';
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the VoteResult type in your schema.
 @immutable

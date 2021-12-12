@@ -22,19 +22,21 @@
 library models.model_provider;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'attration.dart';
-import 'user.dart';
-import 'post.dart';
-import 'comment.dart';
-import 'person.dart';
-import 'license.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+
+import 'attration.dart';
 import 'attration.dart';
 import 'comment.dart';
+import 'comment.dart';
+import 'license.dart';
 import 'license.dart';
 import 'person.dart';
+import 'person.dart';
+import 'post.dart';
 import 'post.dart';
 import 'user.dart';
+import 'user.dart';
+
 export 'attration.dart';
 export 'comment.dart';
 export 'license.dart';
@@ -47,15 +49,15 @@ class ModelProvider extends ModelProviderInterface {
   static final instance = ModelProvider();
 
   @override
-  String get version => '89d72fb9ebe5805eb564815c9b705a178229df1c';
+  String get version => 'be77683ab682a9582f75cde8c5ed7c64c5d64d76';
   @override
   List<ModelSchema> get modelSchemas => [
         Attration.schema,
-        User.schema,
-        Post.schema,
         Comment.schema,
+        License.schema,
         Person.schema,
-        License.schema
+        Post.schema,
+        User.schema
       ];
   @override
   List<ModelSchema> get customTypeSchemas => [];
@@ -64,16 +66,16 @@ class ModelProvider extends ModelProviderInterface {
     switch (modelName) {
       case 'Attration':
         return Attration.classType;
-      case 'User':
-        return User.classType;
-      case 'Post':
-        return Post.classType;
       case 'Comment':
         return Comment.classType;
-      case 'Person':
-        return Person.classType;
       case 'License':
         return License.classType;
+      case 'Person':
+        return Person.classType;
+      case 'Post':
+        return Post.classType;
+      case 'User':
+        return User.classType;
       default:
         throw ArgumentError(
             'Failed to find model in model provider for model name: ' +

@@ -21,8 +21,9 @@
 
 library models.post;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
 import 'blog.dart';
 import 'comment.dart';
 

@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:amplify_codegen/amplify_codegen.dart';
+import 'package:amplify_codegen/src/generator/visitors.dart';
+import 'package:code_builder/code_builder.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
-import 'golden_matcher.dart';
+import 'golden_util.dart';
 
 void main() {
   final schemaDir =
@@ -20,7 +23,15 @@ void main() {
       test(schemaName, () {
         final schema = File(schemaPath).readAsStringSync();
         final generated = generateForSchema(schema);
-        expect(generated, matchesGolden(schemaName));
+        final goldens = loadGolden(schemaName);
+        expect(generated.keys, unorderedEquals(goldens.keys));
+
+        for (var entry in generated.entries) {
+          final name = entry.key;
+          final library = entry.value;
+          final golden = goldens[name]!;
+          expect(library, equalsIgnoringWhitespace(golden));
+        }
       });
     }
 
@@ -38,7 +49,14 @@ void main() {
       final habitrV1Generated = generateForSchema(habitrV1Schema);
       final habitrV2Generated = generateForSchema(habitrV2Schema);
 
-      expect(habitrV1Generated, equals(habitrV2Generated));
+      expect(habitrV1Generated.keys, unorderedEquals(habitrV2Generated.keys));
+
+      for (var key in habitrV1Generated.keys) {
+        final v1Library = habitrV1Generated[key]!;
+        final v2Library = habitrV2Generated[key]!;
+
+        expect(v1Library, equals(v2Library));
+      }
     });
   });
 }

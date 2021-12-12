@@ -22,17 +22,19 @@
 library models.model_provider;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'user.dart';
-import 'habit.dart';
-import 'comment.dart';
-import 'vote_result.dart';
-import 's3_object.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+
+import 'comment.dart';
 import 'comment.dart';
 import 'habit.dart';
+import 'habit.dart';
+import 's3_object.dart';
 import 's3_object.dart';
 import 'user.dart';
+import 'user.dart';
 import 'vote_result.dart';
+import 'vote_result.dart';
+
 export 'access_level.dart';
 export 'category.dart';
 export 'comment.dart';
@@ -46,22 +48,22 @@ class ModelProvider extends ModelProviderInterface {
   static final instance = ModelProvider();
 
   @override
-  String get version => '0eeac06afe55e757692970f73ba088fb09ce7b49';
+  String get version => 'c7773ff6af0cd34eb5b85740ffe8ebb4a0061542';
   @override
   List<ModelSchema> get modelSchemas =>
-      [User.schema, Habit.schema, Comment.schema];
+      [Comment.schema, Habit.schema, User.schema];
   @override
   List<ModelSchema> get customTypeSchemas =>
-      [VoteResult.schema, S3Object.schema];
+      [S3Object.schema, VoteResult.schema];
   @override
   ModelType getModelTypeByModelName(String modelName) {
     switch (modelName) {
-      case 'User':
-        return User.classType;
-      case 'Habit':
-        return Habit.classType;
       case 'Comment':
         return Comment.classType;
+      case 'Habit':
+        return Habit.classType;
+      case 'User':
+        return User.classType;
       default:
         throw ArgumentError(
             'Failed to find model in model provider for model name: ' +

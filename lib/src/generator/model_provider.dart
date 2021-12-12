@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/generator/generator.dart';
 import 'package:amplify_codegen/src/helpers/recase.dart';
@@ -57,9 +59,11 @@ class ModelProviderGenerator extends Generator<Library> {
     );
   }
 
-  /// Generate a consistent hash for [schema].
+  /// Generate a consistent hash for [schema]. This will be consistent across
+  /// transformer version changes as well as semantic-only schema updates.
   List<int> get _schemaHash {
-    return sha1.convert(printNode(parseString(schema)).codeUnits).bytes;
+    final models = this.models..sort((a, b) => a.name.compareTo(b.name));
+    return sha1.convert(jsonEncode(models).codeUnits).bytes;
   }
 
   Iterable<Method> get _methods sync* {

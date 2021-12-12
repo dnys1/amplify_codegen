@@ -21,8 +21,8 @@
 
 library models.author_book;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
 
 /// This is an auto generated class representing the AuthorBook type in your schema.
 @immutable

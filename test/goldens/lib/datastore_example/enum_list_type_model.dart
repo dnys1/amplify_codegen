@@ -21,8 +21,9 @@
 
 library models.enum_list_type_model;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
 import 'enum_model.dart';
 
 /// This is an auto generated class representing the EnumListTypeModel type in your schema.

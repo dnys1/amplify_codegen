@@ -21,11 +21,12 @@
 
 library models.user;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 's3_object.dart';
+import 'package:meta/meta.dart';
+
 import 'comment.dart';
 import 'habit.dart';
+import 's3_object.dart';
 
 /// This is an auto generated class representing the User type in your schema.
 @immutable

@@ -46,8 +46,13 @@ List<Model> parseSchema(String schema) {
       b
         ..name = definition.name.value
         ..authRules.addAll(authRules)
-        ..fields.addAll(definition.modelFields(
-            primaryKey: v1PrimaryKey, isCustom: isCustom))
+        ..fields.addAll(
+            definition.modelFields(primaryKey: v1PrimaryKey, isCustom: isCustom)
+              ..sorted((a, b) {
+                if (a.isPrimaryKey) return -1;
+                if (b.isPrimaryKey) return 1;
+                return a.dartName.compareTo(b.dartName);
+              }))
         ..isCustom = isCustom;
 
       // Inject ID field, if unspecified

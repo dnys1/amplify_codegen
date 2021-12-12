@@ -21,8 +21,9 @@
 
 library models.post;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
 import 'comment.dart';
 
 /// This is an auto generated class representing the Post type in your schema.

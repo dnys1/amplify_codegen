@@ -21,9 +21,10 @@
 
 library models.s3_object;
 
-import 'package:meta/meta.dart';
-import 'access_level.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
+import 'access_level.dart';
 
 /// This is an auto generated class representing the S3Object type in your schema.
 @immutable

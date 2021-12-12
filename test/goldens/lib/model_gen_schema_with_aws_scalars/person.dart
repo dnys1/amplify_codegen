@@ -21,8 +21,9 @@
 
 library models.person;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
+
 import 'license.dart';
 
 /// This is an auto generated class representing the Person type in your schema.

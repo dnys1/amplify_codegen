@@ -21,8 +21,8 @@
 
 library models.child_model;
 
-import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:meta/meta.dart';
 
 /// This is an auto generated class representing the ChildModel type in your schema.
 @immutable

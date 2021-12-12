@@ -22,16 +22,18 @@
 library models.model_provider;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'simple_model.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+
 import 'simple_model.dart';
+import 'simple_model.dart';
+
 export 'simple_model.dart';
 
 class ModelProvider extends ModelProviderInterface {
   static final instance = ModelProvider();
 
   @override
-  String get version => '4b28d141aba618b77ed4c31adb7c23171b56b3df';
+  String get version => '077588c43bd688388028b6557e56d5ac44d3afbe';
   @override
   List<ModelSchema> get modelSchemas => [SimpleModel.schema];
   @override
