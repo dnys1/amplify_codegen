@@ -22,19 +22,12 @@
 library models.model_provider;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 import 'attration.dart';
-import 'attration.dart';
-import 'comment.dart';
 import 'comment.dart';
 import 'license.dart';
-import 'license.dart';
-import 'person.dart';
 import 'person.dart';
 import 'post.dart';
-import 'post.dart';
-import 'user.dart';
 import 'user.dart';
 
 export 'attration.dart';

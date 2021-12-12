@@ -1,6 +1,9 @@
+import 'package:amplify_codegen/src/generator/model_provider.dart';
 import 'package:amplify_codegen/src/generator/visitors.dart';
+import 'package:amplify_codegen/src/parse.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
+import 'package:gql/language.dart';
 
 const header = '''
 /*
@@ -29,17 +32,32 @@ const header = '''
 ///
 /// Returns a map from the library name to its formatted definition file.
 Map<String, String> generateForSchema(String schema) {
-  final libraries = librariesForSchema(schema);
+  // Parse all models before starting
+  final allModels = parseSchema(schema);
+
+  // Generate libraries for model types and enums
+  var libraries = parseString(schema)
+      .definitions
+      .map((definition) {
+        return definition.accept(LibraryVisitor(allModels));
+      })
+      .whereType<Library>()
+      .toList();
+
+  // Create ModelProvider
+  libraries.add(ModelProviderGenerator(schema).generate());
+
+  // Emit Dart code and format
   final formatter = DartFormatter(fixes: StyleFix.all);
-  return libraries.map((libraryName, library) {
+  return Map.fromEntries(libraries.map((library) {
     final emitter = DartEmitter(
       allocator: Allocator(),
       orderDirectives: true,
       useNullSafetySyntax: true,
     );
     return MapEntry(
-      libraryName,
+      library.name!,
       formatter.format('$header\n${library.accept(emitter)}'),
     );
-  });
+  }));
 }

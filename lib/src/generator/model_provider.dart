@@ -22,9 +22,6 @@ class ModelProviderGenerator extends Generator<Library> {
 
   @override
   Library generate() {
-    final importFilenames = [
-      for (var model in models) model.name.snakeCase + '.dart'
-    ]..sort();
     final exportFilenames = [
       for (var model in models) model.name.snakeCase + '.dart',
       for (var enum$ in enums) enum$.name.value.snakeCase + '.dart'
@@ -32,8 +29,6 @@ class ModelProviderGenerator extends Generator<Library> {
     return Library((l) => l
       ..name = 'models.model_provider'
       ..directives.addAll([
-        Directive.import(datastoreUri),
-        ...importFilenames.map(Directive.import),
         ...exportFilenames.map(Directive.export),
       ])
       ..body.add(_class));

@@ -22,9 +22,7 @@
 library models.model_provider;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
-import 'author_book.dart';
 import 'author_book.dart';
 
 export 'author_book.dart';

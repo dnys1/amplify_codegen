@@ -22,17 +22,11 @@
 library models.model_provider;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 import 'comment.dart';
-import 'comment.dart';
-import 'habit.dart';
 import 'habit.dart';
 import 's3_object.dart';
-import 's3_object.dart';
 import 'user.dart';
-import 'user.dart';
-import 'vote_result.dart';
 import 'vote_result.dart';
 
 export 'access_level.dart';
