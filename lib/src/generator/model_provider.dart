@@ -1,10 +1,11 @@
 import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/generator/generator.dart';
-import 'package:amplify_codegen/src/generator/types.dart';
-import 'package:amplify_codegen/src/models/model.dart';
+import 'package:amplify_codegen/src/helpers/types.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
+import 'package:gql/ast.dart';
+import 'package:gql/language.dart';
 import 'package:recase/recase.dart';
 
 class ModelProviderGenerator extends Generator<Library> {
@@ -12,6 +13,10 @@ class ModelProviderGenerator extends Generator<Library> {
 
   final String schema;
   late final List<Model> models = parseSchema(schema);
+  late final List<EnumTypeDefinitionNode> enums = parseString(schema)
+      .definitions
+      .whereType<EnumTypeDefinitionNode>()
+      .toList();
 
   @override
   Library generate() {
@@ -20,7 +25,11 @@ class ModelProviderGenerator extends Generator<Library> {
       ..directives.addAll([
         Directive.import(datastoreUri),
         for (var model in models)
-          Directive.import(ReCase(model.name).snakeCase + '.dart'),
+          Directive.import(model.name.snakeCase + '.dart'),
+        for (var model in models)
+          Directive.export(model.name.snakeCase + '.dart'),
+        for (var enum$ in enums)
+          Directive.export(enum$.name.value.snakeCase + '.dart'),
       ])
       ..body.add(_class));
   }
@@ -37,9 +46,14 @@ class ModelProviderGenerator extends Generator<Library> {
 
   Iterable<Field> get _fields sync* {}
 
+  /// Generate a consistent hash for [schema].
+  List<int> get _schemaHash {
+    return sha1.convert(printNode(parseString(schema)).codeUnits).bytes;
+  }
+
   Iterable<Method> get _methods sync* {
     // version
-    final version = hex.encode(sha1.convert(schema.codeUnits).bytes);
+    final version = hex.encode(_schemaHash);
     yield Method(
       (m) => m
         ..annotations.add(refer('override'))

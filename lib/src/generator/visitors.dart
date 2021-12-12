@@ -1,10 +1,11 @@
-import 'package:amplify_codegen/src/generator/types.dart';
+import 'package:amplify_codegen/src/helpers/types.dart';
 import 'package:amplify_codegen/src/models/model.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:gql/ast.dart';
 
 import 'model.dart';
 import 'enum.dart';
+import '../helpers/types.dart';
 
 /// A visitor for top-level GraphQL definitions which produces a [Library] for
 /// each one. Specifically, this targets object `type` definitions and `enum`
@@ -20,7 +21,7 @@ class LibraryVisitor extends SimpleVisitor<Library> {
   }
 
   @override
-  Library visitObjectTypeDefinitionNode(ObjectTypeDefinitionNode node) {
+  Library? visitObjectTypeDefinitionNode(ObjectTypeDefinitionNode node) {
     return ModelGenerator(node, allModels).generate();
   }
 }
@@ -39,8 +40,10 @@ class TypeVisitor extends SimpleVisitor<TypeReference> {
 
   @override
   TypeReference visitNamedTypeNode(NamedTypeNode node) {
-    return AWSTypes.parse(node.name.value)
-        .reference
+    return AWSType.values
+        .firstWhere((type) => node.name.value == type.name,
+            orElse: () => AWSType.Model)
+        .typeRef(node.name.value)
         .rebuild((t) => t.isNullable = !node.isNonNull);
   }
 }

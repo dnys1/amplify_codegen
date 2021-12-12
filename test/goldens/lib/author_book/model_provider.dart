@@ -17,14 +17,17 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.model_provider;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'author_book.dart';
+export 'author_book.dart';
 
 class ModelProvider extends ModelProviderInterface {
   @override
-  String get version => '4248b4205b549688bfe8b9a03b2c6f83a9fafa24';
+  String get version => '5bbc0f1774f54e7121b9fc254b976c5ec2e875a8';
   @override
   List<ModelSchema> get modelSchemas => [AuthorBook.schema];
 }

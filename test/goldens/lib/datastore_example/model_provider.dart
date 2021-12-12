@@ -17,9 +17,14 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.model_provider;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'all_scalar_types_custom_type.dart';
+import 'all_scalar_types_list_custom_type.dart';
+import 'simple_custom_type.dart';
 import 'blog.dart';
 import 'post.dart';
 import 'comment.dart';
@@ -50,15 +55,49 @@ import 'enum_type_model.dart';
 import 'enum_list_type_model.dart';
 import 'multi_type_model.dart';
 import 'model_nested_custom_type.dart';
-import 'all_scalar_types_custom_type.dart';
-import 'all_scalar_types_list_custom_type.dart';
-import 'simple_custom_type.dart';
+export 'all_scalar_types_custom_type.dart';
+export 'all_scalar_types_list_custom_type.dart';
+export 'simple_custom_type.dart';
+export 'blog.dart';
+export 'post.dart';
+export 'comment.dart';
+export 'has_many_model.dart';
+export 'has_many_child_model.dart';
+export 'has_one_model.dart';
+export 'belongs_to_model.dart';
+export 'child_model.dart';
+export 'string_type_model.dart';
+export 'string_list_type_model.dart';
+export 'int_type_model.dart';
+export 'int_list_type_model.dart';
+export 'double_type_model.dart';
+export 'double_list_type_model.dart';
+export 'bool_type_model.dart';
+export 'bool_list_type_model.dart';
+export 'date_type_model.dart';
+export 'date_list_type_model.dart';
+export 'date_time_type_model.dart';
+export 'date_time_list_type_model.dart';
+export 'time_type_model.dart';
+export 'time_list_type_model.dart';
+export 'timestamp_type_model.dart';
+export 'timestamp_list_type_model.dart';
+export 'j_s_o_n_type_model.dart';
+export 'j_s_o_n_list_type_model.dart';
+export 'enum_type_model.dart';
+export 'enum_list_type_model.dart';
+export 'multi_type_model.dart';
+export 'model_nested_custom_type.dart';
+export 'enum_model.dart';
 
 class ModelProvider extends ModelProviderInterface {
   @override
-  String get version => '95b5df4760144642248da339f2866829b8e55a1c';
+  String get version => 'fefbc59e9be10814774d53dbcc960943ce0e69ec';
   @override
   List<ModelSchema> get modelSchemas => [
+        AllScalarTypesCustomType.schema,
+        AllScalarTypesListCustomType.schema,
+        SimpleCustomType.schema,
         Blog.schema,
         Post.schema,
         Comment.schema,
@@ -88,9 +127,6 @@ class ModelProvider extends ModelProviderInterface {
         EnumTypeModel.schema,
         EnumListTypeModel.schema,
         MultiTypeModel.schema,
-        ModelNestedCustomType.schema,
-        AllScalarTypesCustomType.schema,
-        AllScalarTypesListCustomType.schema,
-        SimpleCustomType.schema
+        ModelNestedCustomType.schema
       ];
 }

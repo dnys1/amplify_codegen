@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.date_list_type_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the DateListTypeModel type in your schema.
 @immutable
@@ -39,8 +42,9 @@ class DateListTypeModel extends Model {
     return DateListTypeModel._internal(
         id: (json['id'] as String),
         value: (json['value'] as List?)
-            ?.cast<AWSDate>()
-            ?.map((el) => (el as TemporalDate?)));
+            ?.cast<TemporalDate?>()
+            .map((el) => el)
+            .toList());
   }
 
   static const _DateListTypeModelModelType classType =
@@ -50,12 +54,32 @@ class DateListTypeModel extends Model {
 
   final List<TemporalDate?>? _value;
 
+  static const ID = QueryField<dynamic>(fieldName: 'id');
+
+  static const VALUE = QueryField<dynamic>(fieldName: 'value');
+
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'DateListTypeModel';
     modelSchemaDefinition.pluralName = 'DateListTypeModels';
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: false,
+        key: VALUE,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.date),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'createdAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'updatedAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
   });
 
   List<TemporalDate?>? get value => _value;
@@ -87,7 +111,7 @@ class DateListTypeModel extends Model {
 
   @override
   Map<String, Object?> toJson() =>
-      {'id': id, 'value': _value?.map((el) => el)?.toList()};
+      {'id': id, 'value': _value?.map((el) => el).toList()};
   @override
   _DateListTypeModelModelType getInstanceType() => classType;
   @override

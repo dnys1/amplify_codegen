@@ -92,6 +92,9 @@ class _$ModelFieldSerializer implements StructuredSerializer<ModelField> {
       'required',
       serializers.serialize(object.required,
           specifiedType: const FullType(bool)),
+      'readOnly',
+      serializers.serialize(object.readOnly,
+          specifiedType: const FullType(bool)),
       'metadata',
       serializers.serialize(object.metadata,
           specifiedType: const FullType(ModelFieldMetadata)),
@@ -121,6 +124,10 @@ class _$ModelFieldSerializer implements StructuredSerializer<ModelField> {
           break;
         case 'required':
           result.required = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
+        case 'readOnly':
+          result.readOnly = serializers.deserialize(value,
               specifiedType: const FullType(bool)) as bool;
           break;
         case 'metadata':
@@ -156,6 +163,9 @@ class _$ModelFieldMetadataSerializer
       'type',
       serializers.serialize(object.type,
           specifiedType: const FullType(AWSType)),
+      'isPrimaryKey',
+      serializers.serialize(object.isPrimaryKey,
+          specifiedType: const FullType(bool)),
       'isList',
       serializers.serialize(object.isList, specifiedType: const FullType(bool)),
       'isHasOne',
@@ -215,6 +225,10 @@ class _$ModelFieldMetadataSerializer
         case 'type':
           result.type = serializers.deserialize(value,
               specifiedType: const FullType(AWSType)) as AWSType;
+          break;
+        case 'isPrimaryKey':
+          result.isPrimaryKey = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
           break;
         case 'isList':
           result.isList = serializers.deserialize(value,
@@ -398,6 +412,8 @@ class _$ModelField extends ModelField {
   @override
   final bool required;
   @override
+  final bool readOnly;
+  @override
   final ModelFieldMetadata metadata;
   @override
   final BuiltList<AuthRule> authRules;
@@ -408,11 +424,13 @@ class _$ModelField extends ModelField {
   _$ModelField._(
       {required this.name,
       required this.required,
+      required this.readOnly,
       required this.metadata,
       required this.authRules})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(name, 'ModelField', 'name');
     BuiltValueNullFieldError.checkNotNull(required, 'ModelField', 'required');
+    BuiltValueNullFieldError.checkNotNull(readOnly, 'ModelField', 'readOnly');
     BuiltValueNullFieldError.checkNotNull(metadata, 'ModelField', 'metadata');
     BuiltValueNullFieldError.checkNotNull(authRules, 'ModelField', 'authRules');
   }
@@ -430,6 +448,7 @@ class _$ModelField extends ModelField {
     return other is ModelField &&
         name == other.name &&
         required == other.required &&
+        readOnly == other.readOnly &&
         metadata == other.metadata &&
         authRules == other.authRules;
   }
@@ -437,7 +456,10 @@ class _$ModelField extends ModelField {
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, name.hashCode), required.hashCode), metadata.hashCode),
+        $jc(
+            $jc($jc($jc(0, name.hashCode), required.hashCode),
+                readOnly.hashCode),
+            metadata.hashCode),
         authRules.hashCode));
   }
 
@@ -446,6 +468,7 @@ class _$ModelField extends ModelField {
     return (newBuiltValueToStringHelper('ModelField')
           ..add('name', name)
           ..add('required', required)
+          ..add('readOnly', readOnly)
           ..add('metadata', metadata)
           ..add('authRules', authRules))
         .toString();
@@ -463,6 +486,10 @@ class ModelFieldBuilder implements Builder<ModelField, ModelFieldBuilder> {
   bool? get required => _$this._required;
   set required(bool? required) => _$this._required = required;
 
+  bool? _readOnly;
+  bool? get readOnly => _$this._readOnly;
+  set readOnly(bool? readOnly) => _$this._readOnly = readOnly;
+
   ModelFieldMetadataBuilder? _metadata;
   ModelFieldMetadataBuilder get metadata =>
       _$this._metadata ??= new ModelFieldMetadataBuilder();
@@ -475,13 +502,16 @@ class ModelFieldBuilder implements Builder<ModelField, ModelFieldBuilder> {
   set authRules(ListBuilder<AuthRule>? authRules) =>
       _$this._authRules = authRules;
 
-  ModelFieldBuilder();
+  ModelFieldBuilder() {
+    ModelField._setDefaults(this);
+  }
 
   ModelFieldBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _name = $v.name;
       _required = $v.required;
+      _readOnly = $v.readOnly;
       _metadata = $v.metadata.toBuilder();
       _authRules = $v.authRules.toBuilder();
       _$v = null;
@@ -510,6 +540,8 @@ class ModelFieldBuilder implements Builder<ModelField, ModelFieldBuilder> {
                   name, 'ModelField', 'name'),
               required: BuiltValueNullFieldError.checkNotNull(
                   required, 'ModelField', 'required'),
+              readOnly: BuiltValueNullFieldError.checkNotNull(
+                  readOnly, 'ModelField', 'readOnly'),
               metadata: metadata.build(),
               authRules: authRules.build());
     } catch (_) {
@@ -534,6 +566,8 @@ class _$ModelFieldMetadata extends ModelFieldMetadata {
   @override
   final AWSType type;
   @override
+  final bool isPrimaryKey;
+  @override
   final bool isList;
   @override
   final bool isHasOne;
@@ -556,6 +590,7 @@ class _$ModelFieldMetadata extends ModelFieldMetadata {
 
   _$ModelFieldMetadata._(
       {required this.type,
+      required this.isPrimaryKey,
       required this.isList,
       required this.isHasOne,
       required this.isHasMany,
@@ -566,6 +601,8 @@ class _$ModelFieldMetadata extends ModelFieldMetadata {
       this.associatedType})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(type, 'ModelFieldMetadata', 'type');
+    BuiltValueNullFieldError.checkNotNull(
+        isPrimaryKey, 'ModelFieldMetadata', 'isPrimaryKey');
     BuiltValueNullFieldError.checkNotNull(
         isList, 'ModelFieldMetadata', 'isList');
     BuiltValueNullFieldError.checkNotNull(
@@ -590,6 +627,7 @@ class _$ModelFieldMetadata extends ModelFieldMetadata {
     if (identical(other, this)) return true;
     return other is ModelFieldMetadata &&
         type == other.type &&
+        isPrimaryKey == other.isPrimaryKey &&
         isList == other.isList &&
         isHasOne == other.isHasOne &&
         isHasMany == other.isHasMany &&
@@ -608,7 +646,11 @@ class _$ModelFieldMetadata extends ModelFieldMetadata {
                 $jc(
                     $jc(
                         $jc(
-                            $jc($jc($jc(0, type.hashCode), isList.hashCode),
+                            $jc(
+                                $jc(
+                                    $jc($jc(0, type.hashCode),
+                                        isPrimaryKey.hashCode),
+                                    isList.hashCode),
                                 isHasOne.hashCode),
                             isHasMany.hashCode),
                         isBelongsTo.hashCode),
@@ -622,6 +664,7 @@ class _$ModelFieldMetadata extends ModelFieldMetadata {
   String toString() {
     return (newBuiltValueToStringHelper('ModelFieldMetadata')
           ..add('type', type)
+          ..add('isPrimaryKey', isPrimaryKey)
           ..add('isList', isList)
           ..add('isHasOne', isHasOne)
           ..add('isHasMany', isHasMany)
@@ -641,6 +684,10 @@ class ModelFieldMetadataBuilder
   AWSType? _type;
   AWSType? get type => _$this._type;
   set type(AWSType? type) => _$this._type = type;
+
+  bool? _isPrimaryKey;
+  bool? get isPrimaryKey => _$this._isPrimaryKey;
+  set isPrimaryKey(bool? isPrimaryKey) => _$this._isPrimaryKey = isPrimaryKey;
 
   bool? _isList;
   bool? get isList => _$this._isList;
@@ -676,12 +723,15 @@ class ModelFieldMetadataBuilder
   set associatedType(String? associatedType) =>
       _$this._associatedType = associatedType;
 
-  ModelFieldMetadataBuilder();
+  ModelFieldMetadataBuilder() {
+    ModelFieldMetadata._setDefaults(this);
+  }
 
   ModelFieldMetadataBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _type = $v.type;
+      _isPrimaryKey = $v.isPrimaryKey;
       _isList = $v.isList;
       _isHasOne = $v.isHasOne;
       _isHasMany = $v.isHasMany;
@@ -712,6 +762,8 @@ class ModelFieldMetadataBuilder
         new _$ModelFieldMetadata._(
             type: BuiltValueNullFieldError.checkNotNull(
                 type, 'ModelFieldMetadata', 'type'),
+            isPrimaryKey: BuiltValueNullFieldError.checkNotNull(
+                isPrimaryKey, 'ModelFieldMetadata', 'isPrimaryKey'),
             isList: BuiltValueNullFieldError.checkNotNull(
                 isList, 'ModelFieldMetadata', 'isList'),
             isHasOne: BuiltValueNullFieldError.checkNotNull(

@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.blog;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the Blog type in your schema.
 @immutable
@@ -42,8 +45,10 @@ class Blog extends Model {
         id: (json['id'] as String),
         name: (json['name'] as String),
         posts: (json['posts'] as List?)
-            ?.cast<Map>()
-            ?.map((el) => el != null ? Post.fromJson(el) : null));
+            ?.cast<Map?>()
+            .map((el) =>
+                el != null ? Post.fromJson(el.cast<String, Object?>()) : null)
+            .toList());
   }
 
   static const _BlogModelType classType = _BlogModelType();
@@ -54,13 +59,42 @@ class Blog extends Model {
 
   final List<Post?>? _posts;
 
+  static const ID = QueryField<dynamic>(fieldName: 'id');
+
+  static const NAME = QueryField<dynamic>(fieldName: 'name');
+
+  static const POSTS = QueryField<dynamic>(
+      fieldName: 'posts',
+      fieldType:
+          ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: 'Post'));
+
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'Blog';
     modelSchemaDefinition.pluralName = 'Blogs';
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: true,
+        key: NAME,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+        isRequired: false,
+        key: POSTS,
+        ofModelName: 'Post',
+        associatedKey: Post.BLOG));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'createdAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'updatedAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
   });
 
   String get name {
@@ -110,7 +144,7 @@ class Blog extends Model {
   Map<String, Object?> toJson() => {
         'id': id,
         'name': _name,
-        'posts': _posts?.map((el) => el?.toJson())?.toList()
+        'posts': _posts?.map((el) => el?.toJson()).toList()
       };
   @override
   _BlogModelType getInstanceType() => classType;

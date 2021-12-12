@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.bool_list_type_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the BoolListTypeModel type in your schema.
 @immutable
@@ -37,9 +40,8 @@ class BoolListTypeModel extends Model {
   factory BoolListTypeModel.fromJson(Map<String, Object?> json) {
     return BoolListTypeModel._internal(
         id: (json['id'] as String),
-        value: (json['value'] as List?)
-            ?.cast<Boolean>()
-            ?.map((el) => (el as bool?)));
+        value:
+            (json['value'] as List?)?.cast<bool?>().map((el) => el).toList());
   }
 
   static const _BoolListTypeModelModelType classType =
@@ -49,12 +51,32 @@ class BoolListTypeModel extends Model {
 
   final List<bool?>? _value;
 
+  static const ID = QueryField<dynamic>(fieldName: 'id');
+
+  static const VALUE = QueryField<dynamic>(fieldName: 'value');
+
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'BoolListTypeModel';
     modelSchemaDefinition.pluralName = 'BoolListTypeModels';
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: false,
+        key: VALUE,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.bool),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'createdAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'updatedAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
   });
 
   List<bool?>? get value => _value;
@@ -86,7 +108,7 @@ class BoolListTypeModel extends Model {
 
   @override
   Map<String, Object?> toJson() =>
-      {'id': id, 'value': _value?.map((el) => el)?.toList()};
+      {'id': id, 'value': _value?.map((el) => el).toList()};
   @override
   _BoolListTypeModelModelType getInstanceType() => classType;
   @override

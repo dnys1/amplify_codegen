@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.enum_list_type_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the EnumListTypeModel type in your schema.
 @immutable
@@ -38,8 +41,9 @@ class EnumListTypeModel extends Model {
     return EnumListTypeModel._internal(
         id: (json['id'] as String),
         value: (json['value'] as List?)
-            ?.cast<Map>()
-            ?.map((el) => el != null ? EnumModel.fromJson(el) : null));
+            ?.cast<String?>()
+            .map((el) => EnumModel.values.byValue((el as String?)))
+            .toList());
   }
 
   static const _EnumListTypeModelModelType classType =
@@ -49,12 +53,32 @@ class EnumListTypeModel extends Model {
 
   final List<EnumModel?>? _value;
 
+  static const ID = QueryField<dynamic>(fieldName: 'id');
+
+  static const VALUE = QueryField<dynamic>(fieldName: 'value');
+
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'EnumListTypeModel';
     modelSchemaDefinition.pluralName = 'EnumListTypeModels';
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: false,
+        key: VALUE,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'createdAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'updatedAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
   });
 
   List<EnumModel?>? get value => _value;
@@ -86,7 +110,7 @@ class EnumListTypeModel extends Model {
 
   @override
   Map<String, Object?> toJson() =>
-      {'id': id, 'value': _value?.map((el) => el?.toJson())?.toList()};
+      {'id': id, 'value': _value?.map((el) => el?.value).toList()};
   @override
   _EnumListTypeModelModelType getInstanceType() => classType;
   @override

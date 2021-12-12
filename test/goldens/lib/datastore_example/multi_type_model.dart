@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.multi_type_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the MultiTypeModel type in your schema.
 @immutable
@@ -71,15 +74,54 @@ class MultiTypeModel extends Model {
 
   final int? _altIntValue;
 
+  static const ID = QueryField<dynamic>(fieldName: 'id');
+
+  static const STRING_VALUE = QueryField<dynamic>(fieldName: 'stringValue');
+
+  static const ALT_STRING_VALUE =
+      QueryField<dynamic>(fieldName: 'altStringValue');
+
+  static const INT_VALUE = QueryField<dynamic>(fieldName: 'intValue');
+
+  static const ALT_INT_VALUE = QueryField<dynamic>(fieldName: 'altIntValue');
+
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'MultiTypeModel';
     modelSchemaDefinition.pluralName = 'MultiTypeModels';
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: false,
+        key: STRING_VALUE,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: false,
+        key: ALT_STRING_VALUE,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: false,
+        key: INT_VALUE,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.int),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: false,
+        key: ALT_INT_VALUE,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.int),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'createdAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'updatedAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
   });
 
   String? get stringValue => _stringValue;

@@ -17,9 +17,32 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.enum_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
 
 enum EnumModel { yes, no }
+
+extension $EnumModel on EnumModel {
+  String get value {
+    switch (this) {
+      case EnumModel.yes:
+        return 'yes';
+      case EnumModel.no:
+        return 'no';
+    }
+  }
+}
+
+extension $EnumModelList on List<EnumModel> {
+  EnumModel? byValue(String? value) {
+    try {
+      return EnumModel.values.firstWhere((el) => el.value == value);
+    } on StateError {
+      return null;
+    }
+  }
+}

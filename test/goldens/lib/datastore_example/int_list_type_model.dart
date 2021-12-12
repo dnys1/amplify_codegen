@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.int_list_type_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the IntListTypeModel type in your schema.
 @immutable
@@ -37,8 +40,7 @@ class IntListTypeModel extends Model {
   factory IntListTypeModel.fromJson(Map<String, Object?> json) {
     return IntListTypeModel._internal(
         id: (json['id'] as String),
-        value:
-            (json['value'] as List?)?.cast<Int>()?.map((el) => (el as int?)));
+        value: (json['value'] as List?)?.cast<int?>().map((el) => el).toList());
   }
 
   static const _IntListTypeModelModelType classType =
@@ -48,12 +50,32 @@ class IntListTypeModel extends Model {
 
   final List<int?>? _value;
 
+  static const ID = QueryField<dynamic>(fieldName: 'id');
+
+  static const VALUE = QueryField<dynamic>(fieldName: 'value');
+
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'IntListTypeModel';
     modelSchemaDefinition.pluralName = 'IntListTypeModels';
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: false,
+        key: VALUE,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.int),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'createdAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'updatedAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
   });
 
   List<int?>? get value => _value;
@@ -85,7 +107,7 @@ class IntListTypeModel extends Model {
 
   @override
   Map<String, Object?> toJson() =>
-      {'id': id, 'value': _value?.map((el) => el)?.toList()};
+      {'id': id, 'value': _value?.map((el) => el).toList()};
   @override
   _IntListTypeModelModelType getInstanceType() => classType;
   @override

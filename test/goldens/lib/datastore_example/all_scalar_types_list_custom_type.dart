@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.all_scalar_types_list_custom_type;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the AllScalarTypesListCustomType type in your schema.
 @immutable
@@ -84,38 +87,49 @@ class AllScalarTypesListCustomType {
   factory AllScalarTypesListCustomType.fromJson(Map<String, Object?> json) {
     return AllScalarTypesListCustomType._internal(
         stringValues: (json['stringValues'] as List?)
-            ?.cast<String>()
-            ?.map((el) => (el as String?)),
-        intValues: (json['intValues'] as List?)
-            ?.cast<Int>()
-            ?.map((el) => (el as int?)),
+            ?.cast<String?>()
+            .map((el) => el)
+            .toList(),
+        intValues:
+            (json['intValues'] as List?)?.cast<int?>().map((el) => el).toList(),
         floatValues: (json['floatValues'] as List?)
-            ?.cast<Float>()
-            ?.map((el) => (el as double?)),
+            ?.cast<double?>()
+            .map((el) => el)
+            .toList(),
         boolValues: (json['boolValues'] as List?)
-            ?.cast<Boolean>()
-            ?.map((el) => (el as bool?)),
+            ?.cast<bool?>()
+            .map((el) => el)
+            .toList(),
         dateValues: (json['dateValues'] as List?)
-            ?.cast<AWSDate>()
-            ?.map((el) => (el as TemporalDate?)),
+            ?.cast<TemporalDate?>()
+            .map((el) => el)
+            .toList(),
         dateTimeValues: (json['dateTimeValues'] as List?)
-            ?.cast<AWSDateTime>()
-            ?.map((el) => (el as TemporalDateTime?)),
+            ?.cast<TemporalDateTime?>()
+            .map((el) => el)
+            .toList(),
         timeValues: (json['timeValues'] as List?)
-            ?.cast<AWSTime>()
-            ?.map((el) => (el as TemporalTime?)),
+            ?.cast<TemporalTime?>()
+            .map((el) => el)
+            .toList(),
         timestampValues: (json['timestampValues'] as List?)
-            ?.cast<AWSTimestamp>()
-            ?.map((el) => (el as TemporalTimestamp?)),
+            ?.cast<TemporalTimestamp?>()
+            .map((el) => el)
+            .toList(),
         jsonValues: (json['jsonValues'] as List?)
-            ?.cast<AWSJSON>()
-            ?.map((el) => (el as String?)),
+            ?.cast<String?>()
+            .map((el) => el)
+            .toList(),
         enumValues: (json['enumValues'] as List?)
-            ?.cast<Map>()
-            ?.map((el) => el != null ? EnumModel.fromJson(el) : null),
+            ?.cast<String?>()
+            .map((el) => EnumModel.values.byValue((el as String?)))
+            .toList(),
         customTypeValues: (json['customTypeValues'] as List?)
-            ?.cast<Map>()
-            ?.map((el) => el != null ? SimpleCustomType.fromJson(el) : null));
+            ?.cast<Map?>()
+            .map((el) => el != null
+                ? SimpleCustomType.fromJson(el.cast<String, Object?>())
+                : null)
+            .toList());
   }
 
   final List<String?>? _stringValues;
@@ -145,49 +159,63 @@ class AllScalarTypesListCustomType {
     modelSchemaDefinition.name = 'AllScalarTypesListCustomType';
     modelSchemaDefinition.pluralName = 'AllScalarTypesListCustomTypes';
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: false,
         fieldName: 'stringValues',
-        isRequired: false,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: false,
         fieldName: 'intValues',
-        isRequired: false,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.int),
+        isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: false,
         fieldName: 'floatValues',
-        isRequired: false,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.double),
+        isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: false,
         fieldName: 'boolValues',
-        isRequired: false,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.bool),
+        isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: false,
         fieldName: 'dateValues',
-        isRequired: false,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.date),
+        isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: false,
         fieldName: 'dateTimeValues',
-        isRequired: false,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: false,
         fieldName: 'timeValues',
-        isRequired: false,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.time),
+        isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: false,
         fieldName: 'timestampValues',
-        isRequired: false,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.timestamp),
+        isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: false,
         fieldName: 'jsonValues',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         fieldName: 'enumValues',
+        isArray: true,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection,
+            ofCustomTypeName: 'EnumModel')));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         fieldName: 'customTypeValues',
-        isRequired: false,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+        isArray: true,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection,
+            ofCustomTypeName: 'SimpleCustomType')));
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
   });
 
   List<String?>? get stringValues => _stringValues;
@@ -270,17 +298,17 @@ class AllScalarTypesListCustomType {
   }
 
   Map<String, Object?> toJson() => {
-        'stringValues': _stringValues?.map((el) => el)?.toList(),
-        'intValues': _intValues?.map((el) => el)?.toList(),
-        'floatValues': _floatValues?.map((el) => el)?.toList(),
-        'boolValues': _boolValues?.map((el) => el)?.toList(),
-        'dateValues': _dateValues?.map((el) => el)?.toList(),
-        'dateTimeValues': _dateTimeValues?.map((el) => el)?.toList(),
-        'timeValues': _timeValues?.map((el) => el)?.toList(),
-        'timestampValues': _timestampValues?.map((el) => el)?.toList(),
-        'jsonValues': _jsonValues?.map((el) => el)?.toList(),
-        'enumValues': _enumValues?.map((el) => el?.toJson())?.toList(),
+        'stringValues': _stringValues?.map((el) => el).toList(),
+        'intValues': _intValues?.map((el) => el).toList(),
+        'floatValues': _floatValues?.map((el) => el).toList(),
+        'boolValues': _boolValues?.map((el) => el).toList(),
+        'dateValues': _dateValues?.map((el) => el).toList(),
+        'dateTimeValues': _dateTimeValues?.map((el) => el).toList(),
+        'timeValues': _timeValues?.map((el) => el).toList(),
+        'timestampValues': _timestampValues?.map((el) => el).toList(),
+        'jsonValues': _jsonValues?.map((el) => el).toList(),
+        'enumValues': _enumValues?.map((el) => el?.value).toList(),
         'customTypeValues':
-            _customTypeValues?.map((el) => el?.toJson())?.toList()
+            _customTypeValues?.map((el) => el?.toJson()).toList()
       };
 }

@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.belongs_to_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the BelongsToModel type in your schema.
 @immutable
@@ -40,7 +43,8 @@ class BelongsToModel extends Model {
     return BelongsToModel._internal(
         id: (json['id'] as String),
         name: (json['name'] as String),
-        child: ChildModel.fromJson(json['child']));
+        child: ChildModel.fromJson(
+            (json['child'] as Map).cast<String, Object?>()));
   }
 
   static const _BelongsToModelModelType classType = _BelongsToModelModelType();
@@ -51,13 +55,42 @@ class BelongsToModel extends Model {
 
   final ChildModel? _child;
 
+  static const ID = QueryField<dynamic>(fieldName: 'id');
+
+  static const NAME = QueryField<dynamic>(fieldName: 'name');
+
+  static const CHILD = QueryField<dynamic>(
+      fieldName: 'child',
+      fieldType:
+          ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'ChildModel'));
+
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'BelongsToModel';
     modelSchemaDefinition.pluralName = 'BelongsToModels';
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: true,
+        key: NAME,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
+        isRequired: true,
+        key: CHILD,
+        ofModelName: 'ChildModel',
+        targetName: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'createdAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'updatedAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
   });
 
   String get name {
@@ -115,7 +148,7 @@ class BelongsToModel extends Model {
 
   @override
   Map<String, Object?> toJson() =>
-      {'id': id, 'name': _name, 'child': _child.toJson()};
+      {'id': id, 'name': _name, 'child': _child?.toJson()};
   @override
   _BelongsToModelModelType getInstanceType() => classType;
   @override

@@ -1,4 +1,4 @@
-import 'package:amplify_codegen/src/generator/types.dart';
+import 'package:amplify_codegen/src/helpers/types.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:gql/ast.dart';
 import 'package:recase/recase.dart';
@@ -8,10 +8,10 @@ abstract class Generator<T> {
 }
 
 abstract class LibraryGenerator<T extends TypeDefinitionNode>
-    extends Generator<Library> {
+    extends Generator<Library?> {
   LibraryGenerator(this.node)
       : builder = LibraryBuilder()
-          ..name = 'models.${ReCase(node.name.value).snakeCase}'
+          ..name = 'models.${node.name.value.snakeCase}'
           ..directives.addAll([
             Directive.import(datastoreUri),
             Directive.import('package:meta/meta.dart'),
@@ -20,7 +20,7 @@ abstract class LibraryGenerator<T extends TypeDefinitionNode>
   final LibraryBuilder builder;
   final T node;
 
-  String get typeName => ReCase(wireName).pascalCase;
+  String get typeName => wireName.pascalCase;
 
   String get wireName => node.name.value;
 }

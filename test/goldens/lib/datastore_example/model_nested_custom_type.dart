@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.model_nested_custom_type;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the ModelNestedCustomType type in your schema.
 @immutable
@@ -47,12 +50,15 @@ class ModelNestedCustomType extends Model {
   factory ModelNestedCustomType.fromJson(Map<String, Object?> json) {
     return ModelNestedCustomType._internal(
         id: (json['id'] as String),
-        customTypeValue:
-            AllScalarTypesCustomType.fromJson(json['customTypeValue']),
+        customTypeValue: AllScalarTypesCustomType.fromJson(
+            (json['customTypeValue'] as Map).cast<String, Object?>()),
         listCustomTypeValue: (json['listCustomTypeValue'] as List?)
-            ?.cast<Map>()
-            ?.map((el) =>
-                el != null ? AllScalarTypesListCustomType.fromJson(el) : null));
+            ?.cast<Map?>()
+            .map((el) => el != null
+                ? AllScalarTypesListCustomType.fromJson(
+                    el.cast<String, Object?>())
+                : null)
+            .toList());
   }
 
   static const _ModelNestedCustomTypeModelType classType =
@@ -64,13 +70,41 @@ class ModelNestedCustomType extends Model {
 
   final List<AllScalarTypesListCustomType?>? _listCustomTypeValue;
 
+  static const ID = QueryField<dynamic>(fieldName: 'id');
+
+  static const CUSTOM_TYPE_VALUE =
+      QueryField<dynamic>(fieldName: 'customTypeValue');
+
+  static const LIST_CUSTOM_TYPE_VALUE =
+      QueryField<dynamic>(fieldName: 'listCustomTypeValue');
+
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'ModelNestedCustomType';
     modelSchemaDefinition.pluralName = 'ModelNestedCustomTypes';
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: true,
+        key: CUSTOM_TYPE_VALUE,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.model),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: false,
+        key: LIST_CUSTOM_TYPE_VALUE,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'createdAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'updatedAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
   });
 
   AllScalarTypesCustomType get customTypeValue {
@@ -125,9 +159,9 @@ class ModelNestedCustomType extends Model {
   @override
   Map<String, Object?> toJson() => {
         'id': id,
-        'customTypeValue': _customTypeValue.toJson(),
+        'customTypeValue': _customTypeValue?.toJson(),
         'listCustomTypeValue':
-            _listCustomTypeValue?.map((el) => el?.toJson())?.toList()
+            _listCustomTypeValue?.map((el) => el?.toJson()).toList()
       };
   @override
   _ModelNestedCustomTypeModelType getInstanceType() => classType;

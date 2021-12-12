@@ -29,11 +29,17 @@ abstract class Model implements Built<Model, ModelBuilder> {
 }
 
 abstract class ModelField implements Built<ModelField, ModelFieldBuilder> {
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(ModelFieldBuilder b) {
+    b.readOnly = false;
+  }
+
   factory ModelField([void Function(ModelFieldBuilder) updates]) = _$ModelField;
   ModelField._();
 
   String get name;
   bool get required;
+  bool get readOnly;
   ModelFieldMetadata get metadata;
   BuiltList<AuthRule> get authRules;
 
@@ -69,7 +75,17 @@ enum AWSType {
 
 abstract class ModelFieldMetadata
     implements Built<ModelFieldMetadata, ModelFieldMetadataBuilder> {
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(ModelFieldMetadataBuilder b) {
+    b
+      ..isPrimaryKey = false
+      ..isBelongsTo = false
+      ..isHasMany = false
+      ..isHasOne = false;
+  }
+
   AWSType get type;
+  bool get isPrimaryKey;
   bool get isList;
   bool get isHasOne;
   bool get isHasMany;

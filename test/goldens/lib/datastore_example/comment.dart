@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.comment;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the Comment type in your schema.
 @immutable
@@ -47,7 +50,9 @@ class Comment extends Model {
     return Comment._internal(
         id: (json['id'] as String),
         postID: (json['postID'] as String),
-        post: json['post'] != null ? Post.fromJson(json['post']) : null,
+        post: json['post'] != null
+            ? Post.fromJson((json['post'] as Map).cast<String, Object?>())
+            : null,
         content: (json['content'] as String));
   }
 
@@ -61,14 +66,48 @@ class Comment extends Model {
 
   final String? _content;
 
+  static const ID = QueryField<dynamic>(fieldName: 'id');
+
+  static const POST_I_D = QueryField<dynamic>(fieldName: 'postID');
+
+  static const POST = QueryField<dynamic>(
+      fieldName: 'post',
+      fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Post'));
+
+  static const CONTENT = QueryField<dynamic>(fieldName: 'content');
+
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'Comment';
     modelSchemaDefinition.pluralName = 'Comments';
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: true,
+        key: POST_I_D,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
+        isRequired: false,
+        key: POST,
+        ofModelName: 'Post',
+        targetName: 'postID'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: true,
+        key: CONTENT,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'createdAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'updatedAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
   });
 
   String get postID {

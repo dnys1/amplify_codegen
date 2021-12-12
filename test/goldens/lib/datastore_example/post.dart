@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.post;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the Post type in your schema.
 @immutable
@@ -65,10 +68,15 @@ class Post extends Model {
         rating: (json['rating'] as int),
         created: (json['created'] as TemporalDateTime?),
         blogID: (json['blogID'] as String),
-        blog: json['blog'] != null ? Blog.fromJson(json['blog']) : null,
+        blog: json['blog'] != null
+            ? Blog.fromJson((json['blog'] as Map).cast<String, Object?>())
+            : null,
         comments: (json['comments'] as List?)
-            ?.cast<Map>()
-            ?.map((el) => el != null ? Comment.fromJson(el) : null));
+            ?.cast<Map?>()
+            .map((el) => el != null
+                ? Comment.fromJson(el.cast<String, Object?>())
+                : null)
+            .toList());
   }
 
   static const _PostModelType classType = _PostModelType();
@@ -87,17 +95,72 @@ class Post extends Model {
 
   final List<Comment?>? _comments;
 
+  static const ID = QueryField<dynamic>(fieldName: 'id');
+
+  static const TITLE = QueryField<dynamic>(fieldName: 'title');
+
+  static const RATING = QueryField<dynamic>(fieldName: 'rating');
+
+  static const CREATED = QueryField<dynamic>(fieldName: 'created');
+
+  static const BLOG_I_D = QueryField<dynamic>(fieldName: 'blogID');
+
+  static const BLOG = QueryField<dynamic>(
+      fieldName: 'blog',
+      fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Blog'));
+
+  static const COMMENTS = QueryField<dynamic>(
+      fieldName: 'comments',
+      fieldType: ModelFieldType(ModelFieldTypeEnum.collection,
+          ofModelName: 'Comment'));
+
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'Post';
     modelSchemaDefinition.pluralName = 'Posts';
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: true,
+        key: TITLE,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: true,
+        key: RATING,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.int),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: false,
+        key: CREATED,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: true,
+        key: BLOG_I_D,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
+        isRequired: false,
+        key: BLOG,
+        ofModelName: 'Blog',
+        targetName: 'blogID'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+        isRequired: false,
+        key: COMMENTS,
+        ofModelName: 'Comment',
+        associatedKey: Comment.POST));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'createdAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'updatedAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
   });
 
   String get title {
@@ -196,7 +259,7 @@ class Post extends Model {
         'created': _created,
         'blogID': _blogID,
         'blog': _blog?.toJson(),
-        'comments': _comments?.map((el) => el?.toJson())?.toList()
+        'comments': _comments?.map((el) => el?.toJson()).toList()
       };
   @override
   _PostModelType getInstanceType() => classType;

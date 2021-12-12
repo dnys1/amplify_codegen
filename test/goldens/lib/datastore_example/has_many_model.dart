@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.has_many_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the HasManyModel type in your schema.
 @immutable
@@ -45,8 +48,11 @@ class HasManyModel extends Model {
         id: (json['id'] as String),
         name: (json['name'] as String),
         children: (json['children'] as List?)
-            ?.cast<Map>()
-            ?.map((el) => el != null ? HasManyChildModel.fromJson(el) : null));
+            ?.cast<Map?>()
+            .map((el) => el != null
+                ? HasManyChildModel.fromJson(el.cast<String, Object?>())
+                : null)
+            .toList());
   }
 
   static const _HasManyModelModelType classType = _HasManyModelModelType();
@@ -57,13 +63,42 @@ class HasManyModel extends Model {
 
   final List<HasManyChildModel?>? _children;
 
+  static const ID = QueryField<dynamic>(fieldName: 'id');
+
+  static const NAME = QueryField<dynamic>(fieldName: 'name');
+
+  static const CHILDREN = QueryField<dynamic>(
+      fieldName: 'children',
+      fieldType: ModelFieldType(ModelFieldTypeEnum.collection,
+          ofModelName: 'HasManyChildModel'));
+
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'HasManyModel';
     modelSchemaDefinition.pluralName = 'HasManyModels';
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
-    modelSchemaDefinition.addField();
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        isRequired: true,
+        key: NAME,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+        isRequired: false,
+        key: CHILDREN,
+        ofModelName: 'HasManyChildModel',
+        associatedKey: HasManyChildModel.PARENT));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'createdAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+        isRequired: false,
+        isReadOnly: true,
+        fieldName: 'updatedAt',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
   });
 
   String get name {
@@ -116,7 +151,7 @@ class HasManyModel extends Model {
   Map<String, Object?> toJson() => {
         'id': id,
         'name': _name,
-        'children': _children?.map((el) => el?.toJson())?.toList()
+        'children': _children?.map((el) => el?.toJson()).toList()
       };
   @override
   _HasManyModelModelType getInstanceType() => classType;

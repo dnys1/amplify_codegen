@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.simple_custom_type;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the SimpleCustomType type in your schema.
 @immutable
@@ -42,9 +45,11 @@ class SimpleCustomType {
     modelSchemaDefinition.name = 'SimpleCustomType';
     modelSchemaDefinition.pluralName = 'SimpleCustomTypes';
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
-        fieldName: 'foo',
         isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string)));
+        fieldName: 'foo',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
   });
 
   String get foo {

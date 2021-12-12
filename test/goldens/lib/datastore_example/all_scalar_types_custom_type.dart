@@ -17,10 +17,13 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
+// ignore_for_file: constant_identifier_names
+
 library models.all_scalar_types_custom_type;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
+import 'model_provider.dart';
 
 /// This is an auto generated class representing the AllScalarTypesCustomType type in your schema.
 @immutable
@@ -86,8 +89,9 @@ class AllScalarTypesCustomType {
         timeValue: (json['timeValue'] as TemporalTime),
         timestampValue: (json['timestampValue'] as TemporalTimestamp),
         jsonValue: (json['jsonValue'] as String),
-        enumValue: EnumModel.fromJson(json['enumValue']),
-        customTypeValue: SimpleCustomType.fromJson(json['customTypeValue']));
+        enumValue: EnumModel.values.byValue((json['enumValue'] as String?))!,
+        customTypeValue: SimpleCustomType.fromJson(
+            (json['customTypeValue'] as Map).cast<String, Object?>()));
   }
 
   final String? _stringValue;
@@ -117,49 +121,62 @@ class AllScalarTypesCustomType {
     modelSchemaDefinition.name = 'AllScalarTypesCustomType';
     modelSchemaDefinition.pluralName = 'AllScalarTypesCustomTypes';
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: true,
         fieldName: 'stringValue',
-        isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: true,
         fieldName: 'intValue',
-        isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.int)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.int),
+        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: true,
         fieldName: 'floatValue',
-        isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.double)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.double),
+        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: true,
         fieldName: 'boolValue',
-        isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.bool)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.bool),
+        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: true,
         fieldName: 'dateValue',
-        isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.date)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.date),
+        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: true,
         fieldName: 'dateTimeValue',
-        isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
+        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: true,
         fieldName: 'timeValue',
-        isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.time)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.time),
+        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: true,
         fieldName: 'timestampValue',
-        isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.timestamp)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.timestamp),
+        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: true,
         fieldName: 'jsonValue',
-        isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isRequired: true,
         fieldName: 'enumValue',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.enumeration),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.enumeration)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         fieldName: 'customTypeValue',
-        isRequired: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded,
+            ofCustomTypeName: 'SimpleCustomType'),
+        isArray: false));
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
   });
 
   String get stringValue {
@@ -361,7 +378,7 @@ class AllScalarTypesCustomType {
         'timeValue': _timeValue,
         'timestampValue': _timestampValue,
         'jsonValue': _jsonValue,
-        'enumValue': _enumValue.toJson(),
-        'customTypeValue': _customTypeValue.toJson()
+        'enumValue': _enumValue?.value,
+        'customTypeValue': _customTypeValue?.toJson()
       };
 }

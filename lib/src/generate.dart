@@ -24,6 +24,8 @@ const header = '''
 // NOTE: This file is generated and may not follow lint rules defined in your app
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
+
+// ignore_for_file: constant_identifier_names
 ''';
 
 /// Generates a Dart file for each type and enum in [schema].
