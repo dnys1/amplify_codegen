@@ -1,4 +1,5 @@
 import 'package:amplify_codegen/src/helpers/field.dart';
+import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/helpers/types.dart';
 import 'package:amplify_codegen/src/models/auth_rule.dart';
 import 'package:amplify_codegen/src/models/model.dart';
@@ -9,7 +10,7 @@ import 'package:gql/language.dart';
 late Set<String> _modelNames;
 
 /// Parses [schema] into a list of [Model] objects.
-List<Model> parseSchema(String schema) {
+Map<String, Model> parseSchema(String schema) {
   const rootTypes = ['Query', 'Mutation', 'Subscription'];
   final doc = parseString(schema);
   final models = <Model>[];
@@ -157,7 +158,7 @@ List<Model> parseSchema(String schema) {
     models.add(updatedModel);
   }
 
-  return models;
+  return Map.fromEntries(models.map((m) => MapEntry(m.name, m)));
 }
 
 extension ModelFields on ObjectTypeDefinitionNode {

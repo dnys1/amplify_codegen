@@ -11,7 +11,7 @@ import 'model.dart';
 class LibraryVisitor extends SimpleVisitor<Library> {
   LibraryVisitor(this.allModels);
 
-  final List<Model> allModels;
+  final Map<String, Model> allModels;
 
   @override
   Library visitEnumTypeDefinitionNode(EnumTypeDefinitionNode node) {

@@ -61,12 +61,12 @@ class Person extends Model {
         license: json['license'] != null
             ? License.fromJson((json['license'] as Map).cast<String, Object?>())
             : null,
-        createdAt: json['createdAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['createdAt'] as String)),
-        updatedAt: json['updatedAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['updatedAt'] as String)));
+        createdAt: json['createdAt'] != null
+            ? TemporalDateTime.fromString((json['createdAt'] as String))
+            : null,
+        updatedAt: json['updatedAt'] != null
+            ? TemporalDateTime.fromString((json['updatedAt'] as String))
+            : null);
   }
 
   static const _PersonModelType classType = _PersonModelType();

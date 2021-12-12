@@ -63,16 +63,16 @@ class MultiTypeModel extends Model {
   factory MultiTypeModel.fromJson(Map<String, Object?> json) {
     return MultiTypeModel._internal(
         id: (json['id'] as String),
-        stringValue: (json['stringValue'] as String),
-        altStringValue: (json['altStringValue'] as String),
-        intValue: (json['intValue'] as int),
-        altIntValue: (json['altIntValue'] as int),
-        createdAt: json['createdAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['createdAt'] as String)),
-        updatedAt: json['updatedAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['updatedAt'] as String)));
+        stringValue: (json['stringValue'] as String?),
+        altStringValue: (json['altStringValue'] as String?),
+        intValue: (json['intValue'] as int?),
+        altIntValue: (json['altIntValue'] as int?),
+        createdAt: json['createdAt'] != null
+            ? TemporalDateTime.fromString((json['createdAt'] as String))
+            : null,
+        updatedAt: json['updatedAt'] != null
+            ? TemporalDateTime.fromString((json['updatedAt'] as String))
+            : null);
   }
 
   static const _MultiTypeModelModelType classType = _MultiTypeModelModelType();

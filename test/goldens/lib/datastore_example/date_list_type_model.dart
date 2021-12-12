@@ -53,14 +53,14 @@ class DateListTypeModel extends Model {
         id: (json['id'] as String),
         value: (json['value'] as List?)
             ?.cast<String?>()
-            .map((el) => el == null ? null : TemporalDate.fromString(el))
+            .map((el) => el != null ? TemporalDate.fromString(el) : null)
             .toList(),
-        createdAt: json['createdAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['createdAt'] as String)),
-        updatedAt: json['updatedAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['updatedAt'] as String)));
+        createdAt: json['createdAt'] != null
+            ? TemporalDateTime.fromString((json['createdAt'] as String))
+            : null,
+        updatedAt: json['updatedAt'] != null
+            ? TemporalDateTime.fromString((json['updatedAt'] as String))
+            : null);
   }
 
   static const _DateListTypeModelModelType classType =

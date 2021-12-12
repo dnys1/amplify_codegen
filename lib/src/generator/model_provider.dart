@@ -14,7 +14,8 @@ class ModelProviderGenerator extends Generator<Library> {
   ModelProviderGenerator(this.schema);
 
   final String schema;
-  late final List<Model> models = parseSchema(schema);
+  late final List<Model> models = parseSchema(schema).values.toList()
+    ..sort((a, b) => a.name.compareTo(b.name));
   late final List<EnumTypeDefinitionNode> enums = parseString(schema)
       .definitions
       .whereType<EnumTypeDefinitionNode>()
@@ -57,7 +58,6 @@ class ModelProviderGenerator extends Generator<Library> {
   /// Generate a consistent hash for [schema]. This will be consistent across
   /// transformer version changes as well as semantic-only schema updates.
   List<int> get _schemaHash {
-    final models = this.models..sort((a, b) => a.name.compareTo(b.name));
     return sha1.convert(jsonEncode(models).codeUnits).bytes;
   }
 

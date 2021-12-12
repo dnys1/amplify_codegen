@@ -62,12 +62,12 @@ class License extends Model {
             ? Person.fromJson(
                 (json['belongsTo'] as Map).cast<String, Object?>())
             : null,
-        createdAt: json['createdAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['createdAt'] as String)),
-        updatedAt: json['updatedAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['updatedAt'] as String)));
+        createdAt: json['createdAt'] != null
+            ? TemporalDateTime.fromString((json['createdAt'] as String))
+            : null,
+        updatedAt: json['updatedAt'] != null
+            ? TemporalDateTime.fromString((json['updatedAt'] as String))
+            : null);
   }
 
   static const _LicenseModelType classType = _LicenseModelType();

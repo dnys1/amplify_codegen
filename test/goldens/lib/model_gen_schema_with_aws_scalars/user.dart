@@ -93,31 +93,31 @@ class User extends Model {
         id: (json['id'] as String),
         name: (json['name'] as String),
         email: (json['email'] as String),
-        meta: (json['meta'] as String),
-        avatar: (json['avatar'] as String),
-        lastIpAddress: (json['lastIPAddress'] as String),
-        phone: (json['phone'] as String),
-        lastActivity: json['lastActivity'] == null
-            ? null
-            : TemporalTimestamp.fromSeconds((json['lastActivity'] as int)),
-        workStart: json['workStart'] == null
-            ? null
-            : TemporalTime.fromString((json['workStart'] as String)),
-        workEnd: json['workEnd'] == null
-            ? null
-            : TemporalTime.fromString((json['workEnd'] as String)),
-        birthday: json['birthday'] == null
-            ? null
-            : TemporalDate.fromString((json['birthday'] as String)),
-        joinedOn: json['joinedOn'] == null
-            ? null
-            : TemporalDateTime.fromString((json['joinedOn'] as String)),
-        createdAt: json['createdAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['createdAt'] as String)),
-        updatedAt: json['updatedAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['updatedAt'] as String)));
+        meta: (json['meta'] as String?),
+        avatar: (json['avatar'] as String?),
+        lastIpAddress: (json['lastIPAddress'] as String?),
+        phone: (json['phone'] as String?),
+        lastActivity: json['lastActivity'] != null
+            ? TemporalTimestamp.fromSeconds((json['lastActivity'] as int))
+            : null,
+        workStart: json['workStart'] != null
+            ? TemporalTime.fromString((json['workStart'] as String))
+            : null,
+        workEnd: json['workEnd'] != null
+            ? TemporalTime.fromString((json['workEnd'] as String))
+            : null,
+        birthday: json['birthday'] != null
+            ? TemporalDate.fromString((json['birthday'] as String))
+            : null,
+        joinedOn: json['joinedOn'] != null
+            ? TemporalDateTime.fromString((json['joinedOn'] as String))
+            : null,
+        createdAt: json['createdAt'] != null
+            ? TemporalDateTime.fromString((json['createdAt'] as String))
+            : null,
+        updatedAt: json['updatedAt'] != null
+            ? TemporalDateTime.fromString((json['updatedAt'] as String))
+            : null);
   }
 
   static const _UserModelType classType = _UserModelType();

@@ -81,8 +81,8 @@ class User extends Model {
   factory User.fromJson(Map<String, Object?> json) {
     return User._internal(
         username: (json['username'] as String),
-        displayUsername: (json['displayUsername'] as String),
-        name: (json['name'] as String),
+        displayUsername: (json['displayUsername'] as String?),
+        name: (json['name'] as String?),
         avatar: json['avatar'] != null
             ? S3Object.fromJson((json['avatar'] as Map).cast<String, Object?>())
             : null,
@@ -96,12 +96,12 @@ class User extends Model {
             .toList(),
         upvotedHabits: (json['upvotedHabits'] as List?)?.cast<String>(),
         downvotedHabits: (json['downvotedHabits'] as List?)?.cast<String>(),
-        createdAt: json['createdAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['createdAt'] as String)),
-        updatedAt: json['updatedAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['updatedAt'] as String)));
+        createdAt: json['createdAt'] != null
+            ? TemporalDateTime.fromString((json['createdAt'] as String))
+            : null,
+        updatedAt: json['updatedAt'] != null
+            ? TemporalDateTime.fromString((json['updatedAt'] as String))
+            : null);
   }
 
   static const _UserModelType classType = _UserModelType();

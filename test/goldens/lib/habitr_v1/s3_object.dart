@@ -64,7 +64,7 @@ class S3Object {
         bucket: (json['bucket'] as String),
         region: (json['region'] as String),
         key: (json['key'] as String),
-        cognitoId: (json['cognitoId'] as String),
+        cognitoId: (json['cognitoId'] as String?),
         accessLevel:
             AccessLevel.values.byValue((json['accessLevel'] as String?)));
   }

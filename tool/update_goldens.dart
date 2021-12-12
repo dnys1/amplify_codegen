@@ -10,12 +10,14 @@ void main() {
   for (var entity in schemaDir.listSync()) {
     final schema = File(entity.path).readAsStringSync();
     final schemaName = path.basenameWithoutExtension(entity.path);
+    print('Generating schema for $schemaName');
     final generated = generateForSchema(schema);
     final outputDir = Directory.fromUri(
       Platform.script.resolve('../test/goldens/lib/$schemaName'),
     )..createSync();
     for (var entry in generated.entries) {
       final filename = entry.key.split('.').last + '.dart';
+      print('-- Generated $filename');
       final file = File.fromUri(outputDir.uri.resolve(filename));
       file.writeAsStringSync(entry.value);
     }

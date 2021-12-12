@@ -768,9 +768,7 @@ class TypeInfoBuilder implements Builder<TypeInfo, TypeInfoBuilder> {
   bool? get isEnum => _$this._isEnum;
   set isEnum(bool? isEnum) => _$this._isEnum = isEnum;
 
-  TypeInfoBuilder() {
-    TypeInfo._setDefaults(this);
-  }
+  TypeInfoBuilder();
 
   TypeInfoBuilder get _$this {
     final $v = _$v;
@@ -799,6 +797,7 @@ class TypeInfoBuilder implements Builder<TypeInfo, TypeInfoBuilder> {
 
   @override
   _$TypeInfo build() {
+    TypeInfo._setDefaults(this);
     _$TypeInfo _$result;
     try {
       _$result = _$v ??

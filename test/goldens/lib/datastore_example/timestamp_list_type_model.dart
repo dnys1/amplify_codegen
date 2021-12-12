@@ -53,14 +53,14 @@ class TimestampListTypeModel extends Model {
         id: (json['id'] as String),
         value: (json['value'] as List?)
             ?.cast<int?>()
-            .map((el) => el == null ? null : TemporalTimestamp.fromSeconds(el))
+            .map((el) => el != null ? TemporalTimestamp.fromSeconds(el) : null)
             .toList(),
-        createdAt: json['createdAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['createdAt'] as String)),
-        updatedAt: json['updatedAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['updatedAt'] as String)));
+        createdAt: json['createdAt'] != null
+            ? TemporalDateTime.fromString((json['createdAt'] as String))
+            : null,
+        updatedAt: json['updatedAt'] != null
+            ? TemporalDateTime.fromString((json['updatedAt'] as String))
+            : null);
   }
 
   static const _TimestampListTypeModelModelType classType =

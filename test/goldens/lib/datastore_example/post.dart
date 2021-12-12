@@ -76,9 +76,9 @@ class Post extends Model {
         id: (json['id'] as String),
         title: (json['title'] as String),
         rating: (json['rating'] as int),
-        created: json['created'] == null
-            ? null
-            : TemporalDateTime.fromString((json['created'] as String)),
+        created: json['created'] != null
+            ? TemporalDateTime.fromString((json['created'] as String))
+            : null,
         blogId: (json['blogID'] as String),
         blog: json['blog'] != null
             ? Blog.fromJson((json['blog'] as Map).cast<String, Object?>())
@@ -89,12 +89,12 @@ class Post extends Model {
                 ? Comment.fromJson(el.cast<String, Object?>())
                 : null)
             .toList(),
-        createdAt: json['createdAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['createdAt'] as String)),
-        updatedAt: json['updatedAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['updatedAt'] as String)));
+        createdAt: json['createdAt'] != null
+            ? TemporalDateTime.fromString((json['createdAt'] as String))
+            : null,
+        updatedAt: json['updatedAt'] != null
+            ? TemporalDateTime.fromString((json['updatedAt'] as String))
+            : null);
   }
 
   static const _PostModelType classType = _PostModelType();

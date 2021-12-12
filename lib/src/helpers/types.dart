@@ -190,7 +190,7 @@ extension TypeInfoHelpers on TypeInfo {
 
   ModelFieldType modelFieldType({
     required bool isCustom,
-    required List<Model> models,
+    required Map<String, Model> models,
   }) {
     if (isList) {
       return isCustom
@@ -225,7 +225,7 @@ extension TypeInfoHelpers on TypeInfo {
         break;
     }
 
-    final isModel = models.any((model) => model.name == modelName!);
+    final isModel = models[modelName!] != null;
     if (isModel) {
       return isCustom ? ModelFieldType.embedded : ModelFieldType.model;
     }
@@ -239,7 +239,7 @@ extension ModelFieldTypes on ModelField {
 
   ModelFieldType modelFieldType({
     required bool isCustom,
-    required List<Model> models,
+    required Map<String, Model> models,
   }) =>
       type.modelFieldType(isCustom: isCustom, models: models);
 }

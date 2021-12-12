@@ -13,15 +13,14 @@ import '../helpers/field.dart';
 class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
   ModelGenerator(ObjectTypeDefinitionNode node, this.allModels) : super(node);
 
-  final List<Model> allModels;
-  late final Model model =
-      allModels.singleWhere((model) => model.name == wireName);
+  final Map<String, Model> allModels;
+  late final Model model = allModels[wireName]!;
 
   String get modelTypeName => '_${typeName}ModelType';
 
   @override
   Library? generate() {
-    if (allModels.firstWhereOrNull((model) => model.name == wireName) == null) {
+    if (allModels[wireName] == null) {
       return null;
     }
     builder.body.add(Class((c) {
@@ -529,10 +528,10 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
       return type.isRequired ? byValue.nullChecked : byValue;
     } else {
       final typeName = type.typeReference.symbol;
-      final wireTypeName = type.wireTypeReference.symbol;
+      final wireType = type.wireTypeReference;
       final awsType = type.awsType;
-      final castRef = isDynamic ? ref.asA(refer(wireTypeName)) : ref;
       final isNullable = !type.isRequired;
+      final castRef = isDynamic ? ref.asA(wireType) : ref;
       switch (awsType!) {
         case AWSType.AWSDate:
         case AWSType.AWSDateTime:
@@ -540,9 +539,13 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         case AWSType.AWSTimestamp:
           final ctorName =
               awsType == AWSType.AWSTimestamp ? 'fromSeconds' : 'fromString';
-          final decode = refer(typeName).newInstanceNamed(ctorName, [castRef]);
+          final decode = refer(typeName).newInstanceNamed(ctorName, [
+            // At depth == 0, refs are null checked below.
+            // At depth > 1, refs have already been cast.
+            depth == 0 ? ref.asA(wireType.nonNull) : ref,
+          ]);
           return isNullable
-              ? ref.equalTo(literalNull).conditional(literalNull, decode)
+              ? ref.notEqualTo(literalNull).conditional(decode, literalNull)
               : decode;
         default:
           return castRef;
@@ -573,9 +576,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
                 'fieldType': refer('ModelFieldType').newInstance([
                   refer('ModelFieldTypeEnum').property(modelFieldType.name),
                 ], {
-                  if (allModels
-                      .singleWhere((m) => m.name == field.type.dartModelName!)
-                      .isCustom)
+                  if (allModels[field.type.dartModelName!]!.isCustom)
                     'ofCustomTypeName': literalString(field.type.dartModelName!)
                   else
                     'ofModelName': literalString(field.type.dartModelName!),

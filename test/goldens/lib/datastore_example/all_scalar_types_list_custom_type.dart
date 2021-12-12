@@ -98,19 +98,19 @@ class AllScalarTypesListCustomType {
         boolValues: (json['boolValues'] as List?)?.cast<bool?>(),
         dateValues: (json['dateValues'] as List?)
             ?.cast<String?>()
-            .map((el) => el == null ? null : TemporalDate.fromString(el))
+            .map((el) => el != null ? TemporalDate.fromString(el) : null)
             .toList(),
         dateTimeValues: (json['dateTimeValues'] as List?)
             ?.cast<String?>()
-            .map((el) => el == null ? null : TemporalDateTime.fromString(el))
+            .map((el) => el != null ? TemporalDateTime.fromString(el) : null)
             .toList(),
         timeValues: (json['timeValues'] as List?)
             ?.cast<String?>()
-            .map((el) => el == null ? null : TemporalTime.fromString(el))
+            .map((el) => el != null ? TemporalTime.fromString(el) : null)
             .toList(),
         timestampValues: (json['timestampValues'] as List?)
             ?.cast<int?>()
-            .map((el) => el == null ? null : TemporalTimestamp.fromSeconds(el))
+            .map((el) => el != null ? TemporalTimestamp.fromSeconds(el) : null)
             .toList(),
         jsonValues: (json['jsonValues'] as List?)?.cast<String?>(),
         enumValues: (json['enumValues'] as List?)

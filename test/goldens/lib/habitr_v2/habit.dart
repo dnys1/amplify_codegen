@@ -85,10 +85,10 @@ class Habit extends Model {
         id: (json['id'] as String),
         tagline: (json['tagline'] as String),
         category: Category.values.byValue((json['category'] as String?))!,
-        details: (json['details'] as String),
-        ups: (json['ups'] as int),
-        downs: (json['downs'] as int),
-        owner: (json['owner'] as String),
+        details: (json['details'] as String?),
+        ups: (json['ups'] as int?),
+        downs: (json['downs'] as int?),
+        owner: (json['owner'] as String?),
         author: json['author'] != null
             ? User.fromJson((json['author'] as Map).cast<String, Object?>())
             : null,
@@ -96,12 +96,12 @@ class Habit extends Model {
             ?.cast<Map>()
             .map((el) => Comment.fromJson(el.cast<String, Object?>()))
             .toList(),
-        createdAt: json['createdAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['createdAt'] as String)),
-        updatedAt: json['updatedAt'] == null
-            ? null
-            : TemporalDateTime.fromString((json['updatedAt'] as String)));
+        createdAt: json['createdAt'] != null
+            ? TemporalDateTime.fromString((json['createdAt'] as String))
+            : null,
+        updatedAt: json['updatedAt'] != null
+            ? TemporalDateTime.fromString((json['updatedAt'] as String))
+            : null);
   }
 
   static const _HabitModelType classType = _HabitModelType();
