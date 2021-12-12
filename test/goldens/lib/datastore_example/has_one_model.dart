@@ -31,14 +31,14 @@ class HasOneModel extends Model {
   factory HasOneModel(
       {String? id,
       required String name,
-      required String childID,
+      required String childId,
       ChildModel? child,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
     return HasOneModel._internal(
         id: id ?? UUID.getUUID(),
         name: name,
-        childID: childID,
+        childId: childId,
         child: child,
         createdAt: createdAt,
         updatedAt: updatedAt);
@@ -47,12 +47,12 @@ class HasOneModel extends Model {
   const HasOneModel._internal(
       {required this.id,
       required String name,
-      required String childID,
+      required String childId,
       ChildModel? child,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt})
       : _name = name,
-        _childID = childID,
+        _childId = childId,
         _child = child,
         _createdAt = createdAt,
         _updatedAt = updatedAt;
@@ -61,7 +61,7 @@ class HasOneModel extends Model {
     return HasOneModel._internal(
         id: (json['id'] as String),
         name: (json['name'] as String),
-        childID: (json['childID'] as String),
+        childId: (json['childID'] as String),
         child: json['child'] != null
             ? ChildModel.fromJson(
                 (json['child'] as Map).cast<String, Object?>())
@@ -80,7 +80,7 @@ class HasOneModel extends Model {
 
   final String? _name;
 
-  final String? _childID;
+  final String? _childId;
 
   final ChildModel? _child;
 
@@ -92,7 +92,7 @@ class HasOneModel extends Model {
 
   static const NAME = QueryField<dynamic>(fieldName: 'name');
 
-  static const CHILD_I_D = QueryField<dynamic>(fieldName: 'childID');
+  static const CHILD_ID = QueryField<dynamic>(fieldName: 'childID');
 
   static const CHILD = QueryField<dynamic>(
       fieldName: 'child',
@@ -111,7 +111,7 @@ class HasOneModel extends Model {
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: CHILD_I_D,
+        key: CHILD_ID,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
@@ -151,15 +151,15 @@ class HasOneModel extends Model {
     return _name!;
   }
 
-  String get childID {
-    if (_childID == null) {
+  String get childId {
+    if (_childId == null) {
       throw const DataStoreException(
           DataStoreExceptionMessages
               .codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion: DataStoreExceptionMessages
               .codeGenRequiredFieldForceCastRecoverySuggestion);
     }
-    return _childID!;
+    return _childId!;
   }
 
   ChildModel? get child => _child;
@@ -175,7 +175,7 @@ class HasOneModel extends Model {
       other is HasOneModel &&
           id == other.id &&
           _name == other._name &&
-          _childID == other._childID &&
+          _childId == other._childId &&
           _child == other._child &&
           _createdAt == other._createdAt &&
           _updatedAt == other._updatedAt;
@@ -188,7 +188,7 @@ class HasOneModel extends Model {
     buffer.write('HasOneModel {');
     buffer.write('id=$id, ');
     buffer.write('name=$_name, ');
-    buffer.write('childID=$_childID, ');
+    buffer.write('childId=$_childId, ');
     buffer.write('child=$_child, ');
     buffer.write('createdAt=$_createdAt, ');
     buffer.write('updatedAt=$_updatedAt');
@@ -200,14 +200,14 @@ class HasOneModel extends Model {
   HasOneModel copyWith(
       {String? id,
       String? name,
-      String? childID,
+      String? childId,
       ChildModel? child,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
     return HasOneModel(
         id: id ?? this.id,
         name: name ?? this.name,
-        childID: childID ?? this.childID,
+        childId: childId ?? this.childId,
         child: child ?? this.child,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt);
@@ -217,7 +217,7 @@ class HasOneModel extends Model {
   Map<String, Object?> toJson() => {
         'id': id,
         'name': _name,
-        'childID': _childID,
+        'childID': _childId,
         'child': _child?.toJson(),
         'createdAt': _createdAt?.format(),
         'updatedAt': _updatedAt?.format()

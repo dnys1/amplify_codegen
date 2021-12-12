@@ -19,27 +19,27 @@
 
 // ignore_for_file: constant_identifier_names
 
-library models.j_s_o_n_list_type_model;
+library models.json_list_type_model;
 
 import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
-/// This is an auto generated class representing the JSONListTypeModel type in your schema.
+/// This is an auto generated class representing the JsonListTypeModel type in your schema.
 @immutable
-class JSONListTypeModel extends Model {
-  factory JSONListTypeModel(
+class JsonListTypeModel extends Model {
+  factory JsonListTypeModel(
       {String? id,
       List<String?>? value,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
-    return JSONListTypeModel._internal(
+    return JsonListTypeModel._internal(
         id: id ?? UUID.getUUID(),
         value: value != null ? List.unmodifiable(value) : null,
         createdAt: createdAt,
         updatedAt: updatedAt);
   }
 
-  const JSONListTypeModel._internal(
+  const JsonListTypeModel._internal(
       {required this.id,
       List<String?>? value,
       TemporalDateTime? createdAt,
@@ -48,8 +48,8 @@ class JSONListTypeModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory JSONListTypeModel.fromJson(Map<String, Object?> json) {
-    return JSONListTypeModel._internal(
+  factory JsonListTypeModel.fromJson(Map<String, Object?> json) {
+    return JsonListTypeModel._internal(
         id: (json['id'] as String),
         value: (json['value'] as List?)?.cast<String?>(),
         createdAt: json['createdAt'] == null
@@ -60,8 +60,8 @@ class JSONListTypeModel extends Model {
             : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
-  static const _JSONListTypeModelModelType classType =
-      _JSONListTypeModelModelType();
+  static const _JsonListTypeModelModelType classType =
+      _JsonListTypeModelModelType();
 
   final String id;
 
@@ -101,7 +101,7 @@ class JSONListTypeModel extends Model {
   });
 
   @override
-  _JSONListTypeModelModelType getInstanceType() => classType;
+  _JsonListTypeModelModelType getInstanceType() => classType;
   @override
   String getId() {
     return id;
@@ -117,7 +117,7 @@ class JSONListTypeModel extends Model {
   @override
   bool operator ==(Object? other) =>
       identical(this, other) ||
-      other is JSONListTypeModel &&
+      other is JsonListTypeModel &&
           id == other.id &&
           _value == other._value &&
           _createdAt == other._createdAt &&
@@ -128,7 +128,7 @@ class JSONListTypeModel extends Model {
   String toString() {
     final buffer = StringBuffer();
 
-    buffer.write('JSONListTypeModel {');
+    buffer.write('JsonListTypeModel {');
     buffer.write('id=$id, ');
     buffer.write('value=$_value, ');
     buffer.write('createdAt=$_createdAt, ');
@@ -138,12 +138,12 @@ class JSONListTypeModel extends Model {
     return buffer.toString();
   }
 
-  JSONListTypeModel copyWith(
+  JsonListTypeModel copyWith(
       {String? id,
       List<String?>? value,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
-    return JSONListTypeModel(
+    return JsonListTypeModel(
         id: id ?? this.id,
         value: value ?? this.value,
         createdAt: createdAt ?? this.createdAt,
@@ -159,11 +159,11 @@ class JSONListTypeModel extends Model {
       };
 }
 
-class _JSONListTypeModelModelType extends ModelType<JSONListTypeModel> {
-  const _JSONListTypeModelModelType();
+class _JsonListTypeModelModelType extends ModelType<JsonListTypeModel> {
+  const _JsonListTypeModelModelType();
 
   @override
-  JSONListTypeModel fromJson(Map<String, Object?> jsonData) {
-    return JSONListTypeModel.fromJson(jsonData);
+  JsonListTypeModel fromJson(Map<String, Object?> jsonData) {
+    return JsonListTypeModel.fromJson(jsonData);
   }
 }

@@ -1,8 +1,8 @@
+import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/helpers/types.dart';
 import 'package:amplify_codegen/src/models/model.dart';
 import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
-import 'package:recase/recase.dart';
 
 extension ModelFieldHelpers on ModelField {
   /// The Dart identifier for this field.

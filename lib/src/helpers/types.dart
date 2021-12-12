@@ -1,10 +1,8 @@
 import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/generator/model.dart';
-import 'package:amplify_codegen/src/generator/visitors.dart';
+import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
-import 'package:recase/recase.dart';
 
 const datastoreUri =
     'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -39,8 +37,6 @@ extension TypeHelpers on TypeNode {
     }
     throw ArgumentError(runtimeType);
   }
-
-  // TypeReference get reference => accept(TypeVisitor())!;
 
   /// The type of model field this represents.
   AWSType get awsType => AWSType.values.firstWhere(

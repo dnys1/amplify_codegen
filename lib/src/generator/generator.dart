@@ -1,6 +1,6 @@
+import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:gql/ast.dart';
-import 'package:recase/recase.dart';
 
 abstract class Generator<T> {
   T generate();

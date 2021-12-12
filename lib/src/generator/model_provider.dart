@@ -1,12 +1,12 @@
 import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/generator/generator.dart';
+import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/helpers/types.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
-import 'package:recase/recase.dart';
 
 class ModelProviderGenerator extends Generator<Library> {
   ModelProviderGenerator(this.schema);

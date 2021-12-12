@@ -30,14 +30,14 @@ import 'post.dart';
 class Comment extends Model {
   factory Comment(
       {String? id,
-      required String postID,
+      required String postId,
       Post? post,
       required String content,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
     return Comment._internal(
         id: id ?? UUID.getUUID(),
-        postID: postID,
+        postId: postId,
         post: post,
         content: content,
         createdAt: createdAt,
@@ -46,12 +46,12 @@ class Comment extends Model {
 
   const Comment._internal(
       {required this.id,
-      required String postID,
+      required String postId,
       Post? post,
       required String content,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt})
-      : _postID = postID,
+      : _postId = postId,
         _post = post,
         _content = content,
         _createdAt = createdAt,
@@ -60,7 +60,7 @@ class Comment extends Model {
   factory Comment.fromJson(Map<String, Object?> json) {
     return Comment._internal(
         id: (json['id'] as String),
-        postID: (json['postID'] as String),
+        postId: (json['postID'] as String),
         post: json['post'] != null
             ? Post.fromJson((json['post'] as Map).cast<String, Object?>())
             : null,
@@ -77,7 +77,7 @@ class Comment extends Model {
 
   final String id;
 
-  final String? _postID;
+  final String? _postId;
 
   final Post? _post;
 
@@ -89,7 +89,7 @@ class Comment extends Model {
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
-  static const POST_I_D = QueryField<dynamic>(fieldName: 'postID');
+  static const POST_ID = QueryField<dynamic>(fieldName: 'postID');
 
   static const POST = QueryField<dynamic>(
       fieldName: 'post',
@@ -104,7 +104,7 @@ class Comment extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: POST_I_D,
+        key: POST_ID,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
@@ -138,15 +138,15 @@ class Comment extends Model {
     return id;
   }
 
-  String get postID {
-    if (_postID == null) {
+  String get postId {
+    if (_postId == null) {
       throw const DataStoreException(
           DataStoreExceptionMessages
               .codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion: DataStoreExceptionMessages
               .codeGenRequiredFieldForceCastRecoverySuggestion);
     }
-    return _postID!;
+    return _postId!;
   }
 
   Post? get post => _post;
@@ -172,7 +172,7 @@ class Comment extends Model {
       identical(this, other) ||
       other is Comment &&
           id == other.id &&
-          _postID == other._postID &&
+          _postId == other._postId &&
           _post == other._post &&
           _content == other._content &&
           _createdAt == other._createdAt &&
@@ -185,7 +185,7 @@ class Comment extends Model {
 
     buffer.write('Comment {');
     buffer.write('id=$id, ');
-    buffer.write('postID=$_postID, ');
+    buffer.write('postId=$_postId, ');
     buffer.write('post=$_post, ');
     buffer.write('content=$_content, ');
     buffer.write('createdAt=$_createdAt, ');
@@ -197,14 +197,14 @@ class Comment extends Model {
 
   Comment copyWith(
       {String? id,
-      String? postID,
+      String? postId,
       Post? post,
       String? content,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
     return Comment(
         id: id ?? this.id,
-        postID: postID ?? this.postID,
+        postId: postId ?? this.postId,
         post: post ?? this.post,
         content: content ?? this.content,
         createdAt: createdAt ?? this.createdAt,
@@ -214,7 +214,7 @@ class Comment extends Model {
   @override
   Map<String, Object?> toJson() => {
         'id': id,
-        'postID': _postID,
+        'postID': _postId,
         'post': _post?.toJson(),
         'content': _content,
         'createdAt': _createdAt?.format(),

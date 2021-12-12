@@ -19,27 +19,27 @@
 
 // ignore_for_file: constant_identifier_names
 
-library models.j_s_o_n_type_model;
+library models.json_type_model;
 
 import 'package:meta/meta.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
-/// This is an auto generated class representing the JSONTypeModel type in your schema.
+/// This is an auto generated class representing the JsonTypeModel type in your schema.
 @immutable
-class JSONTypeModel extends Model {
-  factory JSONTypeModel(
+class JsonTypeModel extends Model {
+  factory JsonTypeModel(
       {String? id,
       String? value,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
-    return JSONTypeModel._internal(
+    return JsonTypeModel._internal(
         id: id ?? UUID.getUUID(),
         value: value,
         createdAt: createdAt,
         updatedAt: updatedAt);
   }
 
-  const JSONTypeModel._internal(
+  const JsonTypeModel._internal(
       {required this.id,
       String? value,
       TemporalDateTime? createdAt,
@@ -48,8 +48,8 @@ class JSONTypeModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory JSONTypeModel.fromJson(Map<String, Object?> json) {
-    return JSONTypeModel._internal(
+  factory JsonTypeModel.fromJson(Map<String, Object?> json) {
+    return JsonTypeModel._internal(
         id: (json['id'] as String),
         value: (json['value'] as String),
         createdAt: json['createdAt'] == null
@@ -60,7 +60,7 @@ class JSONTypeModel extends Model {
             : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
-  static const _JSONTypeModelModelType classType = _JSONTypeModelModelType();
+  static const _JsonTypeModelModelType classType = _JsonTypeModelModelType();
 
   final String id;
 
@@ -99,7 +99,7 @@ class JSONTypeModel extends Model {
   });
 
   @override
-  _JSONTypeModelModelType getInstanceType() => classType;
+  _JsonTypeModelModelType getInstanceType() => classType;
   @override
   String getId() {
     return id;
@@ -115,7 +115,7 @@ class JSONTypeModel extends Model {
   @override
   bool operator ==(Object? other) =>
       identical(this, other) ||
-      other is JSONTypeModel &&
+      other is JsonTypeModel &&
           id == other.id &&
           _value == other._value &&
           _createdAt == other._createdAt &&
@@ -126,7 +126,7 @@ class JSONTypeModel extends Model {
   String toString() {
     final buffer = StringBuffer();
 
-    buffer.write('JSONTypeModel {');
+    buffer.write('JsonTypeModel {');
     buffer.write('id=$id, ');
     buffer.write('value=$_value, ');
     buffer.write('createdAt=$_createdAt, ');
@@ -136,12 +136,12 @@ class JSONTypeModel extends Model {
     return buffer.toString();
   }
 
-  JSONTypeModel copyWith(
+  JsonTypeModel copyWith(
       {String? id,
       String? value,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
-    return JSONTypeModel(
+    return JsonTypeModel(
         id: id ?? this.id,
         value: value ?? this.value,
         createdAt: createdAt ?? this.createdAt,
@@ -157,11 +157,11 @@ class JSONTypeModel extends Model {
       };
 }
 
-class _JSONTypeModelModelType extends ModelType<JSONTypeModel> {
-  const _JSONTypeModelModelType();
+class _JsonTypeModelModelType extends ModelType<JsonTypeModel> {
+  const _JsonTypeModelModelType();
 
   @override
-  JSONTypeModel fromJson(Map<String, Object?> jsonData) {
-    return JSONTypeModel.fromJson(jsonData);
+  JsonTypeModel fromJson(Map<String, Object?> jsonData) {
+    return JsonTypeModel.fromJson(jsonData);
   }
 }

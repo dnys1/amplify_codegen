@@ -1,11 +1,10 @@
 import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/generator/generator.dart';
-import 'package:amplify_codegen/src/generator/visitors.dart';
+import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/helpers/types.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
-import 'package:recase/recase.dart';
 
 import '../helpers/field.dart';
 
@@ -478,8 +477,6 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         ..symbol = 'List'
         ..isNullable = !type.isRequired));
       final listType = type.listType!;
-      final bool isModel = listType.isModel;
-      final isEnum = listType.isEnum;
       final List<Reference> castArgs = [listType.wireTypeReference];
       final newInst = Method(
         (m) => m

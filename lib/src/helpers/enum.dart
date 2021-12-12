@@ -1,5 +1,5 @@
+import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:gql/ast.dart';
-import 'package:recase/recase.dart';
 
 extension EnumHelpers on EnumValueDefinitionNode {
   String get wireValue => name.value;

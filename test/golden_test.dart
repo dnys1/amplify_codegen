@@ -24,6 +24,8 @@ void main() {
       });
     }
 
+    // V1 and V2 schemas should produce the same result if they are semantically
+    // equal to each other.
     test('v1 -> v2', () {
       const habitrV1 = 'habitr_v1.graphql';
       const habitrV2 = 'habitr_v2.graphql';

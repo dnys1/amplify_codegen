@@ -33,7 +33,7 @@ class User extends Model {
       required String email,
       String? meta,
       String? avatar,
-      String? lastIPAddress,
+      String? lastIpAddress,
       String? phone,
       TemporalTimestamp? lastActivity,
       TemporalTime? workStart,
@@ -48,7 +48,7 @@ class User extends Model {
         email: email,
         meta: meta,
         avatar: avatar,
-        lastIPAddress: lastIPAddress,
+        lastIpAddress: lastIpAddress,
         phone: phone,
         lastActivity: lastActivity,
         workStart: workStart,
@@ -65,7 +65,7 @@ class User extends Model {
       required String email,
       String? meta,
       String? avatar,
-      String? lastIPAddress,
+      String? lastIpAddress,
       String? phone,
       TemporalTimestamp? lastActivity,
       TemporalTime? workStart,
@@ -78,7 +78,7 @@ class User extends Model {
         _email = email,
         _meta = meta,
         _avatar = avatar,
-        _lastIPAddress = lastIPAddress,
+        _lastIpAddress = lastIpAddress,
         _phone = phone,
         _lastActivity = lastActivity,
         _workStart = workStart,
@@ -95,7 +95,7 @@ class User extends Model {
         email: (json['email'] as String),
         meta: (json['meta'] as String),
         avatar: (json['avatar'] as String),
-        lastIPAddress: (json['lastIPAddress'] as String),
+        lastIpAddress: (json['lastIPAddress'] as String),
         phone: (json['phone'] as String),
         lastActivity: json['lastActivity'] == null
             ? null
@@ -132,7 +132,7 @@ class User extends Model {
 
   final String? _avatar;
 
-  final String? _lastIPAddress;
+  final String? _lastIpAddress;
 
   final String? _phone;
 
@@ -160,7 +160,7 @@ class User extends Model {
 
   static const AVATAR = QueryField<dynamic>(fieldName: 'avatar');
 
-  static const LAST_I_P_ADDRESS =
+  static const LAST_IP_ADDRESS =
       QueryField<dynamic>(fieldName: 'lastIPAddress');
 
   static const PHONE = QueryField<dynamic>(fieldName: 'phone');
@@ -202,7 +202,7 @@ class User extends Model {
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: LAST_I_P_ADDRESS,
+        key: LAST_IP_ADDRESS,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
@@ -280,7 +280,7 @@ class User extends Model {
 
   String? get meta => _meta;
   String? get avatar => _avatar;
-  String? get lastIPAddress => _lastIPAddress;
+  String? get lastIpAddress => _lastIpAddress;
   String? get phone => _phone;
   TemporalTimestamp? get lastActivity => _lastActivity;
   TemporalTime? get workStart => _workStart;
@@ -302,7 +302,7 @@ class User extends Model {
           _email == other._email &&
           _meta == other._meta &&
           _avatar == other._avatar &&
-          _lastIPAddress == other._lastIPAddress &&
+          _lastIpAddress == other._lastIpAddress &&
           _phone == other._phone &&
           _lastActivity == other._lastActivity &&
           _workStart == other._workStart &&
@@ -323,7 +323,7 @@ class User extends Model {
     buffer.write('email=$_email, ');
     buffer.write('meta=$_meta, ');
     buffer.write('avatar=$_avatar, ');
-    buffer.write('lastIPAddress=$_lastIPAddress, ');
+    buffer.write('lastIpAddress=$_lastIpAddress, ');
     buffer.write('phone=$_phone, ');
     buffer.write('lastActivity=$_lastActivity, ');
     buffer.write('workStart=$_workStart, ');
@@ -343,7 +343,7 @@ class User extends Model {
       String? email,
       String? meta,
       String? avatar,
-      String? lastIPAddress,
+      String? lastIpAddress,
       String? phone,
       TemporalTimestamp? lastActivity,
       TemporalTime? workStart,
@@ -358,7 +358,7 @@ class User extends Model {
         email: email ?? this.email,
         meta: meta ?? this.meta,
         avatar: avatar ?? this.avatar,
-        lastIPAddress: lastIPAddress ?? this.lastIPAddress,
+        lastIpAddress: lastIpAddress ?? this.lastIpAddress,
         phone: phone ?? this.phone,
         lastActivity: lastActivity ?? this.lastActivity,
         workStart: workStart ?? this.workStart,
@@ -376,7 +376,7 @@ class User extends Model {
         'email': _email,
         'meta': _meta,
         'avatar': _avatar,
-        'lastIPAddress': _lastIPAddress,
+        'lastIPAddress': _lastIpAddress,
         'phone': _phone,
         'lastActivity': _lastActivity?.toSeconds(),
         'workStart': _workStart?.format(),

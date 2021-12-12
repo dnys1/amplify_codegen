@@ -1,9 +1,9 @@
 import 'package:amplify_codegen/src/generator/generator.dart';
 import 'package:amplify_codegen/src/helpers/enum.dart';
+import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/helpers/types.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:gql/ast.dart';
-import 'package:recase/recase.dart';
 
 class EnumGenerator extends LibraryGenerator<EnumTypeDefinitionNode> {
   EnumGenerator(EnumTypeDefinitionNode node) : super(node);

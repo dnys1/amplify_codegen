@@ -46,8 +46,8 @@ import 'time_type_model.dart';
 import 'time_list_type_model.dart';
 import 'timestamp_type_model.dart';
 import 'timestamp_list_type_model.dart';
-import 'j_s_o_n_type_model.dart';
-import 'j_s_o_n_list_type_model.dart';
+import 'json_type_model.dart';
+import 'json_list_type_model.dart';
 import 'enum_type_model.dart';
 import 'enum_list_type_model.dart';
 import 'multi_type_model.dart';
@@ -77,8 +77,8 @@ import 'has_many_model.dart';
 import 'has_one_model.dart';
 import 'int_list_type_model.dart';
 import 'int_type_model.dart';
-import 'j_s_o_n_list_type_model.dart';
-import 'j_s_o_n_type_model.dart';
+import 'json_list_type_model.dart';
+import 'json_type_model.dart';
 import 'model_nested_custom_type.dart';
 import 'multi_type_model.dart';
 import 'post.dart';
@@ -111,8 +111,8 @@ export 'has_many_model.dart';
 export 'has_one_model.dart';
 export 'int_list_type_model.dart';
 export 'int_type_model.dart';
-export 'j_s_o_n_list_type_model.dart';
-export 'j_s_o_n_type_model.dart';
+export 'json_list_type_model.dart';
+export 'json_type_model.dart';
 export 'model_nested_custom_type.dart';
 export 'multi_type_model.dart';
 export 'post.dart';
@@ -155,8 +155,8 @@ class ModelProvider extends ModelProviderInterface {
         TimeListTypeModel.schema,
         TimestampTypeModel.schema,
         TimestampListTypeModel.schema,
-        JSONTypeModel.schema,
-        JSONListTypeModel.schema,
+        JsonTypeModel.schema,
+        JsonListTypeModel.schema,
         EnumTypeModel.schema,
         EnumListTypeModel.schema,
         MultiTypeModel.schema,
@@ -220,9 +220,9 @@ class ModelProvider extends ModelProviderInterface {
       case 'TimestampListTypeModel':
         return TimestampListTypeModel.classType;
       case 'JSONTypeModel':
-        return JSONTypeModel.classType;
+        return JsonTypeModel.classType;
       case 'JSONListTypeModel':
-        return JSONListTypeModel.classType;
+        return JsonListTypeModel.classType;
       case 'EnumTypeModel':
         return EnumTypeModel.classType;
       case 'EnumListTypeModel':
