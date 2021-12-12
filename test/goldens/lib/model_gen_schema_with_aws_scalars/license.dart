@@ -21,22 +21,37 @@
 
 library models.license;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'person.dart';
 
 /// This is an auto generated class representing the License type in your schema.
 @immutable
 class License extends Model {
-  factory License({String? id, required String number, Person? belongsTo}) {
+  factory License(
+      {String? id,
+      required String number,
+      Person? belongsTo,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return License._internal(
-        id: id ?? UUID.getUUID(), number: number, belongsTo: belongsTo);
+        id: id ?? UUID.getUUID(),
+        number: number,
+        belongsTo: belongsTo,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const License._internal(
-      {required this.id, required String number, Person? belongsTo})
+      {required this.id,
+      required String number,
+      Person? belongsTo,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _number = number,
-        _belongsTo = belongsTo;
+        _belongsTo = belongsTo,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory License.fromJson(Map<String, Object?> json) {
     return License._internal(
@@ -45,7 +60,13 @@ class License extends Model {
         belongsTo: json['belongsTo'] != null
             ? Person.fromJson(
                 (json['belongsTo'] as Map).cast<String, Object?>())
-            : null);
+            : null,
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _LicenseModelType classType = _LicenseModelType();
@@ -55,6 +76,10 @@ class License extends Model {
   final String? _number;
 
   final Person? _belongsTo;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -94,6 +119,13 @@ class License extends Model {
         isArray: false));
   });
 
+  @override
+  _LicenseModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   String get number {
     if (_number == null) {
       throw const DataStoreException(
@@ -106,6 +138,8 @@ class License extends Model {
   }
 
   Person? get belongsTo => _belongsTo;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -116,7 +150,9 @@ class License extends Model {
       other is License &&
           id == other.id &&
           _number == other._number &&
-          _belongsTo == other._belongsTo;
+          _belongsTo == other._belongsTo &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -126,28 +162,36 @@ class License extends Model {
     buffer.write('License {');
     buffer.write('id=$id, ');
     buffer.write('number=$_number, ');
-    buffer.write('belongsTo=$_belongsTo');
+    buffer.write('belongsTo=$_belongsTo, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  License copyWith({String? id, String? number, Person? belongsTo}) {
+  License copyWith(
+      {String? id,
+      String? number,
+      Person? belongsTo,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return License(
         id: id ?? this.id,
         number: number ?? this.number,
-        belongsTo: belongsTo ?? this.belongsTo);
+        belongsTo: belongsTo ?? this.belongsTo,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() =>
-      {'id': id, 'number': _number, 'belongsTo': _belongsTo?.toJson()};
-  @override
-  _LicenseModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'number': _number,
+        'belongsTo': _belongsTo?.toJson(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _LicenseModelType extends ModelType<License> {

@@ -21,23 +21,45 @@
 
 library models.date_type_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the DateTypeModel type in your schema.
 @immutable
 class DateTypeModel extends Model {
-  factory DateTypeModel({String? id, TemporalDate? value}) {
-    return DateTypeModel._internal(id: id ?? UUID.getUUID(), value: value);
+  factory DateTypeModel(
+      {String? id,
+      TemporalDate? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
+    return DateTypeModel._internal(
+        id: id ?? UUID.getUUID(),
+        value: value,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
-  const DateTypeModel._internal({required this.id, TemporalDate? value})
-      : _value = value;
+  const DateTypeModel._internal(
+      {required this.id,
+      TemporalDate? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
+      : _value = value,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory DateTypeModel.fromJson(Map<String, Object?> json) {
     return DateTypeModel._internal(
-        id: (json['id'] as String), value: (json['value'] as TemporalDate?));
+        id: (json['id'] as String),
+        value: json['value'] == null
+            ? null
+            : TemporalDate.fromString((json['value'] as String)),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _DateTypeModelModelType classType = _DateTypeModelModelType();
@@ -45,6 +67,10 @@ class DateTypeModel extends Model {
   final String id;
 
   final TemporalDate? _value;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -74,7 +100,16 @@ class DateTypeModel extends Model {
         isArray: false));
   });
 
+  @override
+  _DateTypeModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   TemporalDate? get value => _value;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -82,7 +117,11 @@ class DateTypeModel extends Model {
   @override
   bool operator ==(Object? other) =>
       identical(this, other) ||
-      other is DateTypeModel && id == other.id && _value == other._value;
+      other is DateTypeModel &&
+          id == other.id &&
+          _value == other._value &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -91,24 +130,33 @@ class DateTypeModel extends Model {
 
     buffer.write('DateTypeModel {');
     buffer.write('id=$id, ');
-    buffer.write('value=$_value');
+    buffer.write('value=$_value, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  DateTypeModel copyWith({String? id, TemporalDate? value}) {
-    return DateTypeModel(id: id ?? this.id, value: value ?? this.value);
+  DateTypeModel copyWith(
+      {String? id,
+      TemporalDate? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
+    return DateTypeModel(
+        id: id ?? this.id,
+        value: value ?? this.value,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() => {'id': id, 'value': _value};
-  @override
-  _DateTypeModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'value': _value?.format(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _DateTypeModelModelType extends ModelType<DateTypeModel> {

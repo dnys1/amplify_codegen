@@ -21,23 +21,43 @@
 
 library models.bool_type_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the BoolTypeModel type in your schema.
 @immutable
 class BoolTypeModel extends Model {
-  factory BoolTypeModel({String? id, bool? value}) {
-    return BoolTypeModel._internal(id: id ?? UUID.getUUID(), value: value);
+  factory BoolTypeModel(
+      {String? id,
+      bool? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
+    return BoolTypeModel._internal(
+        id: id ?? UUID.getUUID(),
+        value: value,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
-  const BoolTypeModel._internal({required this.id, bool? value})
-      : _value = value;
+  const BoolTypeModel._internal(
+      {required this.id,
+      bool? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
+      : _value = value,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory BoolTypeModel.fromJson(Map<String, Object?> json) {
     return BoolTypeModel._internal(
-        id: (json['id'] as String), value: (json['value'] as bool?));
+        id: (json['id'] as String),
+        value: (json['value'] as bool),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _BoolTypeModelModelType classType = _BoolTypeModelModelType();
@@ -45,6 +65,10 @@ class BoolTypeModel extends Model {
   final String id;
 
   final bool? _value;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -74,7 +98,16 @@ class BoolTypeModel extends Model {
         isArray: false));
   });
 
+  @override
+  _BoolTypeModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   bool? get value => _value;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -82,7 +115,11 @@ class BoolTypeModel extends Model {
   @override
   bool operator ==(Object? other) =>
       identical(this, other) ||
-      other is BoolTypeModel && id == other.id && _value == other._value;
+      other is BoolTypeModel &&
+          id == other.id &&
+          _value == other._value &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -91,24 +128,33 @@ class BoolTypeModel extends Model {
 
     buffer.write('BoolTypeModel {');
     buffer.write('id=$id, ');
-    buffer.write('value=$_value');
+    buffer.write('value=$_value, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  BoolTypeModel copyWith({String? id, bool? value}) {
-    return BoolTypeModel(id: id ?? this.id, value: value ?? this.value);
+  BoolTypeModel copyWith(
+      {String? id,
+      bool? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
+    return BoolTypeModel(
+        id: id ?? this.id,
+        value: value ?? this.value,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() => {'id': id, 'value': _value};
-  @override
-  _BoolTypeModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'value': _value,
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _BoolTypeModelModelType extends ModelType<BoolTypeModel> {

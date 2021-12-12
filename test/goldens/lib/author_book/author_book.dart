@@ -21,9 +21,8 @@
 
 library models.author_book;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the AuthorBook type in your schema.
 @immutable
@@ -33,13 +32,17 @@ class AuthorBook extends Model {
       required String authorId,
       required String bookId,
       String? author,
-      String? book}) {
+      String? book,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return AuthorBook._internal(
         id: id ?? UUID.getUUID(),
         authorId: authorId,
         bookId: bookId,
         author: author,
-        book: book);
+        book: book,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const AuthorBook._internal(
@@ -47,19 +50,29 @@ class AuthorBook extends Model {
       required String authorId,
       required String bookId,
       String? author,
-      String? book})
+      String? book,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _authorId = authorId,
         _bookId = bookId,
         _author = author,
-        _book = book;
+        _book = book,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory AuthorBook.fromJson(Map<String, Object?> json) {
     return AuthorBook._internal(
         id: (json['id'] as String),
         authorId: (json['author_id'] as String),
         bookId: (json['book_id'] as String),
-        author: (json['author'] as String?),
-        book: (json['book'] as String?));
+        author: (json['author'] as String),
+        book: (json['book'] as String),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _AuthorBookModelType classType = _AuthorBookModelType();
@@ -73,6 +86,10 @@ class AuthorBook extends Model {
   final String? _author;
 
   final String? _book;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -123,6 +140,13 @@ class AuthorBook extends Model {
         isArray: false));
   });
 
+  @override
+  _AuthorBookModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   String get authorId {
     if (_authorId == null) {
       throw const DataStoreException(
@@ -147,6 +171,8 @@ class AuthorBook extends Model {
 
   String? get author => _author;
   String? get book => _book;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -159,7 +185,9 @@ class AuthorBook extends Model {
           _authorId == other._authorId &&
           _bookId == other._bookId &&
           _author == other._author &&
-          _book == other._book;
+          _book == other._book &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -171,7 +199,9 @@ class AuthorBook extends Model {
     buffer.write('authorId=$_authorId, ');
     buffer.write('bookId=$_bookId, ');
     buffer.write('author=$_author, ');
-    buffer.write('book=$_book');
+    buffer.write('book=$_book, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
@@ -182,13 +212,17 @@ class AuthorBook extends Model {
       String? authorId,
       String? bookId,
       String? author,
-      String? book}) {
+      String? book,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return AuthorBook(
         id: id ?? this.id,
         authorId: authorId ?? this.authorId,
         bookId: bookId ?? this.bookId,
         author: author ?? this.author,
-        book: book ?? this.book);
+        book: book ?? this.book,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
@@ -197,14 +231,10 @@ class AuthorBook extends Model {
         'author_id': _authorId,
         'book_id': _bookId,
         'author': _author,
-        'book': _book
+        'book': _book,
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _AuthorBookModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _AuthorBookModelType extends ModelType<AuthorBook> {

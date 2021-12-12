@@ -21,9 +21,9 @@
 
 library models.attration;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'status.dart';
 
 /// This is an auto generated class representing the Attration type in your schema.
 @immutable
@@ -33,13 +33,17 @@ class Attration extends Model {
       required String name,
       required Status status,
       List<String?>? tags,
-      required TemporalDate lastUpdate}) {
+      required TemporalDate lastUpdate,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Attration._internal(
         id: id ?? UUID.getUUID(),
         name: name,
         status: status,
         tags: tags != null ? List.unmodifiable(tags) : null,
-        lastUpdate: lastUpdate);
+        lastUpdate: lastUpdate,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const Attration._internal(
@@ -47,19 +51,29 @@ class Attration extends Model {
       required String name,
       required Status status,
       List<String?>? tags,
-      required TemporalDate lastUpdate})
+      required TemporalDate lastUpdate,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _name = name,
         _status = status,
         _tags = tags,
-        _lastUpdate = lastUpdate;
+        _lastUpdate = lastUpdate,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory Attration.fromJson(Map<String, Object?> json) {
     return Attration._internal(
         id: (json['id'] as String),
         name: (json['name'] as String),
         status: Status.values.byValue((json['status'] as String?))!,
-        tags: (json['tags'] as List?)?.cast<String?>().map((el) => el).toList(),
-        lastUpdate: (json['lastUpdate'] as TemporalDate));
+        tags: (json['tags'] as List?)?.cast<String?>(),
+        lastUpdate: TemporalDate.fromString((json['lastUpdate'] as String)),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _AttrationModelType classType = _AttrationModelType();
@@ -73,6 +87,10 @@ class Attration extends Model {
   final List<String?>? _tags;
 
   final TemporalDate? _lastUpdate;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -102,7 +120,8 @@ class Attration extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
         key: TAGS,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'collection'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
@@ -122,6 +141,13 @@ class Attration extends Model {
         ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
         isArray: false));
   });
+
+  @override
+  _AttrationModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
 
   String get name {
     if (_name == null) {
@@ -157,6 +183,8 @@ class Attration extends Model {
     return _lastUpdate!;
   }
 
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -169,7 +197,9 @@ class Attration extends Model {
           _name == other._name &&
           _status == other._status &&
           _tags == other._tags &&
-          _lastUpdate == other._lastUpdate;
+          _lastUpdate == other._lastUpdate &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -181,7 +211,9 @@ class Attration extends Model {
     buffer.write('name=$_name, ');
     buffer.write('status=$_status, ');
     buffer.write('tags=$_tags, ');
-    buffer.write('lastUpdate=$_lastUpdate');
+    buffer.write('lastUpdate=$_lastUpdate, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
@@ -192,13 +224,17 @@ class Attration extends Model {
       String? name,
       Status? status,
       List<String?>? tags,
-      TemporalDate? lastUpdate}) {
+      TemporalDate? lastUpdate,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Attration(
         id: id ?? this.id,
         name: name ?? this.name,
         status: status ?? this.status,
         tags: tags ?? this.tags,
-        lastUpdate: lastUpdate ?? this.lastUpdate);
+        lastUpdate: lastUpdate ?? this.lastUpdate,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
@@ -207,14 +243,10 @@ class Attration extends Model {
         'name': _name,
         'status': _status?.value,
         'tags': _tags?.map((el) => el).toList(),
-        'lastUpdate': _lastUpdate
+        'lastUpdate': _lastUpdate?.format(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _AttrationModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _AttrationModelType extends ModelType<Attration> {

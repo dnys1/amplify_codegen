@@ -21,25 +21,45 @@
 
 library models.timestamp_type_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the TimestampTypeModel type in your schema.
 @immutable
 class TimestampTypeModel extends Model {
-  factory TimestampTypeModel({String? id, TemporalTimestamp? value}) {
-    return TimestampTypeModel._internal(id: id ?? UUID.getUUID(), value: value);
+  factory TimestampTypeModel(
+      {String? id,
+      TemporalTimestamp? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
+    return TimestampTypeModel._internal(
+        id: id ?? UUID.getUUID(),
+        value: value,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const TimestampTypeModel._internal(
-      {required this.id, TemporalTimestamp? value})
-      : _value = value;
+      {required this.id,
+      TemporalTimestamp? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
+      : _value = value,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory TimestampTypeModel.fromJson(Map<String, Object?> json) {
     return TimestampTypeModel._internal(
         id: (json['id'] as String),
-        value: (json['value'] as TemporalTimestamp?));
+        value: json['value'] == null
+            ? null
+            : TemporalTimestamp.fromSeconds((json['value'] as int)),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _TimestampTypeModelModelType classType =
@@ -48,6 +68,10 @@ class TimestampTypeModel extends Model {
   final String id;
 
   final TemporalTimestamp? _value;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -77,7 +101,16 @@ class TimestampTypeModel extends Model {
         isArray: false));
   });
 
+  @override
+  _TimestampTypeModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   TemporalTimestamp? get value => _value;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -85,7 +118,11 @@ class TimestampTypeModel extends Model {
   @override
   bool operator ==(Object? other) =>
       identical(this, other) ||
-      other is TimestampTypeModel && id == other.id && _value == other._value;
+      other is TimestampTypeModel &&
+          id == other.id &&
+          _value == other._value &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -94,24 +131,33 @@ class TimestampTypeModel extends Model {
 
     buffer.write('TimestampTypeModel {');
     buffer.write('id=$id, ');
-    buffer.write('value=$_value');
+    buffer.write('value=$_value, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  TimestampTypeModel copyWith({String? id, TemporalTimestamp? value}) {
-    return TimestampTypeModel(id: id ?? this.id, value: value ?? this.value);
+  TimestampTypeModel copyWith(
+      {String? id,
+      TemporalTimestamp? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
+    return TimestampTypeModel(
+        id: id ?? this.id,
+        value: value ?? this.value,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() => {'id': id, 'value': _value};
-  @override
-  _TimestampTypeModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'value': _value?.toSeconds(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _TimestampTypeModelModelType extends ModelType<TimestampTypeModel> {

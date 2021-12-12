@@ -21,9 +21,6 @@
 
 library models.vote_type;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'package:meta/meta.dart';
-
 enum VoteType { upvote, downvote, removeUpvote, removeDownvote }
 
 extension $VoteType on VoteType {

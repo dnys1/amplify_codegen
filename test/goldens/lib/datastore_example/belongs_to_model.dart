@@ -21,30 +21,50 @@
 
 library models.belongs_to_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'child_model.dart';
 
 /// This is an auto generated class representing the BelongsToModel type in your schema.
 @immutable
 class BelongsToModel extends Model {
   factory BelongsToModel(
-      {String? id, required String name, required ChildModel child}) {
+      {String? id,
+      required String name,
+      required ChildModel child,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return BelongsToModel._internal(
-        id: id ?? UUID.getUUID(), name: name, child: child);
+        id: id ?? UUID.getUUID(),
+        name: name,
+        child: child,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const BelongsToModel._internal(
-      {required this.id, required String name, required ChildModel child})
+      {required this.id,
+      required String name,
+      required ChildModel child,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _name = name,
-        _child = child;
+        _child = child,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory BelongsToModel.fromJson(Map<String, Object?> json) {
     return BelongsToModel._internal(
         id: (json['id'] as String),
         name: (json['name'] as String),
-        child: ChildModel.fromJson(
-            (json['child'] as Map).cast<String, Object?>()));
+        child:
+            ChildModel.fromJson((json['child'] as Map).cast<String, Object?>()),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _BelongsToModelModelType classType = _BelongsToModelModelType();
@@ -54,6 +74,10 @@ class BelongsToModel extends Model {
   final String? _name;
 
   final ChildModel? _child;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -93,6 +117,13 @@ class BelongsToModel extends Model {
         isArray: false));
   });
 
+  @override
+  _BelongsToModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   String get name {
     if (_name == null) {
       throw const DataStoreException(
@@ -115,6 +146,8 @@ class BelongsToModel extends Model {
     return _child!;
   }
 
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -125,7 +158,9 @@ class BelongsToModel extends Model {
       other is BelongsToModel &&
           id == other.id &&
           _name == other._name &&
-          _child == other._child;
+          _child == other._child &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -135,26 +170,36 @@ class BelongsToModel extends Model {
     buffer.write('BelongsToModel {');
     buffer.write('id=$id, ');
     buffer.write('name=$_name, ');
-    buffer.write('child=$_child');
+    buffer.write('child=$_child, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  BelongsToModel copyWith({String? id, String? name, ChildModel? child}) {
+  BelongsToModel copyWith(
+      {String? id,
+      String? name,
+      ChildModel? child,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return BelongsToModel(
-        id: id ?? this.id, name: name ?? this.name, child: child ?? this.child);
+        id: id ?? this.id,
+        name: name ?? this.name,
+        child: child ?? this.child,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() =>
-      {'id': id, 'name': _name, 'child': _child?.toJson()};
-  @override
-  _BelongsToModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'name': _name,
+        'child': _child?.toJson(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _BelongsToModelModelType extends ModelType<BelongsToModel> {

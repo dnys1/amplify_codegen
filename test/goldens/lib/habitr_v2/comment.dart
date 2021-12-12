@@ -21,9 +21,10 @@
 
 library models.comment;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'habit.dart';
+import 'user.dart';
 
 /// This is an auto generated class representing the Comment type in your schema.
 @immutable
@@ -34,14 +35,18 @@ class Comment extends Model {
       Habit? habit,
       String? owner,
       User? by,
-      required String comment}) {
+      required String comment,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Comment._internal(
         id: id ?? UUID.getUUID(),
         habitId: habitId,
         habit: habit,
         owner: owner,
         by: by,
-        comment: comment);
+        comment: comment,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const Comment._internal(
@@ -50,12 +55,16 @@ class Comment extends Model {
       Habit? habit,
       String? owner,
       User? by,
-      required String comment})
+      required String comment,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _habitId = habitId,
         _habit = habit,
         _owner = owner,
         _by = by,
-        _comment = comment;
+        _comment = comment,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory Comment.fromJson(Map<String, Object?> json) {
     return Comment._internal(
@@ -64,11 +73,17 @@ class Comment extends Model {
         habit: json['habit'] != null
             ? Habit.fromJson((json['habit'] as Map).cast<String, Object?>())
             : null,
-        owner: (json['owner'] as String?),
+        owner: (json['owner'] as String),
         by: json['by'] != null
             ? User.fromJson((json['by'] as Map).cast<String, Object?>())
             : null,
-        comment: (json['comment'] as String));
+        comment: (json['comment'] as String),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _CommentModelType classType = _CommentModelType();
@@ -84,6 +99,10 @@ class Comment extends Model {
   final User? _by;
 
   final String? _comment;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -141,7 +160,46 @@ class Comment extends Model {
         fieldName: 'updatedAt',
         ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
         isArray: false));
+    modelSchemaDefinition.authRules = const [
+      AuthRule(
+          authStrategy: AuthStrategy.GROUPS,
+          groupClaim: 'cognito:groups',
+          groups: [
+            'admin'
+          ],
+          operations: [
+            ModelOperation.CREATE,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE,
+            ModelOperation.READ
+          ]),
+      AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
+        ModelOperation.CREATE,
+        ModelOperation.UPDATE,
+        ModelOperation.DELETE,
+        ModelOperation.READ
+      ]),
+      AuthRule(
+          authStrategy: AuthStrategy.PRIVATE,
+          operations: [ModelOperation.READ]),
+      AuthRule(
+          authStrategy: AuthStrategy.OWNER,
+          operations: [
+            ModelOperation.CREATE,
+            ModelOperation.DELETE,
+            ModelOperation.UPDATE
+          ],
+          ownerField: 'owner',
+          identityClaim: 'username')
+    ];
   });
+
+  @override
+  _CommentModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
 
   String get habitId {
     if (_habitId == null) {
@@ -168,6 +226,8 @@ class Comment extends Model {
     return _comment!;
   }
 
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -181,7 +241,9 @@ class Comment extends Model {
           _habit == other._habit &&
           _owner == other._owner &&
           _by == other._by &&
-          _comment == other._comment;
+          _comment == other._comment &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -194,7 +256,9 @@ class Comment extends Model {
     buffer.write('habit=$_habit, ');
     buffer.write('owner=$_owner, ');
     buffer.write('by=$_by, ');
-    buffer.write('comment=$_comment');
+    buffer.write('comment=$_comment, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
@@ -206,14 +270,18 @@ class Comment extends Model {
       Habit? habit,
       String? owner,
       User? by,
-      String? comment}) {
+      String? comment,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Comment(
         id: id ?? this.id,
         habitId: habitId ?? this.habitId,
         habit: habit ?? this.habit,
         owner: owner ?? this.owner,
         by: by ?? this.by,
-        comment: comment ?? this.comment);
+        comment: comment ?? this.comment,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
@@ -223,14 +291,10 @@ class Comment extends Model {
         'habit': _habit?.toJson(),
         'owner': _owner,
         'by': _by?.toJson(),
-        'comment': _comment
+        'comment': _comment,
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _CommentModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _CommentModelType extends ModelType<Comment> {

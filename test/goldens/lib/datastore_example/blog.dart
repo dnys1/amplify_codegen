@@ -21,24 +21,37 @@
 
 library models.blog;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'post.dart';
 
 /// This is an auto generated class representing the Blog type in your schema.
 @immutable
 class Blog extends Model {
-  factory Blog({String? id, required String name, List<Post?>? posts}) {
+  factory Blog(
+      {String? id,
+      required String name,
+      List<Post?>? posts,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Blog._internal(
         id: id ?? UUID.getUUID(),
         name: name,
-        posts: posts != null ? List.unmodifiable(posts) : null);
+        posts: posts != null ? List.unmodifiable(posts) : null,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const Blog._internal(
-      {required this.id, required String name, List<Post?>? posts})
+      {required this.id,
+      required String name,
+      List<Post?>? posts,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _name = name,
-        _posts = posts;
+        _posts = posts,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory Blog.fromJson(Map<String, Object?> json) {
     return Blog._internal(
@@ -48,7 +61,13 @@ class Blog extends Model {
             ?.cast<Map?>()
             .map((el) =>
                 el != null ? Post.fromJson(el.cast<String, Object?>()) : null)
-            .toList());
+            .toList(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _BlogModelType classType = _BlogModelType();
@@ -58,6 +77,10 @@ class Blog extends Model {
   final String? _name;
 
   final List<Post?>? _posts;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -97,6 +120,13 @@ class Blog extends Model {
         isArray: false));
   });
 
+  @override
+  _BlogModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   String get name {
     if (_name == null) {
       throw const DataStoreException(
@@ -109,6 +139,8 @@ class Blog extends Model {
   }
 
   List<Post?>? get posts => _posts;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -119,7 +151,9 @@ class Blog extends Model {
       other is Blog &&
           id == other.id &&
           _name == other._name &&
-          _posts == other._posts;
+          _posts == other._posts &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -129,29 +163,36 @@ class Blog extends Model {
     buffer.write('Blog {');
     buffer.write('id=$id, ');
     buffer.write('name=$_name, ');
-    buffer.write('posts=$_posts');
+    buffer.write('posts=$_posts, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  Blog copyWith({String? id, String? name, List<Post?>? posts}) {
+  Blog copyWith(
+      {String? id,
+      String? name,
+      List<Post?>? posts,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Blog(
-        id: id ?? this.id, name: name ?? this.name, posts: posts ?? this.posts);
+        id: id ?? this.id,
+        name: name ?? this.name,
+        posts: posts ?? this.posts,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
   Map<String, Object?> toJson() => {
         'id': id,
         'name': _name,
-        'posts': _posts?.map((el) => el?.toJson()).toList()
+        'posts': _posts?.map((el) => el?.toJson()).toList(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _BlogModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _BlogModelType extends ModelType<Blog> {

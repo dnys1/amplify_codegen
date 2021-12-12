@@ -21,9 +21,8 @@
 
 library models.multi_type_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the MultiTypeModel type in your schema.
 @immutable
@@ -33,13 +32,17 @@ class MultiTypeModel extends Model {
       String? stringValue,
       String? altStringValue,
       int? intValue,
-      int? altIntValue}) {
+      int? altIntValue,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return MultiTypeModel._internal(
         id: id ?? UUID.getUUID(),
         stringValue: stringValue,
         altStringValue: altStringValue,
         intValue: intValue,
-        altIntValue: altIntValue);
+        altIntValue: altIntValue,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const MultiTypeModel._internal(
@@ -47,19 +50,29 @@ class MultiTypeModel extends Model {
       String? stringValue,
       String? altStringValue,
       int? intValue,
-      int? altIntValue})
+      int? altIntValue,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _stringValue = stringValue,
         _altStringValue = altStringValue,
         _intValue = intValue,
-        _altIntValue = altIntValue;
+        _altIntValue = altIntValue,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory MultiTypeModel.fromJson(Map<String, Object?> json) {
     return MultiTypeModel._internal(
         id: (json['id'] as String),
-        stringValue: (json['stringValue'] as String?),
-        altStringValue: (json['altStringValue'] as String?),
-        intValue: (json['intValue'] as int?),
-        altIntValue: (json['altIntValue'] as int?));
+        stringValue: (json['stringValue'] as String),
+        altStringValue: (json['altStringValue'] as String),
+        intValue: (json['intValue'] as int),
+        altIntValue: (json['altIntValue'] as int),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _MultiTypeModelModelType classType = _MultiTypeModelModelType();
@@ -73,6 +86,10 @@ class MultiTypeModel extends Model {
   final int? _intValue;
 
   final int? _altIntValue;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -124,10 +141,19 @@ class MultiTypeModel extends Model {
         isArray: false));
   });
 
+  @override
+  _MultiTypeModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   String? get stringValue => _stringValue;
   String? get altStringValue => _altStringValue;
   int? get intValue => _intValue;
   int? get altIntValue => _altIntValue;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -140,7 +166,9 @@ class MultiTypeModel extends Model {
           _stringValue == other._stringValue &&
           _altStringValue == other._altStringValue &&
           _intValue == other._intValue &&
-          _altIntValue == other._altIntValue;
+          _altIntValue == other._altIntValue &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -152,7 +180,9 @@ class MultiTypeModel extends Model {
     buffer.write('stringValue=$_stringValue, ');
     buffer.write('altStringValue=$_altStringValue, ');
     buffer.write('intValue=$_intValue, ');
-    buffer.write('altIntValue=$_altIntValue');
+    buffer.write('altIntValue=$_altIntValue, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
@@ -163,13 +193,17 @@ class MultiTypeModel extends Model {
       String? stringValue,
       String? altStringValue,
       int? intValue,
-      int? altIntValue}) {
+      int? altIntValue,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return MultiTypeModel(
         id: id ?? this.id,
         stringValue: stringValue ?? this.stringValue,
         altStringValue: altStringValue ?? this.altStringValue,
         intValue: intValue ?? this.intValue,
-        altIntValue: altIntValue ?? this.altIntValue);
+        altIntValue: altIntValue ?? this.altIntValue,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
@@ -178,14 +212,10 @@ class MultiTypeModel extends Model {
         'stringValue': _stringValue,
         'altStringValue': _altStringValue,
         'intValue': _intValue,
-        'altIntValue': _altIntValue
+        'altIntValue': _altIntValue,
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _MultiTypeModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _MultiTypeModelModelType extends ModelType<MultiTypeModel> {

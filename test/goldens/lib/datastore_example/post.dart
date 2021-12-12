@@ -21,9 +21,10 @@
 
 library models.post;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'blog.dart';
+import 'comment.dart';
 
 /// This is an auto generated class representing the Post type in your schema.
 @immutable
@@ -35,7 +36,9 @@ class Post extends Model {
       TemporalDateTime? created,
       required String blogID,
       Blog? blog,
-      List<Comment?>? comments}) {
+      List<Comment?>? comments,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Post._internal(
         id: id ?? UUID.getUUID(),
         title: title,
@@ -43,7 +46,9 @@ class Post extends Model {
         created: created,
         blogID: blogID,
         blog: blog,
-        comments: comments != null ? List.unmodifiable(comments) : null);
+        comments: comments != null ? List.unmodifiable(comments) : null,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const Post._internal(
@@ -53,20 +58,26 @@ class Post extends Model {
       TemporalDateTime? created,
       required String blogID,
       Blog? blog,
-      List<Comment?>? comments})
+      List<Comment?>? comments,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _title = title,
         _rating = rating,
         _created = created,
         _blogID = blogID,
         _blog = blog,
-        _comments = comments;
+        _comments = comments,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory Post.fromJson(Map<String, Object?> json) {
     return Post._internal(
         id: (json['id'] as String),
         title: (json['title'] as String),
         rating: (json['rating'] as int),
-        created: (json['created'] as TemporalDateTime?),
+        created: json['created'] == null
+            ? null
+            : TemporalDateTime.fromString((json['created'] as String)),
         blogID: (json['blogID'] as String),
         blog: json['blog'] != null
             ? Blog.fromJson((json['blog'] as Map).cast<String, Object?>())
@@ -76,7 +87,13 @@ class Post extends Model {
             .map((el) => el != null
                 ? Comment.fromJson(el.cast<String, Object?>())
                 : null)
-            .toList());
+            .toList(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _PostModelType classType = _PostModelType();
@@ -94,6 +111,10 @@ class Post extends Model {
   final Blog? _blog;
 
   final List<Comment?>? _comments;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -163,6 +184,13 @@ class Post extends Model {
         isArray: false));
   });
 
+  @override
+  _PostModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   String get title {
     if (_title == null) {
       throw const DataStoreException(
@@ -199,6 +227,8 @@ class Post extends Model {
 
   Blog? get blog => _blog;
   List<Comment?>? get comments => _comments;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -213,7 +243,9 @@ class Post extends Model {
           _created == other._created &&
           _blogID == other._blogID &&
           _blog == other._blog &&
-          _comments == other._comments;
+          _comments == other._comments &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -227,7 +259,9 @@ class Post extends Model {
     buffer.write('created=$_created, ');
     buffer.write('blogID=$_blogID, ');
     buffer.write('blog=$_blog, ');
-    buffer.write('comments=$_comments');
+    buffer.write('comments=$_comments, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
@@ -240,7 +274,9 @@ class Post extends Model {
       TemporalDateTime? created,
       String? blogID,
       Blog? blog,
-      List<Comment?>? comments}) {
+      List<Comment?>? comments,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Post(
         id: id ?? this.id,
         title: title ?? this.title,
@@ -248,7 +284,9 @@ class Post extends Model {
         created: created ?? this.created,
         blogID: blogID ?? this.blogID,
         blog: blog ?? this.blog,
-        comments: comments ?? this.comments);
+        comments: comments ?? this.comments,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
@@ -256,17 +294,13 @@ class Post extends Model {
         'id': id,
         'title': _title,
         'rating': _rating,
-        'created': _created,
+        'created': _created?.format(),
         'blogID': _blogID,
         'blog': _blog?.toJson(),
-        'comments': _comments?.map((el) => el?.toJson()).toList()
+        'comments': _comments?.map((el) => el?.toJson()).toList(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _PostModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _PostModelType extends ModelType<Post> {

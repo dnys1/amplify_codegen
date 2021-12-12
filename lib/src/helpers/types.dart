@@ -2,11 +2,14 @@ import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/generator/model.dart';
 import 'package:amplify_codegen/src/generator/visitors.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
 import 'package:recase/recase.dart';
 
 const datastoreUri =
     'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+const flutterFoundationUri = 'package:flutter/foundation.dart';
+const metaUri = 'package:meta/meta.dart';
 
 TypeReference mapOf(String key, String value) {
   return TypeReference((t) => t
@@ -37,19 +40,16 @@ extension TypeHelpers on TypeNode {
     throw ArgumentError(runtimeType);
   }
 
-  TypeReference get reference => accept(TypeVisitor())!;
+  // TypeReference get reference => accept(TypeVisitor())!;
 
   /// The type of model field this represents.
   AWSType get awsType => AWSType.values.firstWhere(
         (type) => type.name == typeName,
         orElse: () => AWSType.Model,
       );
-
-  /// Whether this is a Model/Enum type
-  bool get isModel => awsType == AWSType.Model;
 }
 
-extension TypeReferenceHelpers on Reference {
+extension ReferenceHelpers on Reference {
   TypeReference get typeRef =>
       this is TypeReference ? this as TypeReference : type as TypeReference;
 
@@ -64,9 +64,48 @@ extension TypeReferenceHelpers on Reference {
   }
 }
 
-extension AWSTypeHelpers on AWSType {
-  TypeReference typeRef([String? modelName]) {
-    switch (this) {
+extension TypeInfoHelpers on TypeInfo {
+  /// Whether this type represents a Model.
+  bool get isModel => modelName != null && !isEnum;
+
+  /// The model's identifier in Dart.
+  String? get dartModelName => modelName?.pascalCase;
+
+  /// Whether this type represents a s
+  bool get isPrimitive {
+    if (isModel || isEnum) return false;
+    if (isList) return listType!.isPrimitive;
+
+    switch (awsType!) {
+      case AWSType.AWSDate:
+      case AWSType.AWSTime:
+      case AWSType.AWSDateTime:
+      case AWSType.AWSTimestamp:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  TypeReference get wireTypeReference {
+    if (isList) {
+      return TypeReference((t) => t
+        ..symbol = 'List'
+        ..isNullable = !isRequired);
+    }
+    if (isModel) {
+      return TypeReference((t) => t
+        ..symbol = 'Map'
+        ..isNullable = !isRequired);
+    }
+    if (isEnum) {
+      return TypeReference((t) => t
+        ..symbol = 'String'
+        ..isNullable = !isRequired);
+    }
+
+    final TypeReference baseType;
+    switch (awsType!) {
       case AWSType.ID:
       case AWSType.String:
       case AWSType.AWSEmail:
@@ -74,52 +113,96 @@ extension AWSTypeHelpers on AWSType {
       case AWSType.AWSPhone:
       case AWSType.AWSURL:
       case AWSType.AWSIPAddress:
-        return const Reference('String').type as TypeReference;
-      case AWSType.Int:
-        return const Reference('int').type as TypeReference;
-      case AWSType.Float:
-        return const Reference('double').type as TypeReference;
-      case AWSType.Boolean:
-        return const Reference('bool').type as TypeReference;
       case AWSType.AWSDate:
-        return const Reference(
-          'TemporalDate',
-          datastoreUri,
-        ).type as TypeReference;
       case AWSType.AWSTime:
-        return const Reference(
-          'TemporalTime',
-          datastoreUri,
-        ).type as TypeReference;
       case AWSType.AWSDateTime:
-        return const Reference(
-          'TemporalDateTime',
-          datastoreUri,
-        ).type as TypeReference;
+        baseType = const Reference('String').typeRef;
+        break;
       case AWSType.AWSTimestamp:
-        return const Reference(
-          'TemporalTimestamp',
-          datastoreUri,
-        ).type as TypeReference;
+      case AWSType.Int:
+        baseType = const Reference('int').typeRef;
+        break;
+      case AWSType.Float:
+        baseType = const Reference('double').typeRef;
+        break;
+      case AWSType.Boolean:
+        baseType = const Reference('bool').typeRef;
+        break;
       case AWSType.Model:
-        return Reference(
+        baseType = Reference(
           modelName!,
-          ReCase(modelName).snakeCase + '.dart',
-        ).type as TypeReference;
+          modelName!.snakeCase + '.dart',
+        ).typeRef;
+        break;
     }
-  }
-}
 
-extension ModelFieldHelpers on ModelFieldMetadata {
+    return baseType.rebuild((t) => t..isNullable = !isRequired);
+  }
+
   TypeReference get typeReference {
-    return type.typeRef(modelName);
+    if (isList) {
+      return TypeReference(
+        (t) => t
+          ..symbol = 'List'
+          ..isNullable = !isRequired
+          ..types.add(listType!.typeReference),
+      );
+    }
+
+    final TypeReference baseType;
+    switch (awsType!) {
+      case AWSType.ID:
+      case AWSType.String:
+      case AWSType.AWSEmail:
+      case AWSType.AWSJSON:
+      case AWSType.AWSPhone:
+      case AWSType.AWSURL:
+      case AWSType.AWSIPAddress:
+        baseType = const Reference('String').typeRef;
+        break;
+      case AWSType.Int:
+        baseType = const Reference('int').typeRef;
+        break;
+      case AWSType.Float:
+        baseType = const Reference('double').typeRef;
+        break;
+      case AWSType.Boolean:
+        baseType = const Reference('bool').typeRef;
+        break;
+      case AWSType.AWSDate:
+        baseType = const Reference('TemporalDate', datastoreUri).typeRef;
+        break;
+      case AWSType.AWSTime:
+        baseType = const Reference('TemporalTime', datastoreUri).typeRef;
+        break;
+      case AWSType.AWSDateTime:
+        baseType = const Reference('TemporalDateTime', datastoreUri).typeRef;
+        break;
+      case AWSType.AWSTimestamp:
+        baseType = const Reference('TemporalTimestamp', datastoreUri).typeRef;
+        break;
+      case AWSType.Model:
+        baseType = Reference(
+          modelName!,
+          modelName!.snakeCase + '.dart',
+        ).typeRef;
+        break;
+    }
+
+    return baseType.rebuild((t) => t..isNullable = !isRequired);
   }
 
   ModelFieldType modelFieldType({
     required bool isCustom,
     required List<Model> models,
   }) {
-    switch (type) {
+    if (isList) {
+      return isCustom
+          ? ModelFieldType.embeddedCollection
+          : ModelFieldType.collection;
+    }
+
+    switch (awsType!) {
       case AWSType.ID:
       case AWSType.AWSEmail:
       case AWSType.AWSJSON:
@@ -146,12 +229,6 @@ extension ModelFieldHelpers on ModelFieldMetadata {
         break;
     }
 
-    if (isList) {
-      return isCustom
-          ? ModelFieldType.embeddedCollection
-          : ModelFieldType.collection;
-    }
-
     final isModel = models.any((model) => model.name == modelName!);
     if (isModel) {
       return isCustom ? ModelFieldType.embedded : ModelFieldType.model;
@@ -159,4 +236,14 @@ extension ModelFieldHelpers on ModelFieldMetadata {
 
     return ModelFieldType.enumeration;
   }
+}
+
+extension ModelFieldTypes on ModelField {
+  TypeReference get typeReference => type.typeReference;
+
+  ModelFieldType modelFieldType({
+    required bool isCustom,
+    required List<Model> models,
+  }) =>
+      type.modelFieldType(isCustom: isCustom, models: models);
 }

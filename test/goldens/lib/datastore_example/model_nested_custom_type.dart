@@ -21,9 +21,10 @@
 
 library models.model_nested_custom_type;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'all_scalar_types_custom_type.dart';
+import 'all_scalar_types_list_custom_type.dart';
 
 /// This is an auto generated class representing the ModelNestedCustomType type in your schema.
 @immutable
@@ -31,21 +32,29 @@ class ModelNestedCustomType extends Model {
   factory ModelNestedCustomType(
       {String? id,
       required AllScalarTypesCustomType customTypeValue,
-      List<AllScalarTypesListCustomType?>? listCustomTypeValue}) {
+      List<AllScalarTypesListCustomType?>? listCustomTypeValue,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return ModelNestedCustomType._internal(
         id: id ?? UUID.getUUID(),
         customTypeValue: customTypeValue,
         listCustomTypeValue: listCustomTypeValue != null
             ? List.unmodifiable(listCustomTypeValue)
-            : null);
+            : null,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const ModelNestedCustomType._internal(
       {required this.id,
       required AllScalarTypesCustomType customTypeValue,
-      List<AllScalarTypesListCustomType?>? listCustomTypeValue})
+      List<AllScalarTypesListCustomType?>? listCustomTypeValue,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _customTypeValue = customTypeValue,
-        _listCustomTypeValue = listCustomTypeValue;
+        _listCustomTypeValue = listCustomTypeValue,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory ModelNestedCustomType.fromJson(Map<String, Object?> json) {
     return ModelNestedCustomType._internal(
@@ -58,7 +67,13 @@ class ModelNestedCustomType extends Model {
                 ? AllScalarTypesListCustomType.fromJson(
                     el.cast<String, Object?>())
                 : null)
-            .toList());
+            .toList(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _ModelNestedCustomTypeModelType classType =
@@ -69,6 +84,10 @@ class ModelNestedCustomType extends Model {
   final AllScalarTypesCustomType? _customTypeValue;
 
   final List<AllScalarTypesListCustomType?>? _listCustomTypeValue;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -91,7 +110,8 @@ class ModelNestedCustomType extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
         key: LIST_CUSTOM_TYPE_VALUE,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.collection),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'collection'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
@@ -107,6 +127,13 @@ class ModelNestedCustomType extends Model {
         isArray: false));
   });
 
+  @override
+  _ModelNestedCustomTypeModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   AllScalarTypesCustomType get customTypeValue {
     if (_customTypeValue == null) {
       throw const DataStoreException(
@@ -120,6 +147,8 @@ class ModelNestedCustomType extends Model {
 
   List<AllScalarTypesListCustomType?>? get listCustomTypeValue =>
       _listCustomTypeValue;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -130,7 +159,9 @@ class ModelNestedCustomType extends Model {
       other is ModelNestedCustomType &&
           id == other.id &&
           _customTypeValue == other._customTypeValue &&
-          _listCustomTypeValue == other._listCustomTypeValue;
+          _listCustomTypeValue == other._listCustomTypeValue &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -140,7 +171,9 @@ class ModelNestedCustomType extends Model {
     buffer.write('ModelNestedCustomType {');
     buffer.write('id=$id, ');
     buffer.write('customTypeValue=$_customTypeValue, ');
-    buffer.write('listCustomTypeValue=$_listCustomTypeValue');
+    buffer.write('listCustomTypeValue=$_listCustomTypeValue, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
@@ -149,11 +182,15 @@ class ModelNestedCustomType extends Model {
   ModelNestedCustomType copyWith(
       {String? id,
       AllScalarTypesCustomType? customTypeValue,
-      List<AllScalarTypesListCustomType?>? listCustomTypeValue}) {
+      List<AllScalarTypesListCustomType?>? listCustomTypeValue,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return ModelNestedCustomType(
         id: id ?? this.id,
         customTypeValue: customTypeValue ?? this.customTypeValue,
-        listCustomTypeValue: listCustomTypeValue ?? this.listCustomTypeValue);
+        listCustomTypeValue: listCustomTypeValue ?? this.listCustomTypeValue,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
@@ -161,14 +198,10 @@ class ModelNestedCustomType extends Model {
         'id': id,
         'customTypeValue': _customTypeValue?.toJson(),
         'listCustomTypeValue':
-            _listCustomTypeValue?.map((el) => el?.toJson()).toList()
+            _listCustomTypeValue?.map((el) => el?.toJson()).toList(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _ModelNestedCustomTypeModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _ModelNestedCustomTypeModelType extends ModelType<ModelNestedCustomType> {

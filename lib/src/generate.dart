@@ -36,7 +36,7 @@ Map<String, String> generateForSchema(String schema) {
   final allModels = parseSchema(schema);
 
   // Generate libraries for model types and enums
-  final libraries = parseString(schema)
+  var libraries = parseString(schema)
       .definitions
       .map((definition) {
         return definition.accept(LibraryVisitor(allModels));
@@ -47,10 +47,15 @@ Map<String, String> generateForSchema(String schema) {
   // Create ModelProvider
   libraries.add(ModelProviderGenerator(schema).generate());
 
-  final emitter = DartEmitter(useNullSafetySyntax: true);
-  return {
-    for (var library in libraries)
-      library.name!: DartFormatter(fixes: StyleFix.all)
-          .format('$header\n${library.accept(emitter)}'),
-  };
+  final libraryMap = <String, String>{};
+  final formatter = DartFormatter(fixes: StyleFix.all);
+  for (var library in libraries) {
+    final emitter = DartEmitter(
+      allocator: Allocator(),
+      useNullSafetySyntax: true,
+    );
+    libraryMap[library.name!] =
+        formatter.format('$header\n${library.accept(emitter)}');
+  }
+  return libraryMap;
 }

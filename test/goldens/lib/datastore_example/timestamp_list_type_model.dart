@@ -21,31 +21,46 @@
 
 library models.timestamp_list_type_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the TimestampListTypeModel type in your schema.
 @immutable
 class TimestampListTypeModel extends Model {
   factory TimestampListTypeModel(
-      {String? id, List<TemporalTimestamp?>? value}) {
+      {String? id,
+      List<TemporalTimestamp?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return TimestampListTypeModel._internal(
         id: id ?? UUID.getUUID(),
-        value: value != null ? List.unmodifiable(value) : null);
+        value: value != null ? List.unmodifiable(value) : null,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const TimestampListTypeModel._internal(
-      {required this.id, List<TemporalTimestamp?>? value})
-      : _value = value;
+      {required this.id,
+      List<TemporalTimestamp?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
+      : _value = value,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory TimestampListTypeModel.fromJson(Map<String, Object?> json) {
     return TimestampListTypeModel._internal(
         id: (json['id'] as String),
         value: (json['value'] as List?)
-            ?.cast<TemporalTimestamp?>()
-            .map((el) => el)
-            .toList());
+            ?.cast<int?>()
+            .map((el) => el == null ? null : TemporalTimestamp.fromSeconds(el))
+            .toList(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _TimestampListTypeModelModelType classType =
@@ -54,6 +69,10 @@ class TimestampListTypeModel extends Model {
   final String id;
 
   final List<TemporalTimestamp?>? _value;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -67,7 +86,8 @@ class TimestampListTypeModel extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
         key: VALUE,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.timestamp),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'collection'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
@@ -83,7 +103,16 @@ class TimestampListTypeModel extends Model {
         isArray: false));
   });
 
+  @override
+  _TimestampListTypeModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   List<TemporalTimestamp?>? get value => _value;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -93,7 +122,9 @@ class TimestampListTypeModel extends Model {
       identical(this, other) ||
       other is TimestampListTypeModel &&
           id == other.id &&
-          _value == other._value;
+          _value == other._value &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -102,27 +133,33 @@ class TimestampListTypeModel extends Model {
 
     buffer.write('TimestampListTypeModel {');
     buffer.write('id=$id, ');
-    buffer.write('value=$_value');
+    buffer.write('value=$_value, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
   TimestampListTypeModel copyWith(
-      {String? id, List<TemporalTimestamp?>? value}) {
+      {String? id,
+      List<TemporalTimestamp?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return TimestampListTypeModel(
-        id: id ?? this.id, value: value ?? this.value);
+        id: id ?? this.id,
+        value: value ?? this.value,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() =>
-      {'id': id, 'value': _value?.map((el) => el).toList()};
-  @override
-  _TimestampListTypeModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'value': _value?.map((el) => el?.toSeconds()).toList(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _TimestampListTypeModelModelType

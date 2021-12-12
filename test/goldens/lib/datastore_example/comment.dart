@@ -21,9 +21,9 @@
 
 library models.comment;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'post.dart';
 
 /// This is an auto generated class representing the Comment type in your schema.
 @immutable
@@ -32,19 +32,30 @@ class Comment extends Model {
       {String? id,
       required String postID,
       Post? post,
-      required String content}) {
+      required String content,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Comment._internal(
-        id: id ?? UUID.getUUID(), postID: postID, post: post, content: content);
+        id: id ?? UUID.getUUID(),
+        postID: postID,
+        post: post,
+        content: content,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const Comment._internal(
       {required this.id,
       required String postID,
       Post? post,
-      required String content})
+      required String content,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _postID = postID,
         _post = post,
-        _content = content;
+        _content = content,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory Comment.fromJson(Map<String, Object?> json) {
     return Comment._internal(
@@ -53,7 +64,13 @@ class Comment extends Model {
         post: json['post'] != null
             ? Post.fromJson((json['post'] as Map).cast<String, Object?>())
             : null,
-        content: (json['content'] as String));
+        content: (json['content'] as String),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _CommentModelType classType = _CommentModelType();
@@ -65,6 +82,10 @@ class Comment extends Model {
   final Post? _post;
 
   final String? _content;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -110,6 +131,13 @@ class Comment extends Model {
         isArray: false));
   });
 
+  @override
+  _CommentModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   String get postID {
     if (_postID == null) {
       throw const DataStoreException(
@@ -133,6 +161,8 @@ class Comment extends Model {
     return _content!;
   }
 
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -144,7 +174,9 @@ class Comment extends Model {
           id == other.id &&
           _postID == other._postID &&
           _post == other._post &&
-          _content == other._content;
+          _content == other._content &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -155,18 +187,28 @@ class Comment extends Model {
     buffer.write('id=$id, ');
     buffer.write('postID=$_postID, ');
     buffer.write('post=$_post, ');
-    buffer.write('content=$_content');
+    buffer.write('content=$_content, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  Comment copyWith({String? id, String? postID, Post? post, String? content}) {
+  Comment copyWith(
+      {String? id,
+      String? postID,
+      Post? post,
+      String? content,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Comment(
         id: id ?? this.id,
         postID: postID ?? this.postID,
         post: post ?? this.post,
-        content: content ?? this.content);
+        content: content ?? this.content,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
@@ -174,14 +216,10 @@ class Comment extends Model {
         'id': id,
         'postID': _postID,
         'post': _post?.toJson(),
-        'content': _content
+        'content': _content,
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _CommentModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _CommentModelType extends ModelType<Comment> {

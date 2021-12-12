@@ -21,46 +21,76 @@
 
 library models.post;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'comment.dart';
 
 /// This is an auto generated class representing the Post type in your schema.
 @immutable
 class Post extends Model {
   factory Post(
-      {required String title, String? content, List<Comment?>? comments}) {
+      {String? id,
+      required String title,
+      String? content,
+      List<Comment?>? comments,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Post._internal(
+        id: id ?? UUID.getUUID(),
         title: title,
         content: content,
-        comments: comments != null ? List.unmodifiable(comments) : null);
+        comments: comments != null ? List.unmodifiable(comments) : null,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const Post._internal(
-      {required String title, String? content, List<Comment?>? comments})
+      {required this.id,
+      required String title,
+      String? content,
+      List<Comment?>? comments,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _title = title,
         _content = content,
-        _comments = comments;
+        _comments = comments,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory Post.fromJson(Map<String, Object?> json) {
     return Post._internal(
+        id: (json['id'] as String),
         title: (json['title'] as String),
-        content: (json['content'] as String?),
+        content: (json['content'] as String),
         comments: (json['comments'] as List?)
             ?.cast<Map?>()
             .map((el) => el != null
                 ? Comment.fromJson(el.cast<String, Object?>())
                 : null)
-            .toList());
+            .toList(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _PostModelType classType = _PostModelType();
+
+  final String id;
 
   final String? _title;
 
   final String? _content;
 
   final List<Comment?>? _comments;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
+
+  static const ID = QueryField<dynamic>(fieldName: 'id');
 
   static const TITLE = QueryField<dynamic>(fieldName: 'title');
 
@@ -71,12 +101,11 @@ class Post extends Model {
       fieldType: ModelFieldType(ModelFieldTypeEnum.collection,
           ofModelName: 'Comment'));
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
-
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'Post';
     modelSchemaDefinition.pluralName = 'Posts';
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
         key: TITLE,
@@ -104,8 +133,14 @@ class Post extends Model {
         fieldName: 'updatedAt',
         ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
         isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
   });
+
+  @override
+  _PostModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
 
   String get title {
     if (_title == null) {
@@ -120,6 +155,8 @@ class Post extends Model {
 
   String? get content => _content;
   List<Comment?>? get comments => _comments;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -128,9 +165,12 @@ class Post extends Model {
   bool operator ==(Object? other) =>
       identical(this, other) ||
       other is Post &&
+          id == other.id &&
           _title == other._title &&
           _content == other._content &&
-          _comments == other._comments;
+          _comments == other._comments &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -138,33 +178,42 @@ class Post extends Model {
     final buffer = StringBuffer();
 
     buffer.write('Post {');
+    buffer.write('id=$id, ');
     buffer.write('title=$_title, ');
     buffer.write('content=$_content, ');
-    buffer.write('comments=$_comments');
+    buffer.write('comments=$_comments, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  Post copyWith({String? title, String? content, List<Comment?>? comments}) {
+  Post copyWith(
+      {String? id,
+      String? title,
+      String? content,
+      List<Comment?>? comments,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Post(
+        id: id ?? this.id,
         title: title ?? this.title,
         content: content ?? this.content,
-        comments: comments ?? this.comments);
+        comments: comments ?? this.comments,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
   Map<String, Object?> toJson() => {
+        'id': id,
         'title': _title,
         'content': _content,
-        'comments': _comments?.map((el) => el?.toJson()).toList()
+        'comments': _comments?.map((el) => el?.toJson()).toList(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _PostModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _PostModelType extends ModelType<Post> {

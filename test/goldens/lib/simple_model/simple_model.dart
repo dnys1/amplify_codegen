@@ -21,27 +21,48 @@
 
 library models.simple_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the SimpleModel type in your schema.
 @immutable
 class SimpleModel extends Model {
-  factory SimpleModel({String? id, String? name, String? bar}) {
+  factory SimpleModel(
+      {String? id,
+      String? name,
+      String? bar,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return SimpleModel._internal(
-        id: id ?? UUID.getUUID(), name: name, bar: bar);
+        id: id ?? UUID.getUUID(),
+        name: name,
+        bar: bar,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
-  const SimpleModel._internal({required this.id, String? name, String? bar})
+  const SimpleModel._internal(
+      {required this.id,
+      String? name,
+      String? bar,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _name = name,
-        _bar = bar;
+        _bar = bar,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory SimpleModel.fromJson(Map<String, Object?> json) {
     return SimpleModel._internal(
         id: (json['id'] as String),
-        name: (json['name'] as String?),
-        bar: (json['bar'] as String?));
+        name: (json['name'] as String),
+        bar: (json['bar'] as String),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _SimpleModelModelType classType = _SimpleModelModelType();
@@ -51,6 +72,10 @@ class SimpleModel extends Model {
   final String? _name;
 
   final String? _bar;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -87,8 +112,17 @@ class SimpleModel extends Model {
         isArray: false));
   });
 
+  @override
+  _SimpleModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   String? get name => _name;
   String? get bar => _bar;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -99,7 +133,9 @@ class SimpleModel extends Model {
       other is SimpleModel &&
           id == other.id &&
           _name == other._name &&
-          _bar == other._bar;
+          _bar == other._bar &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -109,25 +145,36 @@ class SimpleModel extends Model {
     buffer.write('SimpleModel {');
     buffer.write('id=$id, ');
     buffer.write('name=$_name, ');
-    buffer.write('bar=$_bar');
+    buffer.write('bar=$_bar, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  SimpleModel copyWith({String? id, String? name, String? bar}) {
+  SimpleModel copyWith(
+      {String? id,
+      String? name,
+      String? bar,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return SimpleModel(
-        id: id ?? this.id, name: name ?? this.name, bar: bar ?? this.bar);
+        id: id ?? this.id,
+        name: name ?? this.name,
+        bar: bar ?? this.bar,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() => {'id': id, 'name': _name, 'bar': _bar};
-  @override
-  _SimpleModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'name': _name,
+        'bar': _bar,
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _SimpleModelModelType extends ModelType<SimpleModel> {

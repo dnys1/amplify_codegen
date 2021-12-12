@@ -25,13 +25,12 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     if (allModels.firstWhereOrNull((model) => model.name == wireName) == null) {
       return null;
     }
-    builder.directives.add(Directive.import('model_provider.dart'));
     builder.body.add(Class((c) {
       c.docs.add(
         '/** This is an auto generated class representing the $typeName '
         'type in your schema. */',
       );
-      c.annotations.add(refer('immutable').expression);
+      c.annotations.add(refer('immutable', metaUri).expression);
       c.name = typeName;
 
       if (!model.isCustom) {
@@ -52,11 +51,11 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
       c.fields.addAll(_typeFields);
       c.fields.addAll(_queryFields);
-      c.methods.addAll(_instanceMethods);
 
       if (!model.isCustom) {
         c.methods.addAll(_modelMethods);
       }
+      c.methods.addAll(_instanceMethods);
 
       c.constructors.addAll([
         _unnamedConstructor,
@@ -76,11 +75,13 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
   /// Adds `final` fields to the class.
   Iterable<Field> get _typeFields sync* {
-    for (var field in node.fields) {
+    for (var field in model.fields) {
+      final nodeField =
+          node.fields.singleWhereOrNull((f) => f.wireName == field.name);
       if (field.isPrimaryKey) {
         // Public final
         yield Field((f) {
-          final description = field.description;
+          final description = nodeField?.description;
           if (description != null) {
             f.docs.add(description.value);
           }
@@ -88,16 +89,14 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           f
             ..name = field.dartName
             ..modifier = FieldModifier.final$
-            ..type = field.type.reference;
+            ..type = field.typeReference;
         });
       } else {
         // Private nullable
         yield Field(
           (f) {
             f.name = '_${field.dartName}';
-            f.type = field.type
-                .accept(TypeVisitor())!
-                .rebuild((t) => t.isNullable = true);
+            f.type = field.typeReference.rebuild((t) => t.isNullable = true);
             f.modifier = FieldModifier.final$;
           },
         );
@@ -131,21 +130,23 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
   }
 
   Iterable<Method> get _instanceMethods sync* {
-    for (var field in node.fields.where((field) => !field.isPrimaryKey)) {
+    for (var field in model.fields.where((field) => !field.isPrimaryKey)) {
+      final nodeField =
+          node.fields.singleWhereOrNull((f) => f.wireName == field.wireName);
       // Public getter
       yield Method(
         (m) {
-          final description = field.description?.value;
+          final description = nodeField?.description?.value;
           if (description != null) {
             m.docs.add(description);
           }
           final name = field.dartName;
           m
             ..name = name
-            ..returns = field.type.accept(TypeVisitor())
-            ..lambda = !field.type.isNonNull
+            ..returns = field.typeReference
+            ..lambda = !field.type.isRequired
             ..type = MethodType.getter
-            ..body = field.type.isNonNull
+            ..body = field.type.isRequired
                 ? _unwrap(refer('_$name'))
                 : refer('_$name').code;
         },
@@ -182,7 +183,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         )
         ..lambda = true
         ..body = Code('identical(this, other) || other is $typeName && ' +
-            node.fields.map((field) {
+            model.fields.map((field) {
               final getter = field.getter;
               return '$getter == other.$getter';
             }).join('&&')),
@@ -211,10 +212,10 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
         buffer.write('$typeName {');
         ''' +
-            node.fields.mapIndexed((index, field) {
+            model.fields.mapIndexed((index, field) {
               final dartName = field.dartName;
               final getter = field.getter;
-              if (index == node.fields.length - 1) {
+              if (index == model.fields.length - 1) {
                 return "buffer.write('$dartName=\$$getter');";
               }
               return "buffer.write('$dartName=\$$getter, ');";
@@ -233,20 +234,19 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         ..returns = refer(typeName)
         ..lambda = false
         ..optionalParameters.addAll([
-          for (var field in node.fields)
+          for (var field in model.fields)
             Parameter(
               (p) => p
                 ..name = field.dartName
                 ..required = false
                 ..named = true
-                ..type = field.type
-                    .accept(TypeVisitor())!
-                    .rebuild((t) => t.isNullable = true),
+                ..type =
+                    field.typeReference.rebuild((t) => t.isNullable = true),
             )
         ]);
 
       final ctorParams = <String, Expression>{};
-      for (var field in node.fields) {
+      for (var field in model.fields) {
         final name = field.dartName;
         ctorParams[name] = refer(name).ifNullThen(refer('this').property(name));
       }
@@ -265,7 +265,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
       // Gather toJson fields
       final jsonObj = <String, Object?>{};
-      for (var field in node.fields) {
+      for (var field in model.fields) {
         final jsonName = field.wireName;
         final getter = field.getter;
         final type = field.type;
@@ -294,9 +294,10 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         ..annotations.add(refer('override').expression)
         ..name = 'getId'
         ..returns = refer('String')
-        ..body = refer(node.fields
+        ..body = refer(model.fields
                     .firstWhereOrNull((field) => field.isPrimaryKey)
-                    ?.dartName ??
+                    ?.name
+                    .camelCase ??
                 'id')
             .returned
             .statement,
@@ -307,26 +308,26 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     ..name = '_internal'
     ..constant = true
     ..optionalParameters.addAll([
-      for (var field in node.fields)
+      for (var field in model.fields)
         Parameter(
           (p) {
-            final type = field.type.reference;
+            final type = field.typeReference;
             final isID = field.isPrimaryKey;
             p
               ..name = field.dartName
               ..named = true
               ..type = isID ? null : type
-              ..required = field.type.isNonNull
+              ..required = field.type.isRequired
               ..toThis = isID;
           },
         ),
     ])
     ..initializers.addAll([
-      for (var field in node.fields.where((field) => !field.isPrimaryKey))
+      for (var field in model.fields.where((field) => !field.isPrimaryKey))
         Code('_${field.dartName} = ${field.dartName}'),
     ]));
 
-  Expression _assignmentFor(FieldDefinitionNode field) {
+  Expression _assignmentFor(ModelField field) {
     final name = field.dartName;
     if (field.isPrimaryKey && field.type.awsType == AWSType.ID) {
       return refer(name).ifNullThen(
@@ -348,11 +349,11 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           ..factory = true
           ..lambda = false
           ..optionalParameters.addAll([
-            for (var field in node.fields)
+            for (var field in model.fields)
               Parameter((p) {
                 final name = field.dartName;
-                final type = field.type.reference.rebuild(
-                  (t) => t.isNullable = !field.type.isNonNull ||
+                final type = field.typeReference.rebuild(
+                  (t) => t.isNullable = !field.type.isRequired ||
                       (field.isPrimaryKey && field.type.awsType == AWSType.ID),
                 );
                 p
@@ -365,7 +366,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
         // Gather the parameters needed to construct the `_internal` call.
         final Map<String, Expression> params = {
-          for (var field in node.fields) field.dartName: _assignmentFor(field),
+          for (var field in model.fields) field.dartName: _assignmentFor(field),
         };
         ctor.body = refer(typeName)
             .newInstanceNamed('_internal', [], params)
@@ -386,11 +387,14 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
         // Gather fromJson fields
         final Map<String, Expression> params = {};
-        for (var field in node.fields) {
+        for (var field in model.fields) {
           final name = field.dartName;
           final jsonName = field.wireName;
           final jsonProp = refer('json').index(literalString(jsonName));
-          params[name] = _deserialize(jsonProp, field.type);
+          params[name] = _deserialize(
+            jsonProp,
+            field.type,
+          );
         }
         ctor.body = refer(typeName)
             .newInstanceNamed('_internal', [], params)
@@ -398,16 +402,27 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
             .statement;
       });
 
-  /// Generates the expression to serialize [node] to JSON.
-  Expression _serialize(String name, TypeNode type, [int depth = 0]) {
+  /// Generates the expression to serialize [field] to JSON.
+  Expression _serialize(
+    String name,
+    TypeInfo type, [
+    int depth = 0,
+  ]) {
+    // All fields are null at depth=0 (on the model). Null checks ensure that
+    // fields in `map` expressions are non-null.
+    final isNullable = depth == 0 || !type.isRequired;
     if (type.isList) {
       final reference = refer(name);
       final closure = Method(
         (m) => m
           ..requiredParameters.add(Parameter((p) => p..name = 'el'))
-          ..body = _serialize('el', type.asList.type, depth + 1).code,
+          ..body = _serialize(
+            'el',
+            type.listType!,
+            depth + 1,
+          ).code,
       ).closure;
-      if (type.isNonNull) {
+      if (type.isRequired) {
         return reference
             .property('map')
             .call([closure])
@@ -421,88 +436,120 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
             .call([]);
       }
     } else if (type.isModel) {
-      final isEnum = allModels.every((model) => model.name != type.typeName);
-      if (isEnum) {
-        return depth == 0 || !type.isNonNull
-            ? refer(name).nullSafeProperty('value')
-            : refer(name).property('value');
-      }
-      return depth == 0 || !type.isNonNull
+      return isNullable
           ? refer(name).nullSafeProperty('toJson').call([])
           : refer(name).property('toJson').call([]);
+    } else if (type.isEnum) {
+      return isNullable
+          ? refer(name).nullSafeProperty('value')
+          : refer(name).property('value');
     } else {
-      return refer(name);
+      final awsType = type.awsType!;
+      final ref = refer(name);
+      switch (awsType) {
+        case AWSType.AWSDate:
+        case AWSType.AWSDateTime:
+        case AWSType.AWSTime:
+          return isNullable
+              ? ref.nullSafeProperty('format').call([])
+              : ref.property('format').call([]);
+        case AWSType.AWSTimestamp:
+          return isNullable
+              ? ref.nullSafeProperty('toSeconds').call([])
+              : ref.property('toSeconds').call([]);
+        default:
+          return ref;
+      }
     }
   }
 
   /// Generates the expression to deserialize [node] from JSON.
-  Expression _deserialize(Expression ref, TypeNode type, [int depth = 0]) {
+  Expression _deserialize(
+    Expression ref,
+    TypeInfo type, {
+    int depth = 0,
+  }) {
+    // All fields are type `dynamic` at depth=0 (from the JSON map). Casts and
+    // `cast` expressions ensure types in `map` expressions, and so types do
+    // not need to be re-cast (important to avoid unnecessary_casts lint).
+    final isDynamic = depth == 0;
     if (type.isList) {
       final list = ref.asA(TypeReference((t) => t
         ..symbol = 'List'
-        ..isNullable = !type.isNonNull));
-      final isEnum = allModels.every((model) => model.name != type.typeName);
-      final listType = type.asList.type;
-      final List<Reference> castArgs;
-      if (type.isModel) {
-        if (isEnum) {
-          castArgs = [
-            TypeReference((t) => t
-              ..symbol = 'String'
-              ..isNullable = !listType.isNonNull)
-          ];
-        } else {
-          castArgs = [
-            TypeReference((t) => t
-              ..symbol = 'Map'
-              ..isNullable = !listType.isNonNull)
-          ];
-        }
-      } else {
-        castArgs = [type.asList.type.reference];
-      }
+        ..isNullable = !type.isRequired));
+      final listType = type.listType!;
+      final bool isModel = listType.isModel;
+      final isEnum = listType.isEnum;
+      final List<Reference> castArgs = [listType.wireTypeReference];
       final newInst = Method(
         (m) => m
           ..lambda = true
           ..requiredParameters.add(Parameter((p) => p..name = 'el'))
-          ..body = _deserialize(refer('el'), type.asList.type, depth + 1).code,
+          ..body = _deserialize(
+            refer('el'),
+            listType,
+            depth: depth + 1,
+          ).code,
       ).closure;
-      if (type.isNonNull) {
-        return list
-            .property('cast')
-            .call([], {}, castArgs)
-            .property('map')
-            .call([newInst])
-            .property('toList')
-            .call([]);
+
+      // Do not `map` for simple types.
+      // e.g. `.map((el) => el).toList()` is redundant.
+      if (type.isRequired) {
+        return type.isPrimitive
+            ? list.property('cast').call([], {}, castArgs)
+            : list
+                .property('cast')
+                .call([], {}, castArgs)
+                .property('map')
+                .call([newInst])
+                .property('toList')
+                .call([]);
       } else {
-        return list
-            .nullSafeProperty('cast')
-            .call([], {}, castArgs)
-            .property('map')
-            .call([newInst])
-            .property('toList')
-            .call([]);
+        return type.isPrimitive
+            ? list.nullSafeProperty('cast').call([], {}, castArgs)
+            : list
+                .nullSafeProperty('cast')
+                .call([], {}, castArgs)
+                .property('map')
+                .call([newInst])
+                .property('toList')
+                .call([]);
       }
     } else if (type.isModel) {
-      final isEnum = allModels.every((model) => model.name != type.typeName);
-      if (isEnum) {
-        final byValue = refer(type.typeName)
-            .property('values')
-            .property('byValue')
-            .call([ref.asA(refer('String').nullable)]);
-        return type.isNonNull ? byValue.nullChecked : byValue;
-      }
-      final newInst = refer(type.typeName).newInstanceNamed('fromJson', [
-        (depth == 0 ? ref.asA(refer('Map')) : ref)
+      final newInst = refer(type.modelName!).newInstanceNamed('fromJson', [
+        (isDynamic ? ref.asA(refer('Map')) : ref)
             .property('cast')
             .call([], {}, [refer('String'), refer('Object').nullable])
       ]);
-      return type.isNonNull
+      return type.isRequired
           ? newInst
           : ref.notEqualTo(literalNull).conditional(newInst, literalNull);
+    } else if (type.isEnum) {
+      final byValue = refer(type.modelName!)
+          .property('values')
+          .property('byValue')
+          .call([isDynamic ? ref.asA(refer('String').nullable) : ref]);
+      return type.isRequired ? byValue.nullChecked : byValue;
     } else {
-      return depth == 0 ? ref.asA(type.reference) : ref;
+      final typeName = type.typeReference.symbol;
+      final wireTypeName = type.wireTypeReference.symbol;
+      final awsType = type.awsType;
+      final castRef = isDynamic ? ref.asA(refer(wireTypeName)) : ref;
+      final isNullable = !type.isRequired;
+      switch (awsType!) {
+        case AWSType.AWSDate:
+        case AWSType.AWSDateTime:
+        case AWSType.AWSTime:
+        case AWSType.AWSTimestamp:
+          final ctorName =
+              awsType == AWSType.AWSTimestamp ? 'fromSeconds' : 'fromString';
+          final decode = refer(typeName).newInstanceNamed(ctorName, [castRef]);
+          return isNullable
+              ? ref.equalTo(literalNull).conditional(literalNull, decode)
+              : decode;
+        default:
+          return castRef;
+      }
     }
   }
 
@@ -511,8 +558,8 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     if (model.isCustom) {
       return;
     }
-    for (var field in model.fields.where((field) => !field.readOnly)) {
-      final modelFieldType = field.metadata.modelFieldType(
+    for (var field in model.fields.where((field) => !field.isReadOnly)) {
+      final modelFieldType = field.modelFieldType(
         isCustom: model.isCustom,
         models: allModels,
       );
@@ -525,18 +572,16 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
             [],
             {
               'fieldName': literalString(field.name),
-              if (field.metadata.isHasOne ||
-                  field.metadata.isBelongsTo ||
-                  field.metadata.isHasMany)
+              if (field.isHasOne || field.isBelongsTo || field.isHasMany)
                 'fieldType': refer('ModelFieldType').newInstance([
                   refer('ModelFieldTypeEnum').property(modelFieldType.name),
                 ], {
                   if (allModels
-                      .singleWhere((m) => m.name == field.metadata.modelName)
+                      .singleWhere((m) => m.name == field.type.dartModelName!)
                       .isCustom)
-                    'ofCustomTypeName': literalString(field.metadata.modelName!)
+                    'ofCustomTypeName': literalString(field.type.dartModelName!)
                   else
-                    'ofModelName': literalString(field.metadata.modelName!),
+                    'ofModelName': literalString(field.type.dartModelName!),
                 })
             },
             [refer('dynamic')],
@@ -547,43 +592,49 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
   Code _schemaDefinitionField(ModelField field) {
     final def = refer('modelSchemaDefinition');
-    final modelFieldType = field.metadata.modelFieldType(
+    final modelFieldType = field.modelFieldType(
       isCustom: model.isCustom,
       models: allModels,
     );
-    late String definitionType;
+    late String definitionCtor;
     Map<String, Expression> properties = {
-      'isRequired': literalBool(field.required),
-      if (field.readOnly) 'isReadOnly': literalBool(true),
+      'isRequired': literalBool(field.type.isRequired),
+      if (field.isReadOnly) 'isReadOnly': literalBool(true),
     };
     final Map<String, Expression> modelTypeProperies = {};
-    if (field.metadata.isHasOne) {
-      definitionType = 'hasOne';
-      properties['key'] = refer(field.name.constantCase);
-      properties['ofModelName'] = literalString(field.metadata.modelName!);
-      properties['associatedKey'] = refer(field.metadata.modelName!)
-          .property(field.metadata.associatedName!.constantCase);
-    } else if (field.metadata.isBelongsTo) {
-      definitionType = 'belongsTo';
-      properties['key'] = refer(field.name.constantCase);
-      properties['ofModelName'] = literalString(field.metadata.modelName!);
-      properties['targetName'] = literalString(field.metadata.targetName!);
-    } else if (field.metadata.isHasMany) {
-      definitionType = 'hasMany';
-      properties['key'] = refer(field.name.constantCase);
-      properties['ofModelName'] = literalString(field.metadata.modelName!);
-      properties['associatedKey'] = refer(field.metadata.modelName!)
-          .property(field.metadata.associatedName!.constantCase);
-    } else if (field.metadata.isPrimaryKey) {
-      definitionType = 'id';
+    if (field.isHasOne) {
+      definitionCtor = 'hasOne';
+      properties.addAll({
+        'key': refer(field.name.constantCase),
+        'ofModelName': literalString(field.type.modelName!),
+        'associatedKey': refer(field.type.modelName!)
+            .property(field.associatedName!.constantCase),
+      });
+    } else if (field.isBelongsTo) {
+      definitionCtor = 'belongsTo';
+      properties.addAll({
+        'key': refer(field.name.constantCase),
+        'ofModelName': literalString(field.type.modelName!),
+        'targetName': literalString(field.targetName!),
+      });
+    } else if (field.isHasMany) {
+      definitionCtor = 'hasMany';
+      properties.addAll({
+        'key': refer(field.name.constantCase),
+        'ofModelName': literalString(field.type.modelName!),
+        'associatedKey': refer(field.type.modelName!)
+            .property(field.associatedName!.constantCase),
+      });
+    } else if (field.isPrimaryKey) {
+      definitionCtor = 'id';
       properties = {'name': literalString(field.name)};
     } else {
       if (modelFieldType == ModelFieldType.embedded ||
           modelFieldType == ModelFieldType.embeddedCollection) {
         properties['fieldName'] = literalString(field.name);
-        definitionType = 'embedded';
-        modelTypeProperies['ofCustomTypeName'] =
-            literalString(field.metadata.modelName!);
+        definitionCtor = 'embedded';
+        // modelTypeProperies['ofCustomTypeName'] = literalString(
+        //     (field.type.modelName ?? field.type.listType?.modelName)!);
       }
       switch (modelFieldType) {
         case ModelFieldType.string:
@@ -596,19 +647,21 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         case ModelFieldType.bool:
         case ModelFieldType.enumeration:
           if (model.isCustom) {
-            definitionType = 'customTypeField';
+            definitionCtor = 'customTypeField';
             properties['fieldName'] = literalString(field.name);
-          } else if (field.readOnly) {
-            definitionType = 'nonQueryField';
+          } else if (field.isReadOnly) {
+            definitionCtor = 'nonQueryField';
             properties['fieldName'] = literalString(field.name);
           } else {
-            definitionType = 'field';
+            definitionCtor = 'field';
             properties['key'] = refer(field.name.constantCase);
           }
           break;
         case ModelFieldType.collection:
-          definitionType = 'field';
+          definitionCtor = 'field';
           properties['key'] = refer(field.name.constantCase);
+          modelTypeProperies['ofModelName'] =
+              literalString(modelFieldType.name);
           break;
         case ModelFieldType.embedded:
           break;
@@ -616,29 +669,56 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           properties['isArray'] = literalBool(true);
           break;
         case ModelFieldType.model:
-          definitionType = 'field';
+          definitionCtor = 'field';
           properties['key'] = refer(field.name.constantCase);
           break;
       }
     }
 
-    if (definitionType == 'field' ||
-        definitionType == 'nonQueryField' ||
-        definitionType == 'customTypeField' ||
-        definitionType == 'embedded') {
+    if (definitionCtor == 'field' ||
+        definitionCtor == 'nonQueryField' ||
+        definitionCtor == 'customTypeField' ||
+        definitionCtor == 'embedded') {
       properties['ofType'] = refer('ModelFieldType').constInstance([
         refer('ModelFieldTypeEnum').property(modelFieldType.name),
       ], modelTypeProperies);
-      properties['isArray'] = literalBool(field.metadata.isList);
+      properties['isArray'] = literalBool(field.type.isList);
+    }
+
+    // TODO: Support all constructors
+    if ((definitionCtor == 'field' || definitionCtor == 'nonQueryField') &&
+        field.authRules.isNotEmpty) {
+      properties['authRules'] =
+          literalConstList(field.authRules.map(_buildAuthRule).toList());
     }
 
     return def.property('addField').call([
       refer('ModelFieldDefinition')
-          .property(definitionType)
+          .property(definitionCtor)
           .call([], properties)
     ]).statement;
   }
 
+  /// Constructs an AuthRule for [authRule].
+  Expression _buildAuthRule(AuthRule authRule) {
+    final ownerField = authRule.ownerField;
+    final identityClaim = authRule.identityClaim;
+    final groupClaim = authRule.groupClaim;
+    final groups = authRule.groups;
+    return refer('AuthRule', datastoreUri).constInstance([], {
+      'authStrategy': refer('AuthStrategy', datastoreUri)
+          .property(authRule.allow.name.constantCase),
+      if (groupClaim != null) 'groupClaim': literalString(groupClaim),
+      if (groups.isNotEmpty) 'groups': literalList(groups),
+      'operations': literalList(authRule.operations.map((op) =>
+          refer('ModelOperation', datastoreUri)
+              .property(op.name.constantCase))),
+      if (ownerField != null) 'ownerField': literalString(ownerField),
+      if (identityClaim != null) 'identityClaim': literalString(identityClaim),
+    });
+  }
+
+  /// The static `schema` field on the Model.
   Field get _schemaField {
     // Build schema definition
     final schemaDefinition = Method((m) {
@@ -657,6 +737,14 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
         // Fields
         for (var field in model.fields) _schemaDefinitionField(field),
+
+        // Auth Rules
+        if (model.authRules.isNotEmpty)
+          def
+              .property('authRules')
+              .assign(literalConstList(
+                  model.authRules.map(_buildAuthRule).toList()))
+              .statement,
       ]);
     });
     return Field((f) {

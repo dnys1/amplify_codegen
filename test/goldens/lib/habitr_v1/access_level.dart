@@ -21,9 +21,6 @@
 
 library models.access_level;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'package:meta/meta.dart';
-
 enum AccessLevel { guest, private, protected }
 
 extension $AccessLevel on AccessLevel {

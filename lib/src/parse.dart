@@ -6,14 +6,24 @@ import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
 
+late Set<String> _modelNames;
+
 /// Parses [schema] into a list of [Model] objects.
 List<Model> parseSchema(String schema) {
+  const rootTypes = ['Query', 'Mutation', 'Subscription'];
   final doc = parseString(schema);
   final models = <Model>[];
+
+  _modelNames = doc.definitions
+      .where((definition) =>
+          definition is ObjectTypeDefinitionNode &&
+          !rootTypes.contains(definition.name.value))
+      .map((el) => (el as ObjectTypeDefinitionNode).name.value)
+      .toSet();
+
   for (var definition in doc.definitions) {
     final isModel = definition is ObjectTypeDefinitionNode &&
-        !const ['Query', 'Mutation', 'Subscription']
-            .contains(definition.name.value);
+        _modelNames.contains(definition.name.value);
     if (!isModel) {
       continue;
     }
@@ -41,15 +51,16 @@ List<Model> parseSchema(String schema) {
         ..isCustom = isCustom;
 
       // Inject ID field, if unspecified
-      if (b.fields.build().every((f) => !f.metadata.isPrimaryKey)) {
-        b.fields.add(ModelField((f) {
+      if (b.fields.build().every((f) => !f.isPrimaryKey)) {
+        b.fields.insert(0, ModelField((f) {
           f
             ..name = 'id'
-            ..required = true
-            ..readOnly = false
-            ..metadata.isPrimaryKey = true
-            ..metadata.isList = false
-            ..metadata.type = AWSType.ID;
+            ..isReadOnly = false
+            ..isPrimaryKey = true;
+          f.type
+            ..awsType = AWSType.ID
+            ..isList = false
+            ..isRequired = true;
         }));
       }
     });
@@ -79,7 +90,7 @@ List<Model> parseSchema(String schema) {
           final nodeField =
               nodeFields.singleWhereOrNull((f) => f.wireName == field.name);
           if (nodeField == null || !nodeField.hasRelationship) {
-            field.metadata
+            field
               ..isBelongsTo = false
               ..isHasMany = false
               ..isHasOne = false;
@@ -95,43 +106,43 @@ List<Model> parseSchema(String schema) {
 
           // Get the foreign field of the relationship.
           final foreignModelField = relationModel.fields.firstWhereOrNull((f) {
-            return f.metadata.modelName == m.name;
+            return f.type.modelName == m.name;
           });
 
           // For hasOne relationships, use the ID field as the associated field.
           final foreignIdField =
-              relationModel.fields.singleWhere((f) => f.metadata.isPrimaryKey);
+              relationModel.fields.singleWhere((f) => f.isPrimaryKey);
 
           // One-way relationship
           final isHasOne =
               foreignModelField == null && relationFieldName != null;
           if (isHasOne) {
-            field.metadata
+            field
               ..isBelongsTo = false
               ..isHasMany = false
               ..isHasOne = true;
-            field.metadata
+            field
               ..associatedType = relationModel.name
               ..associatedName = foreignModelField?.name ?? foreignIdField.name;
             return;
           }
 
           final isBelongsTo = foreignModelField == null ||
-              foreignModelField.metadata.isList && !field.metadata.isList!;
+              foreignModelField.type.isList && !field.type.isList!;
           if (isBelongsTo) {
             // belongsTo
-            field.metadata
+            field
               ..isBelongsTo = true
               ..isHasMany = false
               ..isHasOne = false;
-            field.metadata.targetName = relationFieldName ?? 'id';
+            field.targetName = relationFieldName ?? 'id';
           } else {
             // hasMany
-            field.metadata
+            field
               ..isBelongsTo = false
               ..isHasMany = true
               ..isHasOne = false;
-            field.metadata
+            field
               ..associatedType = relationModel.name
               ..associatedName = foreignModelField.name;
           }
@@ -159,30 +170,30 @@ extension ModelFields on ObjectTypeDefinitionNode {
         (f) {
           f
             ..name = field.name.value
-            ..required = field.type.isNonNull
-            ..readOnly = false
+            ..type.isRequired = field.type.isNonNull
+            ..isReadOnly = false
             ..authRules.addAll(field.directives.authRules);
 
-          _buildTypeFor(f.metadata, field.type);
+          _buildTypeFor(f.type, field.type);
 
           final isPrimaryKey =
               field.wireName == primaryKey || field.isPrimaryKey;
           if (isPrimaryKey) {
             primaryKey ??= field.wireName;
           }
-          f.metadata
+          f
             ..isPrimaryKey = isPrimaryKey
             ..isBelongsTo = field.isBelongsTo
             ..isHasOne = field.isHasOne
             ..isHasMany = field.isHasMany;
 
           if (field.isBelongsTo) {
-            f.metadata.targetName = f.metadata.modelName;
+            f.targetName = f.type.modelName;
           }
           if (field.isHasOne || field.isHasMany) {
-            f.metadata
+            f
               ..associatedName = ''
-              ..associatedType = f.metadata.modelName;
+              ..associatedType = f.type.modelName;
           }
         },
       );
@@ -193,40 +204,49 @@ extension ModelFields on ObjectTypeDefinitionNode {
       yield ModelField(
         (f) => f
           ..name = 'createdAt'
-          ..required = false
-          ..readOnly = true
-          ..metadata.isList = false
-          ..metadata.type = AWSType.AWSDateTime,
+          ..isReadOnly = true
+          ..type.isRequired = false
+          ..type.isList = false
+          ..type.awsType = AWSType.AWSDateTime,
       );
 
       // updatedAt
       yield ModelField(
         (f) => f
           ..name = 'updatedAt'
-          ..required = false
-          ..readOnly = true
-          ..metadata.isList = false
-          ..metadata.type = AWSType.AWSDateTime,
+          ..isReadOnly = true
+          ..type.isRequired = false
+          ..type.isList = false
+          ..type.awsType = AWSType.AWSDateTime,
       );
     }
   }
 }
 
-void _buildTypeFor(ModelFieldMetadataBuilder builder, TypeNode node) {
+TypeInfoBuilder _buildTypeFor(TypeInfoBuilder builder, TypeNode node) {
   if (node is NamedTypeNode) {
     builder.isList ??= false;
-    builder.type = AWSType.values.firstWhere(
+    builder.isRequired = node.isNonNull;
+    builder.awsType = AWSType.values.firstWhere(
       (el) => el.name == node.name.value,
       orElse: () {
-        builder.modelName = node.name.value;
+        final modelName = node.name.value;
+        builder.modelName = modelName;
+        builder.isEnum = !_modelNames.contains(modelName);
         return AWSType.Model;
       },
     );
-    return;
+    return builder;
   } else if (node is ListTypeNode) {
     builder.isList ??= true;
-    _buildTypeFor(builder, node.type);
-    return;
+    builder.isRequired = node.isNonNull;
+
+    final valueBuilder = _buildTypeFor(builder.listType, node.type);
+    builder
+      ..modelName = valueBuilder.modelName
+      ..isEnum = valueBuilder.isEnum;
+
+    return builder;
   }
   throw ArgumentError(node.runtimeType);
 }
@@ -277,8 +297,8 @@ extension AuthRules on List<DirectiveNode> {
           default:
             throw StateError('Unknown key: ${field.name.value}');
         }
-        yield rule.build();
       }
+      yield rule.build();
     }
   }
 }

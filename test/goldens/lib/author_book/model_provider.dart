@@ -23,11 +23,28 @@ library models.model_provider;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'author_book.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'author_book.dart';
 export 'author_book.dart';
 
 class ModelProvider extends ModelProviderInterface {
+  static final instance = ModelProvider();
+
   @override
   String get version => '5bbc0f1774f54e7121b9fc254b976c5ec2e875a8';
   @override
   List<ModelSchema> get modelSchemas => [AuthorBook.schema];
+  @override
+  List<ModelSchema> get customTypeSchemas => [];
+  @override
+  ModelType getModelTypeByModelName(String modelName) {
+    switch (modelName) {
+      case 'authorBook':
+        return AuthorBook.classType;
+      default:
+        throw ArgumentError(
+            'Failed to find model in model provider for model name: ' +
+                modelName);
+    }
+  }
 }

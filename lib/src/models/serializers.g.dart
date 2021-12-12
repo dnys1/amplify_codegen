@@ -13,8 +13,8 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(Claimant.serializer)
       ..add(Model.serializer)
       ..add(ModelField.serializer)
-      ..add(ModelFieldMetadata.serializer)
       ..add(ModelOperation.serializer)
+      ..add(TypeInfo.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(AuthRule)]),
           () => new ListBuilder<AuthRule>())

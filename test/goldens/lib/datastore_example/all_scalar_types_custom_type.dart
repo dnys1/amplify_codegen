@@ -21,15 +21,17 @@
 
 library models.all_scalar_types_custom_type;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'enum_model.dart';
+import 'simple_custom_type.dart';
 
 /// This is an auto generated class representing the AllScalarTypesCustomType type in your schema.
 @immutable
 class AllScalarTypesCustomType {
   factory AllScalarTypesCustomType(
-      {required String stringValue,
+      {String? id,
+      required String stringValue,
       required int intValue,
       required double floatValue,
       required bool boolValue,
@@ -41,6 +43,7 @@ class AllScalarTypesCustomType {
       required EnumModel enumValue,
       required SimpleCustomType customTypeValue}) {
     return AllScalarTypesCustomType._internal(
+        id: id ?? UUID.getUUID(),
         stringValue: stringValue,
         intValue: intValue,
         floatValue: floatValue,
@@ -55,7 +58,8 @@ class AllScalarTypesCustomType {
   }
 
   const AllScalarTypesCustomType._internal(
-      {required String stringValue,
+      {required this.id,
+      required String stringValue,
       required int intValue,
       required double floatValue,
       required bool boolValue,
@@ -80,19 +84,24 @@ class AllScalarTypesCustomType {
 
   factory AllScalarTypesCustomType.fromJson(Map<String, Object?> json) {
     return AllScalarTypesCustomType._internal(
+        id: (json['id'] as String),
         stringValue: (json['stringValue'] as String),
         intValue: (json['intValue'] as int),
         floatValue: (json['floatValue'] as double),
         boolValue: (json['boolValue'] as bool),
-        dateValue: (json['dateValue'] as TemporalDate),
-        dateTimeValue: (json['dateTimeValue'] as TemporalDateTime),
-        timeValue: (json['timeValue'] as TemporalTime),
-        timestampValue: (json['timestampValue'] as TemporalTimestamp),
+        dateValue: TemporalDate.fromString((json['dateValue'] as String)),
+        dateTimeValue:
+            TemporalDateTime.fromString((json['dateTimeValue'] as String)),
+        timeValue: TemporalTime.fromString((json['timeValue'] as String)),
+        timestampValue:
+            TemporalTimestamp.fromSeconds((json['timestampValue'] as int)),
         jsonValue: (json['jsonValue'] as String),
         enumValue: EnumModel.values.byValue((json['enumValue'] as String?))!,
         customTypeValue: SimpleCustomType.fromJson(
             (json['customTypeValue'] as Map).cast<String, Object?>()));
   }
+
+  final String id;
 
   final String? _stringValue;
 
@@ -120,6 +129,7 @@ class AllScalarTypesCustomType {
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'AllScalarTypesCustomType';
     modelSchemaDefinition.pluralName = 'AllScalarTypesCustomTypes';
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: true,
         fieldName: 'stringValue',
@@ -173,10 +183,8 @@ class AllScalarTypesCustomType {
     modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: true,
         fieldName: 'customTypeValue',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded,
-            ofCustomTypeName: 'SimpleCustomType'),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded),
         isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
   });
 
   String get stringValue {
@@ -308,6 +316,7 @@ class AllScalarTypesCustomType {
   bool operator ==(Object? other) =>
       identical(this, other) ||
       other is AllScalarTypesCustomType &&
+          id == other.id &&
           _stringValue == other._stringValue &&
           _intValue == other._intValue &&
           _floatValue == other._floatValue &&
@@ -326,6 +335,7 @@ class AllScalarTypesCustomType {
     final buffer = StringBuffer();
 
     buffer.write('AllScalarTypesCustomType {');
+    buffer.write('id=$id, ');
     buffer.write('stringValue=$_stringValue, ');
     buffer.write('intValue=$_intValue, ');
     buffer.write('floatValue=$_floatValue, ');
@@ -343,7 +353,8 @@ class AllScalarTypesCustomType {
   }
 
   AllScalarTypesCustomType copyWith(
-      {String? stringValue,
+      {String? id,
+      String? stringValue,
       int? intValue,
       double? floatValue,
       bool? boolValue,
@@ -355,6 +366,7 @@ class AllScalarTypesCustomType {
       EnumModel? enumValue,
       SimpleCustomType? customTypeValue}) {
     return AllScalarTypesCustomType(
+        id: id ?? this.id,
         stringValue: stringValue ?? this.stringValue,
         intValue: intValue ?? this.intValue,
         floatValue: floatValue ?? this.floatValue,
@@ -369,14 +381,15 @@ class AllScalarTypesCustomType {
   }
 
   Map<String, Object?> toJson() => {
+        'id': id,
         'stringValue': _stringValue,
         'intValue': _intValue,
         'floatValue': _floatValue,
         'boolValue': _boolValue,
-        'dateValue': _dateValue,
-        'dateTimeValue': _dateTimeValue,
-        'timeValue': _timeValue,
-        'timestampValue': _timestampValue,
+        'dateValue': _dateValue?.format(),
+        'dateTimeValue': _dateTimeValue?.format(),
+        'timeValue': _timeValue?.format(),
+        'timestampValue': _timestampValue?.toSeconds(),
         'jsonValue': _jsonValue,
         'enumValue': _enumValue?.value,
         'customTypeValue': _customTypeValue?.toJson()

@@ -21,23 +21,26 @@
 
 library models.vote_result;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'habit.dart';
+import 'user.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the VoteResult type in your schema.
 @immutable
 class VoteResult {
-  factory VoteResult({Habit? habit, User? user}) {
-    return VoteResult._internal(habit: habit, user: user);
+  factory VoteResult({String? id, Habit? habit, User? user}) {
+    return VoteResult._internal(
+        id: id ?? UUID.getUUID(), habit: habit, user: user);
   }
 
-  const VoteResult._internal({Habit? habit, User? user})
+  const VoteResult._internal({required this.id, Habit? habit, User? user})
       : _habit = habit,
         _user = user;
 
   factory VoteResult.fromJson(Map<String, Object?> json) {
     return VoteResult._internal(
+        id: (json['id'] as String),
         habit: json['habit'] != null
             ? Habit.fromJson((json['habit'] as Map).cast<String, Object?>())
             : null,
@@ -45,6 +48,8 @@ class VoteResult {
             ? User.fromJson((json['user'] as Map).cast<String, Object?>())
             : null);
   }
+
+  final String id;
 
   final Habit? _habit;
 
@@ -54,19 +59,17 @@ class VoteResult {
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'VoteResult';
     modelSchemaDefinition.pluralName = 'VoteResults';
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'habit',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded,
-            ofCustomTypeName: 'Habit'),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'user',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded,
-            ofCustomTypeName: 'User'),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded),
         isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
   });
 
   Habit? get habit => _habit;
@@ -78,7 +81,10 @@ class VoteResult {
   @override
   bool operator ==(Object? other) =>
       identical(this, other) ||
-      other is VoteResult && _habit == other._habit && _user == other._user;
+      other is VoteResult &&
+          id == other.id &&
+          _habit == other._habit &&
+          _user == other._user;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -86,6 +92,7 @@ class VoteResult {
     final buffer = StringBuffer();
 
     buffer.write('VoteResult {');
+    buffer.write('id=$id, ');
     buffer.write('habit=$_habit, ');
     buffer.write('user=$_user');
     buffer.write('}');
@@ -93,10 +100,11 @@ class VoteResult {
     return buffer.toString();
   }
 
-  VoteResult copyWith({Habit? habit, User? user}) {
-    return VoteResult(habit: habit ?? this.habit, user: user ?? this.user);
+  VoteResult copyWith({String? id, Habit? habit, User? user}) {
+    return VoteResult(
+        id: id ?? this.id, habit: habit ?? this.habit, user: user ?? this.user);
   }
 
   Map<String, Object?> toJson() =>
-      {'habit': _habit?.toJson(), 'user': _user?.toJson()};
+      {'id': id, 'habit': _habit?.toJson(), 'user': _user?.toJson()};
 }

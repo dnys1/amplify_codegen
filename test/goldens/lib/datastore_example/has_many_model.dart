@@ -21,27 +21,37 @@
 
 library models.has_many_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'has_many_child_model.dart';
 
 /// This is an auto generated class representing the HasManyModel type in your schema.
 @immutable
 class HasManyModel extends Model {
   factory HasManyModel(
-      {String? id, required String name, List<HasManyChildModel?>? children}) {
+      {String? id,
+      required String name,
+      List<HasManyChildModel?>? children,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return HasManyModel._internal(
         id: id ?? UUID.getUUID(),
         name: name,
-        children: children != null ? List.unmodifiable(children) : null);
+        children: children != null ? List.unmodifiable(children) : null,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const HasManyModel._internal(
       {required this.id,
       required String name,
-      List<HasManyChildModel?>? children})
+      List<HasManyChildModel?>? children,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _name = name,
-        _children = children;
+        _children = children,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory HasManyModel.fromJson(Map<String, Object?> json) {
     return HasManyModel._internal(
@@ -52,7 +62,13 @@ class HasManyModel extends Model {
             .map((el) => el != null
                 ? HasManyChildModel.fromJson(el.cast<String, Object?>())
                 : null)
-            .toList());
+            .toList(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _HasManyModelModelType classType = _HasManyModelModelType();
@@ -62,6 +78,10 @@ class HasManyModel extends Model {
   final String? _name;
 
   final List<HasManyChildModel?>? _children;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -101,6 +121,13 @@ class HasManyModel extends Model {
         isArray: false));
   });
 
+  @override
+  _HasManyModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   String get name {
     if (_name == null) {
       throw const DataStoreException(
@@ -113,6 +140,8 @@ class HasManyModel extends Model {
   }
 
   List<HasManyChildModel?>? get children => _children;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -123,7 +152,9 @@ class HasManyModel extends Model {
       other is HasManyModel &&
           id == other.id &&
           _name == other._name &&
-          _children == other._children;
+          _children == other._children &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -133,32 +164,36 @@ class HasManyModel extends Model {
     buffer.write('HasManyModel {');
     buffer.write('id=$id, ');
     buffer.write('name=$_name, ');
-    buffer.write('children=$_children');
+    buffer.write('children=$_children, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
   HasManyModel copyWith(
-      {String? id, String? name, List<HasManyChildModel?>? children}) {
+      {String? id,
+      String? name,
+      List<HasManyChildModel?>? children,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return HasManyModel(
         id: id ?? this.id,
         name: name ?? this.name,
-        children: children ?? this.children);
+        children: children ?? this.children,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
   Map<String, Object?> toJson() => {
         'id': id,
         'name': _name,
-        'children': _children?.map((el) => el?.toJson()).toList()
+        'children': _children?.map((el) => el?.toJson()).toList(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _HasManyModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _HasManyModelModelType extends ModelType<HasManyModel> {

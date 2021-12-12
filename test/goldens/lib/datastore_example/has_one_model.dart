@@ -21,9 +21,9 @@
 
 library models.has_one_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'child_model.dart';
 
 /// This is an auto generated class representing the HasOneModel type in your schema.
 @immutable
@@ -32,19 +32,30 @@ class HasOneModel extends Model {
       {String? id,
       required String name,
       required String childID,
-      ChildModel? child}) {
+      ChildModel? child,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return HasOneModel._internal(
-        id: id ?? UUID.getUUID(), name: name, childID: childID, child: child);
+        id: id ?? UUID.getUUID(),
+        name: name,
+        childID: childID,
+        child: child,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const HasOneModel._internal(
       {required this.id,
       required String name,
       required String childID,
-      ChildModel? child})
+      ChildModel? child,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _name = name,
         _childID = childID,
-        _child = child;
+        _child = child,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory HasOneModel.fromJson(Map<String, Object?> json) {
     return HasOneModel._internal(
@@ -54,7 +65,13 @@ class HasOneModel extends Model {
         child: json['child'] != null
             ? ChildModel.fromJson(
                 (json['child'] as Map).cast<String, Object?>())
-            : null);
+            : null,
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _HasOneModelModelType classType = _HasOneModelModelType();
@@ -66,6 +83,10 @@ class HasOneModel extends Model {
   final String? _childID;
 
   final ChildModel? _child;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -112,6 +133,13 @@ class HasOneModel extends Model {
         isArray: false));
   });
 
+  @override
+  _HasOneModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   String get name {
     if (_name == null) {
       throw const DataStoreException(
@@ -135,6 +163,8 @@ class HasOneModel extends Model {
   }
 
   ChildModel? get child => _child;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -146,7 +176,9 @@ class HasOneModel extends Model {
           id == other.id &&
           _name == other._name &&
           _childID == other._childID &&
-          _child == other._child;
+          _child == other._child &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -157,30 +189,39 @@ class HasOneModel extends Model {
     buffer.write('id=$id, ');
     buffer.write('name=$_name, ');
     buffer.write('childID=$_childID, ');
-    buffer.write('child=$_child');
+    buffer.write('child=$_child, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
   HasOneModel copyWith(
-      {String? id, String? name, String? childID, ChildModel? child}) {
+      {String? id,
+      String? name,
+      String? childID,
+      ChildModel? child,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return HasOneModel(
         id: id ?? this.id,
         name: name ?? this.name,
         childID: childID ?? this.childID,
-        child: child ?? this.child);
+        child: child ?? this.child,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() =>
-      {'id': id, 'name': _name, 'childID': _childID, 'child': _child?.toJson()};
-  @override
-  _HasOneModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'name': _name,
+        'childID': _childID,
+        'child': _child?.toJson(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _HasOneModelModelType extends ModelType<HasOneModel> {

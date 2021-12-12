@@ -31,17 +31,28 @@ abstract class Model implements Built<Model, ModelBuilder> {
 abstract class ModelField implements Built<ModelField, ModelFieldBuilder> {
   @BuiltValueHook(initializeBuilder: true)
   static void _setDefaults(ModelFieldBuilder b) {
-    b.readOnly = false;
+    b
+      ..isReadOnly = false
+      ..isPrimaryKey = false
+      ..isBelongsTo = false
+      ..isHasMany = false
+      ..isHasOne = false;
   }
 
   factory ModelField([void Function(ModelFieldBuilder) updates]) = _$ModelField;
   ModelField._();
 
   String get name;
-  bool get required;
-  bool get readOnly;
-  ModelFieldMetadata get metadata;
+  bool get isReadOnly;
   BuiltList<AuthRule> get authRules;
+  TypeInfo get type;
+  bool get isPrimaryKey;
+  bool get isHasOne;
+  bool get isHasMany;
+  bool get isBelongsTo;
+  String? get targetName;
+  String? get associatedName;
+  String? get associatedType;
 
   Map<String, Object?> toJson() {
     return serializers.serializeWith(ModelField.serializer, this)
@@ -73,44 +84,32 @@ enum AWSType {
   Model,
 }
 
-abstract class ModelFieldMetadata
-    implements Built<ModelFieldMetadata, ModelFieldMetadataBuilder> {
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(ModelFieldMetadataBuilder b) {
-    b
-      ..isPrimaryKey = false
-      ..isBelongsTo = false
-      ..isHasMany = false
-      ..isHasOne = false;
+abstract class TypeInfo implements Built<TypeInfo, TypeInfoBuilder> {
+  @BuiltValueHook(finalizeBuilder: true)
+  static void _setDefaults(TypeInfoBuilder b) {
+    b.isEnum ??= false;
   }
 
-  AWSType get type;
-  bool get isPrimaryKey;
-  bool get isList;
-  bool get isHasOne;
-  bool get isHasMany;
-  bool get isBelongsTo;
-  String? get modelName;
-  String? get targetName;
-  String? get associatedName;
-  String? get associatedType;
+  factory TypeInfo([void Function(TypeInfoBuilder) updates]) = _$TypeInfo;
+  TypeInfo._();
 
-  factory ModelFieldMetadata(
-          [void Function(ModelFieldMetadataBuilder) updates]) =
-      _$ModelFieldMetadata;
-  ModelFieldMetadata._();
+  AWSType? get awsType;
+  bool get isRequired;
+  bool get isList;
+  String? get modelName;
+  TypeInfo? get listType;
+  bool get isEnum;
 
   Map<String, Object?> toJson() {
-    return serializers.serializeWith(ModelFieldMetadata.serializer, this)
+    return serializers.serializeWith(TypeInfo.serializer, this)
         as Map<String, Object?>;
   }
 
-  static ModelFieldMetadata? fromJson(Map<String, Object?> json) {
-    return serializers.deserializeWith(ModelFieldMetadata.serializer, json);
+  static TypeInfo? fromJson(Map<String, dynamic> json) {
+    return serializers.deserializeWith(TypeInfo.serializer, json);
   }
 
-  static Serializer<ModelFieldMetadata> get serializer =>
-      _$modelFieldMetadataSerializer;
+  static Serializer<TypeInfo> get serializer => _$typeInfoSerializer;
 }
 
 class AWSTypeSerializer extends PrimitiveSerializer<AWSType> {

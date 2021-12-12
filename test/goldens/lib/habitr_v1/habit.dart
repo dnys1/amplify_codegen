@@ -21,9 +21,11 @@
 
 library models.habit;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'category.dart';
+import 'user.dart';
+import 'comment.dart';
 
 /// This is an auto generated class representing the Habit type in your schema.
 @immutable
@@ -37,7 +39,9 @@ class Habit extends Model {
       int? downs,
       String? owner,
       User? author,
-      List<Comment>? comments}) {
+      List<Comment>? comments,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Habit._internal(
         id: id ?? UUID.getUUID(),
         tagline: tagline,
@@ -47,7 +51,9 @@ class Habit extends Model {
         downs: downs,
         owner: owner,
         author: author,
-        comments: comments != null ? List.unmodifiable(comments) : null);
+        comments: comments != null ? List.unmodifiable(comments) : null,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const Habit._internal(
@@ -59,7 +65,9 @@ class Habit extends Model {
       int? downs,
       String? owner,
       User? author,
-      List<Comment>? comments})
+      List<Comment>? comments,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _tagline = tagline,
         _category = category,
         _details = details,
@@ -67,24 +75,32 @@ class Habit extends Model {
         _downs = downs,
         _owner = owner,
         _author = author,
-        _comments = comments;
+        _comments = comments,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory Habit.fromJson(Map<String, Object?> json) {
     return Habit._internal(
         id: (json['id'] as String),
         tagline: (json['tagline'] as String),
         category: Category.values.byValue((json['category'] as String?))!,
-        details: (json['details'] as String?),
-        ups: (json['ups'] as int?),
-        downs: (json['downs'] as int?),
-        owner: (json['owner'] as String?),
+        details: (json['details'] as String),
+        ups: (json['ups'] as int),
+        downs: (json['downs'] as int),
+        owner: (json['owner'] as String),
         author: json['author'] != null
             ? User.fromJson((json['author'] as Map).cast<String, Object?>())
             : null,
         comments: (json['comments'] as List?)
             ?.cast<Map>()
             .map((el) => Comment.fromJson(el.cast<String, Object?>()))
-            .toList());
+            .toList(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _HabitModelType classType = _HabitModelType();
@@ -106,6 +122,10 @@ class Habit extends Model {
   final User? _author;
 
   final List<Comment>? _comments;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -154,12 +174,68 @@ class Habit extends Model {
         isRequired: false,
         key: UPS,
         ofType: const ModelFieldType(ModelFieldTypeEnum.int),
-        isArray: false));
+        isArray: false,
+        authRules: const [
+          AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
+            ModelOperation.CREATE,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE,
+            ModelOperation.READ
+          ]),
+          AuthRule(
+              authStrategy: AuthStrategy.PRIVATE,
+              operations: [ModelOperation.READ]),
+          AuthRule(
+              authStrategy: AuthStrategy.GROUPS,
+              groupClaim: 'cognito:groups',
+              groups: [
+                'admin'
+              ],
+              operations: [
+                ModelOperation.CREATE,
+                ModelOperation.UPDATE,
+                ModelOperation.DELETE,
+                ModelOperation.READ
+              ]),
+          AuthRule(
+              authStrategy: AuthStrategy.OWNER,
+              operations: [ModelOperation.CREATE],
+              ownerField: 'owner',
+              identityClaim: 'username')
+        ]));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
         key: DOWNS,
         ofType: const ModelFieldType(ModelFieldTypeEnum.int),
-        isArray: false));
+        isArray: false,
+        authRules: const [
+          AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
+            ModelOperation.CREATE,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE,
+            ModelOperation.READ
+          ]),
+          AuthRule(
+              authStrategy: AuthStrategy.PRIVATE,
+              operations: [ModelOperation.READ]),
+          AuthRule(
+              authStrategy: AuthStrategy.GROUPS,
+              groupClaim: 'cognito:groups',
+              groups: [
+                'admin'
+              ],
+              operations: [
+                ModelOperation.CREATE,
+                ModelOperation.UPDATE,
+                ModelOperation.DELETE,
+                ModelOperation.READ
+              ]),
+          AuthRule(
+              authStrategy: AuthStrategy.OWNER,
+              operations: [ModelOperation.CREATE],
+              ownerField: 'owner',
+              identityClaim: 'username')
+        ]));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
         key: OWNER,
@@ -187,7 +263,42 @@ class Habit extends Model {
         fieldName: 'updatedAt',
         ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
         isArray: false));
+    modelSchemaDefinition.authRules = const [
+      AuthRule(
+          authStrategy: AuthStrategy.GROUPS,
+          groupClaim: 'cognito:groups',
+          groups: [
+            'admin'
+          ],
+          operations: [
+            ModelOperation.CREATE,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE,
+            ModelOperation.READ
+          ]),
+      AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
+        ModelOperation.CREATE,
+        ModelOperation.UPDATE,
+        ModelOperation.DELETE,
+        ModelOperation.READ
+      ]),
+      AuthRule(
+          authStrategy: AuthStrategy.PRIVATE,
+          operations: [ModelOperation.READ]),
+      AuthRule(
+          authStrategy: AuthStrategy.OWNER,
+          operations: [ModelOperation.CREATE, ModelOperation.DELETE],
+          ownerField: 'owner',
+          identityClaim: 'username')
+    ];
   });
+
+  @override
+  _HabitModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
 
   String get tagline {
     if (_tagline == null) {
@@ -217,6 +328,8 @@ class Habit extends Model {
   String? get owner => _owner;
   User? get author => _author;
   List<Comment>? get comments => _comments;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -233,7 +346,9 @@ class Habit extends Model {
           _downs == other._downs &&
           _owner == other._owner &&
           _author == other._author &&
-          _comments == other._comments;
+          _comments == other._comments &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -249,7 +364,9 @@ class Habit extends Model {
     buffer.write('downs=$_downs, ');
     buffer.write('owner=$_owner, ');
     buffer.write('author=$_author, ');
-    buffer.write('comments=$_comments');
+    buffer.write('comments=$_comments, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
@@ -264,7 +381,9 @@ class Habit extends Model {
       int? downs,
       String? owner,
       User? author,
-      List<Comment>? comments}) {
+      List<Comment>? comments,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return Habit(
         id: id ?? this.id,
         tagline: tagline ?? this.tagline,
@@ -274,7 +393,9 @@ class Habit extends Model {
         downs: downs ?? this.downs,
         owner: owner ?? this.owner,
         author: author ?? this.author,
-        comments: comments ?? this.comments);
+        comments: comments ?? this.comments,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
@@ -287,14 +408,10 @@ class Habit extends Model {
         'downs': _downs,
         'owner': _owner,
         'author': _author?.toJson(),
-        'comments': _comments?.map((el) => el.toJson()).toList()
+        'comments': _comments?.map((el) => el.toJson()).toList(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _HabitModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _HabitModelType extends ModelType<Habit> {

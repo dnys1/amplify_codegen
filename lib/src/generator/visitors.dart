@@ -26,24 +26,24 @@ class LibraryVisitor extends SimpleVisitor<Library> {
   }
 }
 
-/// A visitor of GraphQL types which produces corresponding [TypeReference]
-/// objects.
-class TypeVisitor extends SimpleVisitor<TypeReference> {
-  @override
-  TypeReference visitListTypeNode(ListTypeNode node) {
-    return TypeReference((t) {
-      t.symbol = 'List';
-      t.isNullable = !node.isNonNull;
-      t.types.add(node.type.accept(this)!);
-    });
-  }
+// /// A visitor of GraphQL types which produces corresponding [TypeReference]
+// /// objects.
+// class TypeVisitor extends SimpleVisitor<TypeReference> {
+//   @override
+//   TypeReference visitListTypeNode(ListTypeNode node) {
+//     return TypeReference((t) {
+//       t.symbol = 'List';
+//       t.isNullable = !node.isNonNull;
+//       t.types.add(node.type.accept(this)!);
+//     });
+//   }
 
-  @override
-  TypeReference visitNamedTypeNode(NamedTypeNode node) {
-    return AWSType.values
-        .firstWhere((type) => node.name.value == type.name,
-            orElse: () => AWSType.Model)
-        .typeRef(node.name.value)
-        .rebuild((t) => t.isNullable = !node.isNonNull);
-  }
-}
+//   @override
+//   TypeReference visitNamedTypeNode(NamedTypeNode node) {
+//     return AWSType.values
+//         .firstWhere((type) => node.name.value == type.name,
+//             orElse: () => AWSType.Model)
+//         .typeRef(node.name.value)
+//         .rebuild((t) => t.isNullable = !node.isNonNull);
+//   }
+// }

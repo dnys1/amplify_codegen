@@ -21,23 +21,43 @@
 
 library models.child_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the ChildModel type in your schema.
 @immutable
 class ChildModel extends Model {
-  factory ChildModel({String? id, required String name}) {
-    return ChildModel._internal(id: id ?? UUID.getUUID(), name: name);
+  factory ChildModel(
+      {String? id,
+      required String name,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
+    return ChildModel._internal(
+        id: id ?? UUID.getUUID(),
+        name: name,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
-  const ChildModel._internal({required this.id, required String name})
-      : _name = name;
+  const ChildModel._internal(
+      {required this.id,
+      required String name,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
+      : _name = name,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory ChildModel.fromJson(Map<String, Object?> json) {
     return ChildModel._internal(
-        id: (json['id'] as String), name: (json['name'] as String));
+        id: (json['id'] as String),
+        name: (json['name'] as String),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _ChildModelModelType classType = _ChildModelModelType();
@@ -45,6 +65,10 @@ class ChildModel extends Model {
   final String id;
 
   final String? _name;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -74,6 +98,13 @@ class ChildModel extends Model {
         isArray: false));
   });
 
+  @override
+  _ChildModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   String get name {
     if (_name == null) {
       throw const DataStoreException(
@@ -85,6 +116,8 @@ class ChildModel extends Model {
     return _name!;
   }
 
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -92,7 +125,11 @@ class ChildModel extends Model {
   @override
   bool operator ==(Object? other) =>
       identical(this, other) ||
-      other is ChildModel && id == other.id && _name == other._name;
+      other is ChildModel &&
+          id == other.id &&
+          _name == other._name &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -101,24 +138,33 @@ class ChildModel extends Model {
 
     buffer.write('ChildModel {');
     buffer.write('id=$id, ');
-    buffer.write('name=$_name');
+    buffer.write('name=$_name, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  ChildModel copyWith({String? id, String? name}) {
-    return ChildModel(id: id ?? this.id, name: name ?? this.name);
+  ChildModel copyWith(
+      {String? id,
+      String? name,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
+    return ChildModel(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() => {'id': id, 'name': _name};
-  @override
-  _ChildModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'name': _name,
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _ChildModelModelType extends ModelType<ChildModel> {

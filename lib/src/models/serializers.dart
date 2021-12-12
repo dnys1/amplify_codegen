@@ -16,7 +16,7 @@ part 'serializers.g.dart';
   Claimant,
   Model,
   ModelField,
-  ModelFieldMetadata,
+  TypeInfo,
 ])
 final Serializers serializers = (_$serializers.toBuilder()
       ..addPlugin(StandardJsonPlugin())

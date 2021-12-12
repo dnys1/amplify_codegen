@@ -4,6 +4,17 @@ import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
 import 'package:recase/recase.dart';
 
+extension ModelFieldHelpers on ModelField {
+  /// The Dart identifier for this field.
+  String get dartName => name.camelCase;
+
+  /// The wire name as it shows in JSON.
+  String get wireName => name;
+
+  /// The non-throwing getter for this field.
+  String get getter => isPrimaryKey ? dartName : '_$dartName';
+}
+
 extension FieldHelpers on FieldDefinitionNode {
   /// Whether this field represents the primary key, or ID field.
   bool get isPrimaryKey =>

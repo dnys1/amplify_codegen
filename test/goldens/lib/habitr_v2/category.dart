@@ -21,9 +21,6 @@
 
 library models.category;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'package:meta/meta.dart';
-
 enum Category { health, finance, productivity, relationships }
 
 extension $Category on Category {

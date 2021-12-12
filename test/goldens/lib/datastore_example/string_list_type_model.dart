@@ -21,27 +21,43 @@
 
 library models.string_list_type_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the StringListTypeModel type in your schema.
 @immutable
 class StringListTypeModel extends Model {
-  factory StringListTypeModel({String? id, List<String?>? value}) {
+  factory StringListTypeModel(
+      {String? id,
+      List<String?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return StringListTypeModel._internal(
         id: id ?? UUID.getUUID(),
-        value: value != null ? List.unmodifiable(value) : null);
+        value: value != null ? List.unmodifiable(value) : null,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
-  const StringListTypeModel._internal({required this.id, List<String?>? value})
-      : _value = value;
+  const StringListTypeModel._internal(
+      {required this.id,
+      List<String?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
+      : _value = value,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory StringListTypeModel.fromJson(Map<String, Object?> json) {
     return StringListTypeModel._internal(
         id: (json['id'] as String),
-        value:
-            (json['value'] as List?)?.cast<String?>().map((el) => el).toList());
+        value: (json['value'] as List?)?.cast<String?>(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _StringListTypeModelModelType classType =
@@ -50,6 +66,10 @@ class StringListTypeModel extends Model {
   final String id;
 
   final List<String?>? _value;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -63,7 +83,8 @@ class StringListTypeModel extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
         key: VALUE,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'collection'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
@@ -79,7 +100,16 @@ class StringListTypeModel extends Model {
         isArray: false));
   });
 
+  @override
+  _StringListTypeModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   List<String?>? get value => _value;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -87,7 +117,11 @@ class StringListTypeModel extends Model {
   @override
   bool operator ==(Object? other) =>
       identical(this, other) ||
-      other is StringListTypeModel && id == other.id && _value == other._value;
+      other is StringListTypeModel &&
+          id == other.id &&
+          _value == other._value &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -96,25 +130,33 @@ class StringListTypeModel extends Model {
 
     buffer.write('StringListTypeModel {');
     buffer.write('id=$id, ');
-    buffer.write('value=$_value');
+    buffer.write('value=$_value, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  StringListTypeModel copyWith({String? id, List<String?>? value}) {
-    return StringListTypeModel(id: id ?? this.id, value: value ?? this.value);
+  StringListTypeModel copyWith(
+      {String? id,
+      List<String?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
+    return StringListTypeModel(
+        id: id ?? this.id,
+        value: value ?? this.value,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() =>
-      {'id': id, 'value': _value?.map((el) => el).toList()};
-  @override
-  _StringListTypeModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'value': _value?.map((el) => el).toList(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _StringListTypeModelModelType extends ModelType<StringListTypeModel> {

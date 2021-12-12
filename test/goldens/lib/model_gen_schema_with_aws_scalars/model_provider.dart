@@ -28,15 +28,24 @@ import 'post.dart';
 import 'comment.dart';
 import 'person.dart';
 import 'license.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'attration.dart';
+import 'comment.dart';
+import 'license.dart';
+import 'person.dart';
+import 'post.dart';
+import 'user.dart';
 export 'attration.dart';
-export 'user.dart';
-export 'post.dart';
 export 'comment.dart';
-export 'person.dart';
 export 'license.dart';
+export 'person.dart';
+export 'post.dart';
 export 'status.dart';
+export 'user.dart';
 
 class ModelProvider extends ModelProviderInterface {
+  static final instance = ModelProvider();
+
   @override
   String get version => '89d72fb9ebe5805eb564815c9b705a178229df1c';
   @override
@@ -48,4 +57,27 @@ class ModelProvider extends ModelProviderInterface {
         Person.schema,
         License.schema
       ];
+  @override
+  List<ModelSchema> get customTypeSchemas => [];
+  @override
+  ModelType getModelTypeByModelName(String modelName) {
+    switch (modelName) {
+      case 'Attration':
+        return Attration.classType;
+      case 'User':
+        return User.classType;
+      case 'Post':
+        return Post.classType;
+      case 'Comment':
+        return Comment.classType;
+      case 'Person':
+        return Person.classType;
+      case 'License':
+        return License.classType;
+      default:
+        throw ArgumentError(
+            'Failed to find model in model provider for model name: ' +
+                modelName);
+    }
+  }
 }

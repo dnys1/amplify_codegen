@@ -21,22 +21,25 @@
 
 library models.simple_custom_type;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the SimpleCustomType type in your schema.
 @immutable
 class SimpleCustomType {
-  factory SimpleCustomType({required String foo}) {
-    return SimpleCustomType._internal(foo: foo);
+  factory SimpleCustomType({String? id, required String foo}) {
+    return SimpleCustomType._internal(id: id ?? UUID.getUUID(), foo: foo);
   }
 
-  const SimpleCustomType._internal({required String foo}) : _foo = foo;
+  const SimpleCustomType._internal({required this.id, required String foo})
+      : _foo = foo;
 
   factory SimpleCustomType.fromJson(Map<String, Object?> json) {
-    return SimpleCustomType._internal(foo: (json['foo'] as String));
+    return SimpleCustomType._internal(
+        id: (json['id'] as String), foo: (json['foo'] as String));
   }
+
+  final String id;
 
   final String? _foo;
 
@@ -44,12 +47,12 @@ class SimpleCustomType {
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'SimpleCustomType';
     modelSchemaDefinition.pluralName = 'SimpleCustomTypes';
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: true,
         fieldName: 'foo',
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
   });
 
   String get foo {
@@ -69,7 +72,8 @@ class SimpleCustomType {
 
   @override
   bool operator ==(Object? other) =>
-      identical(this, other) || other is SimpleCustomType && _foo == other._foo;
+      identical(this, other) ||
+      other is SimpleCustomType && id == other.id && _foo == other._foo;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -77,15 +81,16 @@ class SimpleCustomType {
     final buffer = StringBuffer();
 
     buffer.write('SimpleCustomType {');
+    buffer.write('id=$id, ');
     buffer.write('foo=$_foo');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  SimpleCustomType copyWith({String? foo}) {
-    return SimpleCustomType(foo: foo ?? this.foo);
+  SimpleCustomType copyWith({String? id, String? foo}) {
+    return SimpleCustomType(id: id ?? this.id, foo: foo ?? this.foo);
   }
 
-  Map<String, Object?> toJson() => {'foo': _foo};
+  Map<String, Object?> toJson() => {'id': id, 'foo': _foo};
 }

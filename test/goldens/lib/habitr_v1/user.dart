@@ -21,9 +21,11 @@
 
 library models.user;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 's3_object.dart';
+import 'comment.dart';
+import 'habit.dart';
 
 /// This is an auto generated class representing the User type in your schema.
 @immutable
@@ -36,7 +38,9 @@ class User extends Model {
       List<Comment>? comments,
       List<Habit>? habits,
       List<String>? upvotedHabits,
-      List<String>? downvotedHabits}) {
+      List<String>? downvotedHabits,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return User._internal(
         username: username,
         displayUsername: displayUsername,
@@ -46,34 +50,38 @@ class User extends Model {
         habits: habits != null ? List.unmodifiable(habits) : null,
         upvotedHabits:
             upvotedHabits != null ? List.unmodifiable(upvotedHabits) : null,
-        downvotedHabits: downvotedHabits != null
-            ? List.unmodifiable(downvotedHabits)
-            : null);
+        downvotedHabits:
+            downvotedHabits != null ? List.unmodifiable(downvotedHabits) : null,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const User._internal(
-      {required String username,
+      {required this.username,
       String? displayUsername,
       String? name,
       S3Object? avatar,
       List<Comment>? comments,
       List<Habit>? habits,
       List<String>? upvotedHabits,
-      List<String>? downvotedHabits})
-      : _username = username,
-        _displayUsername = displayUsername,
+      List<String>? downvotedHabits,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
+      : _displayUsername = displayUsername,
         _name = name,
         _avatar = avatar,
         _comments = comments,
         _habits = habits,
         _upvotedHabits = upvotedHabits,
-        _downvotedHabits = downvotedHabits;
+        _downvotedHabits = downvotedHabits,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory User.fromJson(Map<String, Object?> json) {
     return User._internal(
         username: (json['username'] as String),
-        displayUsername: (json['displayUsername'] as String?),
-        name: (json['name'] as String?),
+        displayUsername: (json['displayUsername'] as String),
+        name: (json['name'] as String),
         avatar: json['avatar'] != null
             ? S3Object.fromJson((json['avatar'] as Map).cast<String, Object?>())
             : null,
@@ -85,19 +93,19 @@ class User extends Model {
             ?.cast<Map>()
             .map((el) => Habit.fromJson(el.cast<String, Object?>()))
             .toList(),
-        upvotedHabits: (json['upvotedHabits'] as List?)
-            ?.cast<String>()
-            .map((el) => el)
-            .toList(),
-        downvotedHabits: (json['downvotedHabits'] as List?)
-            ?.cast<String>()
-            .map((el) => el)
-            .toList());
+        upvotedHabits: (json['upvotedHabits'] as List?)?.cast<String>(),
+        downvotedHabits: (json['downvotedHabits'] as List?)?.cast<String>(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _UserModelType classType = _UserModelType();
 
-  final String? _username;
+  final String username;
 
   final String? _displayUsername;
 
@@ -112,6 +120,10 @@ class User extends Model {
   final List<String>? _upvotedHabits;
 
   final List<String>? _downvotedHabits;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const USERNAME = QueryField<dynamic>(fieldName: 'username');
 
@@ -170,13 +182,65 @@ class User extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
         key: UPVOTED_HABITS,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
-        isArray: true));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'collection'),
+        isArray: true,
+        authRules: const [
+          AuthRule(
+              authStrategy: AuthStrategy.GROUPS,
+              groupClaim: 'cognito:groups',
+              groups: [
+                'admin'
+              ],
+              operations: [
+                ModelOperation.CREATE,
+                ModelOperation.UPDATE,
+                ModelOperation.DELETE,
+                ModelOperation.READ
+              ]),
+          AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
+            ModelOperation.CREATE,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE,
+            ModelOperation.READ
+          ]),
+          AuthRule(
+              authStrategy: AuthStrategy.OWNER,
+              operations: [ModelOperation.READ],
+              ownerField: 'username',
+              identityClaim: 'username')
+        ]));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
         key: DOWNVOTED_HABITS,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
-        isArray: true));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'collection'),
+        isArray: true,
+        authRules: const [
+          AuthRule(
+              authStrategy: AuthStrategy.GROUPS,
+              groupClaim: 'cognito:groups',
+              groups: [
+                'admin'
+              ],
+              operations: [
+                ModelOperation.CREATE,
+                ModelOperation.UPDATE,
+                ModelOperation.DELETE,
+                ModelOperation.READ
+              ]),
+          AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
+            ModelOperation.CREATE,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE,
+            ModelOperation.READ
+          ]),
+          AuthRule(
+              authStrategy: AuthStrategy.OWNER,
+              operations: [ModelOperation.READ],
+              ownerField: 'username',
+              identityClaim: 'username')
+        ]));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,
@@ -189,17 +253,41 @@ class User extends Model {
         fieldName: 'updatedAt',
         ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
         isArray: false));
+    modelSchemaDefinition.authRules = const [
+      AuthRule(
+          authStrategy: AuthStrategy.GROUPS,
+          groupClaim: 'cognito:groups',
+          groups: [
+            'admin'
+          ],
+          operations: [
+            ModelOperation.CREATE,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE,
+            ModelOperation.READ
+          ]),
+      AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
+        ModelOperation.CREATE,
+        ModelOperation.UPDATE,
+        ModelOperation.DELETE,
+        ModelOperation.READ
+      ]),
+      AuthRule(
+          authStrategy: AuthStrategy.PRIVATE,
+          operations: [ModelOperation.READ]),
+      AuthRule(
+          authStrategy: AuthStrategy.OWNER,
+          operations: [ModelOperation.UPDATE],
+          ownerField: 'username',
+          identityClaim: 'username')
+    ];
   });
 
-  String get username {
-    if (_username == null) {
-      throw const DataStoreException(
-          DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion: DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastRecoverySuggestion);
-    }
-    return _username!;
+  @override
+  _UserModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return username;
   }
 
   String? get displayUsername => _displayUsername;
@@ -209,6 +297,8 @@ class User extends Model {
   List<Habit>? get habits => _habits;
   List<String>? get upvotedHabits => _upvotedHabits;
   List<String>? get downvotedHabits => _downvotedHabits;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -217,14 +307,16 @@ class User extends Model {
   bool operator ==(Object? other) =>
       identical(this, other) ||
       other is User &&
-          _username == other._username &&
+          username == other.username &&
           _displayUsername == other._displayUsername &&
           _name == other._name &&
           _avatar == other._avatar &&
           _comments == other._comments &&
           _habits == other._habits &&
           _upvotedHabits == other._upvotedHabits &&
-          _downvotedHabits == other._downvotedHabits;
+          _downvotedHabits == other._downvotedHabits &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -232,14 +324,16 @@ class User extends Model {
     final buffer = StringBuffer();
 
     buffer.write('User {');
-    buffer.write('username=$_username, ');
+    buffer.write('username=$username, ');
     buffer.write('displayUsername=$_displayUsername, ');
     buffer.write('name=$_name, ');
     buffer.write('avatar=$_avatar, ');
     buffer.write('comments=$_comments, ');
     buffer.write('habits=$_habits, ');
     buffer.write('upvotedHabits=$_upvotedHabits, ');
-    buffer.write('downvotedHabits=$_downvotedHabits');
+    buffer.write('downvotedHabits=$_downvotedHabits, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
@@ -253,7 +347,9 @@ class User extends Model {
       List<Comment>? comments,
       List<Habit>? habits,
       List<String>? upvotedHabits,
-      List<String>? downvotedHabits}) {
+      List<String>? downvotedHabits,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return User(
         username: username ?? this.username,
         displayUsername: displayUsername ?? this.displayUsername,
@@ -262,26 +358,24 @@ class User extends Model {
         comments: comments ?? this.comments,
         habits: habits ?? this.habits,
         upvotedHabits: upvotedHabits ?? this.upvotedHabits,
-        downvotedHabits: downvotedHabits ?? this.downvotedHabits);
+        downvotedHabits: downvotedHabits ?? this.downvotedHabits,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
   Map<String, Object?> toJson() => {
-        'username': _username,
+        'username': username,
         'displayUsername': _displayUsername,
         'name': _name,
         'avatar': _avatar?.toJson(),
         'comments': _comments?.map((el) => el.toJson()).toList(),
         'habits': _habits?.map((el) => el.toJson()).toList(),
         'upvotedHabits': _upvotedHabits?.map((el) => el).toList(),
-        'downvotedHabits': _downvotedHabits?.map((el) => el).toList()
+        'downvotedHabits': _downvotedHabits?.map((el) => el).toList(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _UserModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _UserModelType extends ModelType<User> {

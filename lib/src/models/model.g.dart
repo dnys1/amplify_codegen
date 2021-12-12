@@ -8,8 +8,7 @@ part of 'model.dart';
 
 Serializer<Model> _$modelSerializer = new _$ModelSerializer();
 Serializer<ModelField> _$modelFieldSerializer = new _$ModelFieldSerializer();
-Serializer<ModelFieldMetadata> _$modelFieldMetadataSerializer =
-    new _$ModelFieldMetadataSerializer();
+Serializer<TypeInfo> _$typeInfoSerializer = new _$TypeInfoSerializer();
 
 class _$ModelSerializer implements StructuredSerializer<Model> {
   @override
@@ -89,85 +88,19 @@ class _$ModelFieldSerializer implements StructuredSerializer<ModelField> {
     final result = <Object?>[
       'name',
       serializers.serialize(object.name, specifiedType: const FullType(String)),
-      'required',
-      serializers.serialize(object.required,
+      'isReadOnly',
+      serializers.serialize(object.isReadOnly,
           specifiedType: const FullType(bool)),
-      'readOnly',
-      serializers.serialize(object.readOnly,
-          specifiedType: const FullType(bool)),
-      'metadata',
-      serializers.serialize(object.metadata,
-          specifiedType: const FullType(ModelFieldMetadata)),
       'authRules',
       serializers.serialize(object.authRules,
           specifiedType:
               const FullType(BuiltList, const [const FullType(AuthRule)])),
-    ];
-
-    return result;
-  }
-
-  @override
-  ModelField deserialize(Serializers serializers, Iterable<Object?> serialized,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = new ModelFieldBuilder();
-
-    final iterator = serialized.iterator;
-    while (iterator.moveNext()) {
-      final key = iterator.current as String;
-      iterator.moveNext();
-      final Object? value = iterator.current;
-      switch (key) {
-        case 'name':
-          result.name = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
-          break;
-        case 'required':
-          result.required = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
-          break;
-        case 'readOnly':
-          result.readOnly = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
-          break;
-        case 'metadata':
-          result.metadata.replace(serializers.deserialize(value,
-                  specifiedType: const FullType(ModelFieldMetadata))!
-              as ModelFieldMetadata);
-          break;
-        case 'authRules':
-          result.authRules.replace(serializers.deserialize(value,
-                  specifiedType: const FullType(
-                      BuiltList, const [const FullType(AuthRule)]))!
-              as BuiltList<Object?>);
-          break;
-      }
-    }
-
-    return result.build();
-  }
-}
-
-class _$ModelFieldMetadataSerializer
-    implements StructuredSerializer<ModelFieldMetadata> {
-  @override
-  final Iterable<Type> types = const [ModelFieldMetadata, _$ModelFieldMetadata];
-  @override
-  final String wireName = 'ModelFieldMetadata';
-
-  @override
-  Iterable<Object?> serialize(
-      Serializers serializers, ModelFieldMetadata object,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object?>[
       'type',
       serializers.serialize(object.type,
-          specifiedType: const FullType(AWSType)),
+          specifiedType: const FullType(TypeInfo)),
       'isPrimaryKey',
       serializers.serialize(object.isPrimaryKey,
           specifiedType: const FullType(bool)),
-      'isList',
-      serializers.serialize(object.isList, specifiedType: const FullType(bool)),
       'isHasOne',
       serializers.serialize(object.isHasOne,
           specifiedType: const FullType(bool)),
@@ -179,13 +112,6 @@ class _$ModelFieldMetadataSerializer
           specifiedType: const FullType(bool)),
     ];
     Object? value;
-    value = object.modelName;
-    if (value != null) {
-      result
-        ..add('modelName')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
-    }
     value = object.targetName;
     if (value != null) {
       result
@@ -211,10 +137,9 @@ class _$ModelFieldMetadataSerializer
   }
 
   @override
-  ModelFieldMetadata deserialize(
-      Serializers serializers, Iterable<Object?> serialized,
+  ModelField deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new ModelFieldMetadataBuilder();
+    final result = new ModelFieldBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -222,16 +147,26 @@ class _$ModelFieldMetadataSerializer
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
+        case 'name':
+          result.name = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'isReadOnly':
+          result.isReadOnly = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
+        case 'authRules':
+          result.authRules.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(AuthRule)]))!
+              as BuiltList<Object?>);
+          break;
         case 'type':
-          result.type = serializers.deserialize(value,
-              specifiedType: const FullType(AWSType)) as AWSType;
+          result.type.replace(serializers.deserialize(value,
+              specifiedType: const FullType(TypeInfo))! as TypeInfo);
           break;
         case 'isPrimaryKey':
           result.isPrimaryKey = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
-          break;
-        case 'isList':
-          result.isList = serializers.deserialize(value,
               specifiedType: const FullType(bool)) as bool;
           break;
         case 'isHasOne':
@@ -246,10 +181,6 @@ class _$ModelFieldMetadataSerializer
           result.isBelongsTo = serializers.deserialize(value,
               specifiedType: const FullType(bool)) as bool;
           break;
-        case 'modelName':
-          result.modelName = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
-          break;
         case 'targetName':
           result.targetName = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
@@ -261,6 +192,91 @@ class _$ModelFieldMetadataSerializer
         case 'associatedType':
           result.associatedType = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
+class _$TypeInfoSerializer implements StructuredSerializer<TypeInfo> {
+  @override
+  final Iterable<Type> types = const [TypeInfo, _$TypeInfo];
+  @override
+  final String wireName = 'TypeInfo';
+
+  @override
+  Iterable<Object?> serialize(Serializers serializers, TypeInfo object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object?>[
+      'isRequired',
+      serializers.serialize(object.isRequired,
+          specifiedType: const FullType(bool)),
+      'isList',
+      serializers.serialize(object.isList, specifiedType: const FullType(bool)),
+      'isEnum',
+      serializers.serialize(object.isEnum, specifiedType: const FullType(bool)),
+    ];
+    Object? value;
+    value = object.awsType;
+    if (value != null) {
+      result
+        ..add('awsType')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(AWSType)));
+    }
+    value = object.modelName;
+    if (value != null) {
+      result
+        ..add('modelName')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
+    value = object.listType;
+    if (value != null) {
+      result
+        ..add('listType')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(TypeInfo)));
+    }
+    return result;
+  }
+
+  @override
+  TypeInfo deserialize(Serializers serializers, Iterable<Object?> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new TypeInfoBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final Object? value = iterator.current;
+      switch (key) {
+        case 'awsType':
+          result.awsType = serializers.deserialize(value,
+              specifiedType: const FullType(AWSType)) as AWSType?;
+          break;
+        case 'isRequired':
+          result.isRequired = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
+        case 'isList':
+          result.isList = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
+        case 'modelName':
+          result.modelName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String?;
+          break;
+        case 'listType':
+          result.listType.replace(serializers.deserialize(value,
+              specifiedType: const FullType(TypeInfo))! as TypeInfo);
+          break;
+        case 'isEnum':
+          result.isEnum = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
           break;
       }
     }
@@ -410,29 +426,53 @@ class _$ModelField extends ModelField {
   @override
   final String name;
   @override
-  final bool required;
-  @override
-  final bool readOnly;
-  @override
-  final ModelFieldMetadata metadata;
+  final bool isReadOnly;
   @override
   final BuiltList<AuthRule> authRules;
+  @override
+  final TypeInfo type;
+  @override
+  final bool isPrimaryKey;
+  @override
+  final bool isHasOne;
+  @override
+  final bool isHasMany;
+  @override
+  final bool isBelongsTo;
+  @override
+  final String? targetName;
+  @override
+  final String? associatedName;
+  @override
+  final String? associatedType;
 
   factory _$ModelField([void Function(ModelFieldBuilder)? updates]) =>
       (new ModelFieldBuilder()..update(updates)).build();
 
   _$ModelField._(
       {required this.name,
-      required this.required,
-      required this.readOnly,
-      required this.metadata,
-      required this.authRules})
+      required this.isReadOnly,
+      required this.authRules,
+      required this.type,
+      required this.isPrimaryKey,
+      required this.isHasOne,
+      required this.isHasMany,
+      required this.isBelongsTo,
+      this.targetName,
+      this.associatedName,
+      this.associatedType})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(name, 'ModelField', 'name');
-    BuiltValueNullFieldError.checkNotNull(required, 'ModelField', 'required');
-    BuiltValueNullFieldError.checkNotNull(readOnly, 'ModelField', 'readOnly');
-    BuiltValueNullFieldError.checkNotNull(metadata, 'ModelField', 'metadata');
+    BuiltValueNullFieldError.checkNotNull(
+        isReadOnly, 'ModelField', 'isReadOnly');
     BuiltValueNullFieldError.checkNotNull(authRules, 'ModelField', 'authRules');
+    BuiltValueNullFieldError.checkNotNull(type, 'ModelField', 'type');
+    BuiltValueNullFieldError.checkNotNull(
+        isPrimaryKey, 'ModelField', 'isPrimaryKey');
+    BuiltValueNullFieldError.checkNotNull(isHasOne, 'ModelField', 'isHasOne');
+    BuiltValueNullFieldError.checkNotNull(isHasMany, 'ModelField', 'isHasMany');
+    BuiltValueNullFieldError.checkNotNull(
+        isBelongsTo, 'ModelField', 'isBelongsTo');
   }
 
   @override
@@ -447,30 +487,56 @@ class _$ModelField extends ModelField {
     if (identical(other, this)) return true;
     return other is ModelField &&
         name == other.name &&
-        required == other.required &&
-        readOnly == other.readOnly &&
-        metadata == other.metadata &&
-        authRules == other.authRules;
+        isReadOnly == other.isReadOnly &&
+        authRules == other.authRules &&
+        type == other.type &&
+        isPrimaryKey == other.isPrimaryKey &&
+        isHasOne == other.isHasOne &&
+        isHasMany == other.isHasMany &&
+        isBelongsTo == other.isBelongsTo &&
+        targetName == other.targetName &&
+        associatedName == other.associatedName &&
+        associatedType == other.associatedType;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, name.hashCode), required.hashCode),
-                readOnly.hashCode),
-            metadata.hashCode),
-        authRules.hashCode));
+            $jc(
+                $jc(
+                    $jc(
+                        $jc(
+                            $jc(
+                                $jc(
+                                    $jc(
+                                        $jc($jc(0, name.hashCode),
+                                            isReadOnly.hashCode),
+                                        authRules.hashCode),
+                                    type.hashCode),
+                                isPrimaryKey.hashCode),
+                            isHasOne.hashCode),
+                        isHasMany.hashCode),
+                    isBelongsTo.hashCode),
+                targetName.hashCode),
+            associatedName.hashCode),
+        associatedType.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ModelField')
           ..add('name', name)
-          ..add('required', required)
-          ..add('readOnly', readOnly)
-          ..add('metadata', metadata)
-          ..add('authRules', authRules))
+          ..add('isReadOnly', isReadOnly)
+          ..add('authRules', authRules)
+          ..add('type', type)
+          ..add('isPrimaryKey', isPrimaryKey)
+          ..add('isHasOne', isHasOne)
+          ..add('isHasMany', isHasMany)
+          ..add('isBelongsTo', isBelongsTo)
+          ..add('targetName', targetName)
+          ..add('associatedName', associatedName)
+          ..add('associatedType', associatedType))
         .toString();
   }
 }
@@ -482,25 +548,49 @@ class ModelFieldBuilder implements Builder<ModelField, ModelFieldBuilder> {
   String? get name => _$this._name;
   set name(String? name) => _$this._name = name;
 
-  bool? _required;
-  bool? get required => _$this._required;
-  set required(bool? required) => _$this._required = required;
-
-  bool? _readOnly;
-  bool? get readOnly => _$this._readOnly;
-  set readOnly(bool? readOnly) => _$this._readOnly = readOnly;
-
-  ModelFieldMetadataBuilder? _metadata;
-  ModelFieldMetadataBuilder get metadata =>
-      _$this._metadata ??= new ModelFieldMetadataBuilder();
-  set metadata(ModelFieldMetadataBuilder? metadata) =>
-      _$this._metadata = metadata;
+  bool? _isReadOnly;
+  bool? get isReadOnly => _$this._isReadOnly;
+  set isReadOnly(bool? isReadOnly) => _$this._isReadOnly = isReadOnly;
 
   ListBuilder<AuthRule>? _authRules;
   ListBuilder<AuthRule> get authRules =>
       _$this._authRules ??= new ListBuilder<AuthRule>();
   set authRules(ListBuilder<AuthRule>? authRules) =>
       _$this._authRules = authRules;
+
+  TypeInfoBuilder? _type;
+  TypeInfoBuilder get type => _$this._type ??= new TypeInfoBuilder();
+  set type(TypeInfoBuilder? type) => _$this._type = type;
+
+  bool? _isPrimaryKey;
+  bool? get isPrimaryKey => _$this._isPrimaryKey;
+  set isPrimaryKey(bool? isPrimaryKey) => _$this._isPrimaryKey = isPrimaryKey;
+
+  bool? _isHasOne;
+  bool? get isHasOne => _$this._isHasOne;
+  set isHasOne(bool? isHasOne) => _$this._isHasOne = isHasOne;
+
+  bool? _isHasMany;
+  bool? get isHasMany => _$this._isHasMany;
+  set isHasMany(bool? isHasMany) => _$this._isHasMany = isHasMany;
+
+  bool? _isBelongsTo;
+  bool? get isBelongsTo => _$this._isBelongsTo;
+  set isBelongsTo(bool? isBelongsTo) => _$this._isBelongsTo = isBelongsTo;
+
+  String? _targetName;
+  String? get targetName => _$this._targetName;
+  set targetName(String? targetName) => _$this._targetName = targetName;
+
+  String? _associatedName;
+  String? get associatedName => _$this._associatedName;
+  set associatedName(String? associatedName) =>
+      _$this._associatedName = associatedName;
+
+  String? _associatedType;
+  String? get associatedType => _$this._associatedType;
+  set associatedType(String? associatedType) =>
+      _$this._associatedType = associatedType;
 
   ModelFieldBuilder() {
     ModelField._setDefaults(this);
@@ -510,10 +600,16 @@ class ModelFieldBuilder implements Builder<ModelField, ModelFieldBuilder> {
     final $v = _$v;
     if ($v != null) {
       _name = $v.name;
-      _required = $v.required;
-      _readOnly = $v.readOnly;
-      _metadata = $v.metadata.toBuilder();
+      _isReadOnly = $v.isReadOnly;
       _authRules = $v.authRules.toBuilder();
+      _type = $v.type.toBuilder();
+      _isPrimaryKey = $v.isPrimaryKey;
+      _isHasOne = $v.isHasOne;
+      _isHasMany = $v.isHasMany;
+      _isBelongsTo = $v.isBelongsTo;
+      _targetName = $v.targetName;
+      _associatedName = $v.associatedName;
+      _associatedType = $v.associatedType;
       _$v = null;
     }
     return this;
@@ -538,19 +634,28 @@ class ModelFieldBuilder implements Builder<ModelField, ModelFieldBuilder> {
           new _$ModelField._(
               name: BuiltValueNullFieldError.checkNotNull(
                   name, 'ModelField', 'name'),
-              required: BuiltValueNullFieldError.checkNotNull(
-                  required, 'ModelField', 'required'),
-              readOnly: BuiltValueNullFieldError.checkNotNull(
-                  readOnly, 'ModelField', 'readOnly'),
-              metadata: metadata.build(),
-              authRules: authRules.build());
+              isReadOnly: BuiltValueNullFieldError.checkNotNull(
+                  isReadOnly, 'ModelField', 'isReadOnly'),
+              authRules: authRules.build(),
+              type: type.build(),
+              isPrimaryKey: BuiltValueNullFieldError.checkNotNull(
+                  isPrimaryKey, 'ModelField', 'isPrimaryKey'),
+              isHasOne: BuiltValueNullFieldError.checkNotNull(
+                  isHasOne, 'ModelField', 'isHasOne'),
+              isHasMany: BuiltValueNullFieldError.checkNotNull(
+                  isHasMany, 'ModelField', 'isHasMany'),
+              isBelongsTo: BuiltValueNullFieldError.checkNotNull(
+                  isBelongsTo, 'ModelField', 'isBelongsTo'),
+              targetName: targetName,
+              associatedName: associatedName,
+              associatedType: associatedType);
     } catch (_) {
       late String _$failedField;
       try {
-        _$failedField = 'metadata';
-        metadata.build();
         _$failedField = 'authRules';
         authRules.build();
+        _$failedField = 'type';
+        type.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'ModelField', _$failedField, e.toString());
@@ -562,80 +667,53 @@ class ModelFieldBuilder implements Builder<ModelField, ModelFieldBuilder> {
   }
 }
 
-class _$ModelFieldMetadata extends ModelFieldMetadata {
+class _$TypeInfo extends TypeInfo {
   @override
-  final AWSType type;
+  final AWSType? awsType;
   @override
-  final bool isPrimaryKey;
+  final bool isRequired;
   @override
   final bool isList;
   @override
-  final bool isHasOne;
-  @override
-  final bool isHasMany;
-  @override
-  final bool isBelongsTo;
-  @override
   final String? modelName;
   @override
-  final String? targetName;
+  final TypeInfo? listType;
   @override
-  final String? associatedName;
-  @override
-  final String? associatedType;
+  final bool isEnum;
 
-  factory _$ModelFieldMetadata(
-          [void Function(ModelFieldMetadataBuilder)? updates]) =>
-      (new ModelFieldMetadataBuilder()..update(updates)).build();
+  factory _$TypeInfo([void Function(TypeInfoBuilder)? updates]) =>
+      (new TypeInfoBuilder()..update(updates)).build();
 
-  _$ModelFieldMetadata._(
-      {required this.type,
-      required this.isPrimaryKey,
+  _$TypeInfo._(
+      {this.awsType,
+      required this.isRequired,
       required this.isList,
-      required this.isHasOne,
-      required this.isHasMany,
-      required this.isBelongsTo,
       this.modelName,
-      this.targetName,
-      this.associatedName,
-      this.associatedType})
+      this.listType,
+      required this.isEnum})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(type, 'ModelFieldMetadata', 'type');
-    BuiltValueNullFieldError.checkNotNull(
-        isPrimaryKey, 'ModelFieldMetadata', 'isPrimaryKey');
-    BuiltValueNullFieldError.checkNotNull(
-        isList, 'ModelFieldMetadata', 'isList');
-    BuiltValueNullFieldError.checkNotNull(
-        isHasOne, 'ModelFieldMetadata', 'isHasOne');
-    BuiltValueNullFieldError.checkNotNull(
-        isHasMany, 'ModelFieldMetadata', 'isHasMany');
-    BuiltValueNullFieldError.checkNotNull(
-        isBelongsTo, 'ModelFieldMetadata', 'isBelongsTo');
+    BuiltValueNullFieldError.checkNotNull(isRequired, 'TypeInfo', 'isRequired');
+    BuiltValueNullFieldError.checkNotNull(isList, 'TypeInfo', 'isList');
+    BuiltValueNullFieldError.checkNotNull(isEnum, 'TypeInfo', 'isEnum');
   }
 
   @override
-  ModelFieldMetadata rebuild(
-          void Function(ModelFieldMetadataBuilder) updates) =>
+  TypeInfo rebuild(void Function(TypeInfoBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ModelFieldMetadataBuilder toBuilder() =>
-      new ModelFieldMetadataBuilder()..replace(this);
+  TypeInfoBuilder toBuilder() => new TypeInfoBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ModelFieldMetadata &&
-        type == other.type &&
-        isPrimaryKey == other.isPrimaryKey &&
+    return other is TypeInfo &&
+        awsType == other.awsType &&
+        isRequired == other.isRequired &&
         isList == other.isList &&
-        isHasOne == other.isHasOne &&
-        isHasMany == other.isHasMany &&
-        isBelongsTo == other.isBelongsTo &&
         modelName == other.modelName &&
-        targetName == other.targetName &&
-        associatedName == other.associatedName &&
-        associatedType == other.associatedType;
+        listType == other.listType &&
+        isEnum == other.isEnum;
   }
 
   @override
@@ -643,139 +721,108 @@ class _$ModelFieldMetadata extends ModelFieldMetadata {
     return $jf($jc(
         $jc(
             $jc(
-                $jc(
-                    $jc(
-                        $jc(
-                            $jc(
-                                $jc(
-                                    $jc($jc(0, type.hashCode),
-                                        isPrimaryKey.hashCode),
-                                    isList.hashCode),
-                                isHasOne.hashCode),
-                            isHasMany.hashCode),
-                        isBelongsTo.hashCode),
-                    modelName.hashCode),
-                targetName.hashCode),
-            associatedName.hashCode),
-        associatedType.hashCode));
+                $jc($jc($jc(0, awsType.hashCode), isRequired.hashCode),
+                    isList.hashCode),
+                modelName.hashCode),
+            listType.hashCode),
+        isEnum.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ModelFieldMetadata')
-          ..add('type', type)
-          ..add('isPrimaryKey', isPrimaryKey)
+    return (newBuiltValueToStringHelper('TypeInfo')
+          ..add('awsType', awsType)
+          ..add('isRequired', isRequired)
           ..add('isList', isList)
-          ..add('isHasOne', isHasOne)
-          ..add('isHasMany', isHasMany)
-          ..add('isBelongsTo', isBelongsTo)
           ..add('modelName', modelName)
-          ..add('targetName', targetName)
-          ..add('associatedName', associatedName)
-          ..add('associatedType', associatedType))
+          ..add('listType', listType)
+          ..add('isEnum', isEnum))
         .toString();
   }
 }
 
-class ModelFieldMetadataBuilder
-    implements Builder<ModelFieldMetadata, ModelFieldMetadataBuilder> {
-  _$ModelFieldMetadata? _$v;
+class TypeInfoBuilder implements Builder<TypeInfo, TypeInfoBuilder> {
+  _$TypeInfo? _$v;
 
-  AWSType? _type;
-  AWSType? get type => _$this._type;
-  set type(AWSType? type) => _$this._type = type;
+  AWSType? _awsType;
+  AWSType? get awsType => _$this._awsType;
+  set awsType(AWSType? awsType) => _$this._awsType = awsType;
 
-  bool? _isPrimaryKey;
-  bool? get isPrimaryKey => _$this._isPrimaryKey;
-  set isPrimaryKey(bool? isPrimaryKey) => _$this._isPrimaryKey = isPrimaryKey;
+  bool? _isRequired;
+  bool? get isRequired => _$this._isRequired;
+  set isRequired(bool? isRequired) => _$this._isRequired = isRequired;
 
   bool? _isList;
   bool? get isList => _$this._isList;
   set isList(bool? isList) => _$this._isList = isList;
 
-  bool? _isHasOne;
-  bool? get isHasOne => _$this._isHasOne;
-  set isHasOne(bool? isHasOne) => _$this._isHasOne = isHasOne;
-
-  bool? _isHasMany;
-  bool? get isHasMany => _$this._isHasMany;
-  set isHasMany(bool? isHasMany) => _$this._isHasMany = isHasMany;
-
-  bool? _isBelongsTo;
-  bool? get isBelongsTo => _$this._isBelongsTo;
-  set isBelongsTo(bool? isBelongsTo) => _$this._isBelongsTo = isBelongsTo;
-
   String? _modelName;
   String? get modelName => _$this._modelName;
   set modelName(String? modelName) => _$this._modelName = modelName;
 
-  String? _targetName;
-  String? get targetName => _$this._targetName;
-  set targetName(String? targetName) => _$this._targetName = targetName;
+  TypeInfoBuilder? _listType;
+  TypeInfoBuilder get listType => _$this._listType ??= new TypeInfoBuilder();
+  set listType(TypeInfoBuilder? listType) => _$this._listType = listType;
 
-  String? _associatedName;
-  String? get associatedName => _$this._associatedName;
-  set associatedName(String? associatedName) =>
-      _$this._associatedName = associatedName;
+  bool? _isEnum;
+  bool? get isEnum => _$this._isEnum;
+  set isEnum(bool? isEnum) => _$this._isEnum = isEnum;
 
-  String? _associatedType;
-  String? get associatedType => _$this._associatedType;
-  set associatedType(String? associatedType) =>
-      _$this._associatedType = associatedType;
-
-  ModelFieldMetadataBuilder() {
-    ModelFieldMetadata._setDefaults(this);
+  TypeInfoBuilder() {
+    TypeInfo._setDefaults(this);
   }
 
-  ModelFieldMetadataBuilder get _$this {
+  TypeInfoBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
-      _type = $v.type;
-      _isPrimaryKey = $v.isPrimaryKey;
+      _awsType = $v.awsType;
+      _isRequired = $v.isRequired;
       _isList = $v.isList;
-      _isHasOne = $v.isHasOne;
-      _isHasMany = $v.isHasMany;
-      _isBelongsTo = $v.isBelongsTo;
       _modelName = $v.modelName;
-      _targetName = $v.targetName;
-      _associatedName = $v.associatedName;
-      _associatedType = $v.associatedType;
+      _listType = $v.listType?.toBuilder();
+      _isEnum = $v.isEnum;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(ModelFieldMetadata other) {
+  void replace(TypeInfo other) {
     ArgumentError.checkNotNull(other, 'other');
-    _$v = other as _$ModelFieldMetadata;
+    _$v = other as _$TypeInfo;
   }
 
   @override
-  void update(void Function(ModelFieldMetadataBuilder)? updates) {
+  void update(void Function(TypeInfoBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$ModelFieldMetadata build() {
-    final _$result = _$v ??
-        new _$ModelFieldMetadata._(
-            type: BuiltValueNullFieldError.checkNotNull(
-                type, 'ModelFieldMetadata', 'type'),
-            isPrimaryKey: BuiltValueNullFieldError.checkNotNull(
-                isPrimaryKey, 'ModelFieldMetadata', 'isPrimaryKey'),
-            isList: BuiltValueNullFieldError.checkNotNull(
-                isList, 'ModelFieldMetadata', 'isList'),
-            isHasOne: BuiltValueNullFieldError.checkNotNull(
-                isHasOne, 'ModelFieldMetadata', 'isHasOne'),
-            isHasMany: BuiltValueNullFieldError.checkNotNull(
-                isHasMany, 'ModelFieldMetadata', 'isHasMany'),
-            isBelongsTo: BuiltValueNullFieldError.checkNotNull(
-                isBelongsTo, 'ModelFieldMetadata', 'isBelongsTo'),
-            modelName: modelName,
-            targetName: targetName,
-            associatedName: associatedName,
-            associatedType: associatedType);
+  _$TypeInfo build() {
+    _$TypeInfo _$result;
+    try {
+      _$result = _$v ??
+          new _$TypeInfo._(
+              awsType: awsType,
+              isRequired: BuiltValueNullFieldError.checkNotNull(
+                  isRequired, 'TypeInfo', 'isRequired'),
+              isList: BuiltValueNullFieldError.checkNotNull(
+                  isList, 'TypeInfo', 'isList'),
+              modelName: modelName,
+              listType: _listType?.build(),
+              isEnum: BuiltValueNullFieldError.checkNotNull(
+                  isEnum, 'TypeInfo', 'isEnum'));
+    } catch (_) {
+      late String _$failedField;
+      try {
+        _$failedField = 'listType';
+        _listType?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'TypeInfo', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

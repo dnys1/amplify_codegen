@@ -21,15 +21,15 @@
 
 library models.user;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the User type in your schema.
 @immutable
 class User extends Model {
   factory User(
-      {required String name,
+      {String? id,
+      required String name,
       required String email,
       String? meta,
       String? avatar,
@@ -39,8 +39,11 @@ class User extends Model {
       TemporalTime? workStart,
       TemporalTime? workEnd,
       TemporalDate? birthday,
-      TemporalDateTime? joinedOn}) {
+      TemporalDateTime? joinedOn,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return User._internal(
+        id: id ?? UUID.getUUID(),
         name: name,
         email: email,
         meta: meta,
@@ -51,11 +54,14 @@ class User extends Model {
         workStart: workStart,
         workEnd: workEnd,
         birthday: birthday,
-        joinedOn: joinedOn);
+        joinedOn: joinedOn,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
   const User._internal(
-      {required String name,
+      {required this.id,
+      required String name,
       required String email,
       String? meta,
       String? avatar,
@@ -65,7 +71,9 @@ class User extends Model {
       TemporalTime? workStart,
       TemporalTime? workEnd,
       TemporalDate? birthday,
-      TemporalDateTime? joinedOn})
+      TemporalDateTime? joinedOn,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
       : _name = name,
         _email = email,
         _meta = meta,
@@ -76,24 +84,45 @@ class User extends Model {
         _workStart = workStart,
         _workEnd = workEnd,
         _birthday = birthday,
-        _joinedOn = joinedOn;
+        _joinedOn = joinedOn,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory User.fromJson(Map<String, Object?> json) {
     return User._internal(
+        id: (json['id'] as String),
         name: (json['name'] as String),
         email: (json['email'] as String),
-        meta: (json['meta'] as String?),
-        avatar: (json['avatar'] as String?),
-        lastIPAddress: (json['lastIPAddress'] as String?),
-        phone: (json['phone'] as String?),
-        lastActivity: (json['lastActivity'] as TemporalTimestamp?),
-        workStart: (json['workStart'] as TemporalTime?),
-        workEnd: (json['workEnd'] as TemporalTime?),
-        birthday: (json['birthday'] as TemporalDate?),
-        joinedOn: (json['joinedOn'] as TemporalDateTime?));
+        meta: (json['meta'] as String),
+        avatar: (json['avatar'] as String),
+        lastIPAddress: (json['lastIPAddress'] as String),
+        phone: (json['phone'] as String),
+        lastActivity: json['lastActivity'] == null
+            ? null
+            : TemporalTimestamp.fromSeconds((json['lastActivity'] as int)),
+        workStart: json['workStart'] == null
+            ? null
+            : TemporalTime.fromString((json['workStart'] as String)),
+        workEnd: json['workEnd'] == null
+            ? null
+            : TemporalTime.fromString((json['workEnd'] as String)),
+        birthday: json['birthday'] == null
+            ? null
+            : TemporalDate.fromString((json['birthday'] as String)),
+        joinedOn: json['joinedOn'] == null
+            ? null
+            : TemporalDateTime.fromString((json['joinedOn'] as String)),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _UserModelType classType = _UserModelType();
+
+  final String id;
 
   final String? _name;
 
@@ -116,6 +145,12 @@ class User extends Model {
   final TemporalDate? _birthday;
 
   final TemporalDateTime? _joinedOn;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
+
+  static const ID = QueryField<dynamic>(fieldName: 'id');
 
   static const NAME = QueryField<dynamic>(fieldName: 'name');
 
@@ -140,12 +175,11 @@ class User extends Model {
 
   static const JOINED_ON = QueryField<dynamic>(fieldName: 'joinedOn');
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
-
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'User';
     modelSchemaDefinition.pluralName = 'Users';
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
         key: NAME,
@@ -213,8 +247,14 @@ class User extends Model {
         fieldName: 'updatedAt',
         ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
         isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
   });
+
+  @override
+  _UserModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
 
   String get name {
     if (_name == null) {
@@ -247,6 +287,8 @@ class User extends Model {
   TemporalTime? get workEnd => _workEnd;
   TemporalDate? get birthday => _birthday;
   TemporalDateTime? get joinedOn => _joinedOn;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -255,6 +297,7 @@ class User extends Model {
   bool operator ==(Object? other) =>
       identical(this, other) ||
       other is User &&
+          id == other.id &&
           _name == other._name &&
           _email == other._email &&
           _meta == other._meta &&
@@ -265,7 +308,9 @@ class User extends Model {
           _workStart == other._workStart &&
           _workEnd == other._workEnd &&
           _birthday == other._birthday &&
-          _joinedOn == other._joinedOn;
+          _joinedOn == other._joinedOn &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -273,6 +318,7 @@ class User extends Model {
     final buffer = StringBuffer();
 
     buffer.write('User {');
+    buffer.write('id=$id, ');
     buffer.write('name=$_name, ');
     buffer.write('email=$_email, ');
     buffer.write('meta=$_meta, ');
@@ -283,14 +329,17 @@ class User extends Model {
     buffer.write('workStart=$_workStart, ');
     buffer.write('workEnd=$_workEnd, ');
     buffer.write('birthday=$_birthday, ');
-    buffer.write('joinedOn=$_joinedOn');
+    buffer.write('joinedOn=$_joinedOn, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
   User copyWith(
-      {String? name,
+      {String? id,
+      String? name,
       String? email,
       String? meta,
       String? avatar,
@@ -300,8 +349,11 @@ class User extends Model {
       TemporalTime? workStart,
       TemporalTime? workEnd,
       TemporalDate? birthday,
-      TemporalDateTime? joinedOn}) {
+      TemporalDateTime? joinedOn,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return User(
+        id: id ?? this.id,
         name: name ?? this.name,
         email: email ?? this.email,
         meta: meta ?? this.meta,
@@ -312,29 +364,28 @@ class User extends Model {
         workStart: workStart ?? this.workStart,
         workEnd: workEnd ?? this.workEnd,
         birthday: birthday ?? this.birthday,
-        joinedOn: joinedOn ?? this.joinedOn);
+        joinedOn: joinedOn ?? this.joinedOn,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
   Map<String, Object?> toJson() => {
+        'id': id,
         'name': _name,
         'email': _email,
         'meta': _meta,
         'avatar': _avatar,
         'lastIPAddress': _lastIPAddress,
         'phone': _phone,
-        'lastActivity': _lastActivity,
-        'workStart': _workStart,
-        'workEnd': _workEnd,
-        'birthday': _birthday,
-        'joinedOn': _joinedOn
+        'lastActivity': _lastActivity?.toSeconds(),
+        'workStart': _workStart?.format(),
+        'workEnd': _workEnd?.format(),
+        'birthday': _birthday?.format(),
+        'joinedOn': _joinedOn?.format(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
       };
-  @override
-  _UserModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
 }
 
 class _UserModelType extends ModelType<User> {

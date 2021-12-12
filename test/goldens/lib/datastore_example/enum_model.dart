@@ -21,9 +21,6 @@
 
 library models.enum_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'package:meta/meta.dart';
-
 enum EnumModel { yes, no }
 
 extension $EnumModel on EnumModel {

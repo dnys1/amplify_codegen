@@ -21,15 +21,17 @@
 
 library models.all_scalar_types_list_custom_type;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'enum_model.dart';
+import 'simple_custom_type.dart';
 
 /// This is an auto generated class representing the AllScalarTypesListCustomType type in your schema.
 @immutable
 class AllScalarTypesListCustomType {
   factory AllScalarTypesListCustomType(
-      {List<String?>? stringValues,
+      {String? id,
+      List<String?>? stringValues,
       List<int?>? intValues,
       List<double?>? floatValues,
       List<bool?>? boolValues,
@@ -41,6 +43,7 @@ class AllScalarTypesListCustomType {
       List<EnumModel?>? enumValues,
       List<SimpleCustomType?>? customTypeValues}) {
     return AllScalarTypesListCustomType._internal(
+        id: id ?? UUID.getUUID(),
         stringValues:
             stringValues != null ? List.unmodifiable(stringValues) : null,
         intValues: intValues != null ? List.unmodifiable(intValues) : null,
@@ -61,7 +64,8 @@ class AllScalarTypesListCustomType {
   }
 
   const AllScalarTypesListCustomType._internal(
-      {List<String?>? stringValues,
+      {required this.id,
+      List<String?>? stringValues,
       List<int?>? intValues,
       List<double?>? floatValues,
       List<bool?>? boolValues,
@@ -86,43 +90,31 @@ class AllScalarTypesListCustomType {
 
   factory AllScalarTypesListCustomType.fromJson(Map<String, Object?> json) {
     return AllScalarTypesListCustomType._internal(
-        stringValues: (json['stringValues'] as List?)
-            ?.cast<String?>()
-            .map((el) => el)
-            .toList(),
-        intValues:
-            (json['intValues'] as List?)?.cast<int?>().map((el) => el).toList(),
-        floatValues: (json['floatValues'] as List?)
-            ?.cast<double?>()
-            .map((el) => el)
-            .toList(),
-        boolValues: (json['boolValues'] as List?)
-            ?.cast<bool?>()
-            .map((el) => el)
-            .toList(),
+        id: (json['id'] as String),
+        stringValues: (json['stringValues'] as List?)?.cast<String?>(),
+        intValues: (json['intValues'] as List?)?.cast<int?>(),
+        floatValues: (json['floatValues'] as List?)?.cast<double?>(),
+        boolValues: (json['boolValues'] as List?)?.cast<bool?>(),
         dateValues: (json['dateValues'] as List?)
-            ?.cast<TemporalDate?>()
-            .map((el) => el)
+            ?.cast<String?>()
+            .map((el) => el == null ? null : TemporalDate.fromString(el))
             .toList(),
         dateTimeValues: (json['dateTimeValues'] as List?)
-            ?.cast<TemporalDateTime?>()
-            .map((el) => el)
+            ?.cast<String?>()
+            .map((el) => el == null ? null : TemporalDateTime.fromString(el))
             .toList(),
         timeValues: (json['timeValues'] as List?)
-            ?.cast<TemporalTime?>()
-            .map((el) => el)
+            ?.cast<String?>()
+            .map((el) => el == null ? null : TemporalTime.fromString(el))
             .toList(),
         timestampValues: (json['timestampValues'] as List?)
-            ?.cast<TemporalTimestamp?>()
-            .map((el) => el)
+            ?.cast<int?>()
+            .map((el) => el == null ? null : TemporalTimestamp.fromSeconds(el))
             .toList(),
-        jsonValues: (json['jsonValues'] as List?)
-            ?.cast<String?>()
-            .map((el) => el)
-            .toList(),
+        jsonValues: (json['jsonValues'] as List?)?.cast<String?>(),
         enumValues: (json['enumValues'] as List?)
             ?.cast<String?>()
-            .map((el) => EnumModel.values.byValue((el as String?)))
+            .map((el) => EnumModel.values.byValue(el))
             .toList(),
         customTypeValues: (json['customTypeValues'] as List?)
             ?.cast<Map?>()
@@ -131,6 +123,8 @@ class AllScalarTypesListCustomType {
                 : null)
             .toList());
   }
+
+  final String id;
 
   final List<String?>? _stringValues;
 
@@ -158,64 +152,62 @@ class AllScalarTypesListCustomType {
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'AllScalarTypesListCustomType';
     modelSchemaDefinition.pluralName = 'AllScalarTypesListCustomTypes';
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'stringValues',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
-        isArray: true));
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isArray: true,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'intValues',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.int),
-        isArray: true));
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isArray: true,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'floatValues',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.double),
-        isArray: true));
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isArray: true,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'boolValues',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.bool),
-        isArray: true));
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isArray: true,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'dateValues',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.date),
-        isArray: true));
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isArray: true,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'dateTimeValues',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
-        isArray: true));
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isArray: true,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'timeValues',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.time),
-        isArray: true));
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isArray: true,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'timestampValues',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.timestamp),
-        isArray: true));
-    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
+        isArray: true,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'jsonValues',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
-        isArray: true));
+        isArray: true,
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
     modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'enumValues',
         isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection,
-            ofCustomTypeName: 'EnumModel')));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
     modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'customTypeValues',
         isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection,
-            ofCustomTypeName: 'SimpleCustomType')));
-    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
   });
 
   List<String?>? get stringValues => _stringValues;
@@ -237,6 +229,7 @@ class AllScalarTypesListCustomType {
   bool operator ==(Object? other) =>
       identical(this, other) ||
       other is AllScalarTypesListCustomType &&
+          id == other.id &&
           _stringValues == other._stringValues &&
           _intValues == other._intValues &&
           _floatValues == other._floatValues &&
@@ -255,6 +248,7 @@ class AllScalarTypesListCustomType {
     final buffer = StringBuffer();
 
     buffer.write('AllScalarTypesListCustomType {');
+    buffer.write('id=$id, ');
     buffer.write('stringValues=$_stringValues, ');
     buffer.write('intValues=$_intValues, ');
     buffer.write('floatValues=$_floatValues, ');
@@ -272,7 +266,8 @@ class AllScalarTypesListCustomType {
   }
 
   AllScalarTypesListCustomType copyWith(
-      {List<String?>? stringValues,
+      {String? id,
+      List<String?>? stringValues,
       List<int?>? intValues,
       List<double?>? floatValues,
       List<bool?>? boolValues,
@@ -284,6 +279,7 @@ class AllScalarTypesListCustomType {
       List<EnumModel?>? enumValues,
       List<SimpleCustomType?>? customTypeValues}) {
     return AllScalarTypesListCustomType(
+        id: id ?? this.id,
         stringValues: stringValues ?? this.stringValues,
         intValues: intValues ?? this.intValues,
         floatValues: floatValues ?? this.floatValues,
@@ -298,14 +294,16 @@ class AllScalarTypesListCustomType {
   }
 
   Map<String, Object?> toJson() => {
+        'id': id,
         'stringValues': _stringValues?.map((el) => el).toList(),
         'intValues': _intValues?.map((el) => el).toList(),
         'floatValues': _floatValues?.map((el) => el).toList(),
         'boolValues': _boolValues?.map((el) => el).toList(),
-        'dateValues': _dateValues?.map((el) => el).toList(),
-        'dateTimeValues': _dateTimeValues?.map((el) => el).toList(),
-        'timeValues': _timeValues?.map((el) => el).toList(),
-        'timestampValues': _timestampValues?.map((el) => el).toList(),
+        'dateValues': _dateValues?.map((el) => el?.format()).toList(),
+        'dateTimeValues': _dateTimeValues?.map((el) => el?.format()).toList(),
+        'timeValues': _timeValues?.map((el) => el?.format()).toList(),
+        'timestampValues':
+            _timestampValues?.map((el) => el?.toSeconds()).toList(),
         'jsonValues': _jsonValues?.map((el) => el).toList(),
         'enumValues': _enumValues?.map((el) => el?.value).toList(),
         'customTypeValues':

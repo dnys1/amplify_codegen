@@ -21,27 +21,43 @@
 
 library models.bool_list_type_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the BoolListTypeModel type in your schema.
 @immutable
 class BoolListTypeModel extends Model {
-  factory BoolListTypeModel({String? id, List<bool?>? value}) {
+  factory BoolListTypeModel(
+      {String? id,
+      List<bool?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return BoolListTypeModel._internal(
         id: id ?? UUID.getUUID(),
-        value: value != null ? List.unmodifiable(value) : null);
+        value: value != null ? List.unmodifiable(value) : null,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
-  const BoolListTypeModel._internal({required this.id, List<bool?>? value})
-      : _value = value;
+  const BoolListTypeModel._internal(
+      {required this.id,
+      List<bool?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
+      : _value = value,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory BoolListTypeModel.fromJson(Map<String, Object?> json) {
     return BoolListTypeModel._internal(
         id: (json['id'] as String),
-        value:
-            (json['value'] as List?)?.cast<bool?>().map((el) => el).toList());
+        value: (json['value'] as List?)?.cast<bool?>(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _BoolListTypeModelModelType classType =
@@ -50,6 +66,10 @@ class BoolListTypeModel extends Model {
   final String id;
 
   final List<bool?>? _value;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -63,7 +83,8 @@ class BoolListTypeModel extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
         key: VALUE,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.bool),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'collection'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
@@ -79,7 +100,16 @@ class BoolListTypeModel extends Model {
         isArray: false));
   });
 
+  @override
+  _BoolListTypeModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   List<bool?>? get value => _value;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -87,7 +117,11 @@ class BoolListTypeModel extends Model {
   @override
   bool operator ==(Object? other) =>
       identical(this, other) ||
-      other is BoolListTypeModel && id == other.id && _value == other._value;
+      other is BoolListTypeModel &&
+          id == other.id &&
+          _value == other._value &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -96,25 +130,33 @@ class BoolListTypeModel extends Model {
 
     buffer.write('BoolListTypeModel {');
     buffer.write('id=$id, ');
-    buffer.write('value=$_value');
+    buffer.write('value=$_value, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  BoolListTypeModel copyWith({String? id, List<bool?>? value}) {
-    return BoolListTypeModel(id: id ?? this.id, value: value ?? this.value);
+  BoolListTypeModel copyWith(
+      {String? id,
+      List<bool?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
+    return BoolListTypeModel(
+        id: id ?? this.id,
+        value: value ?? this.value,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() =>
-      {'id': id, 'value': _value?.map((el) => el).toList()};
-  @override
-  _BoolListTypeModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'value': _value?.map((el) => el).toList(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _BoolListTypeModelModelType extends ModelType<BoolListTypeModel> {

@@ -21,29 +21,47 @@
 
 library models.enum_list_type_model;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'enum_model.dart';
 
 /// This is an auto generated class representing the EnumListTypeModel type in your schema.
 @immutable
 class EnumListTypeModel extends Model {
-  factory EnumListTypeModel({String? id, List<EnumModel?>? value}) {
+  factory EnumListTypeModel(
+      {String? id,
+      List<EnumModel?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
     return EnumListTypeModel._internal(
         id: id ?? UUID.getUUID(),
-        value: value != null ? List.unmodifiable(value) : null);
+        value: value != null ? List.unmodifiable(value) : null,
+        createdAt: createdAt,
+        updatedAt: updatedAt);
   }
 
-  const EnumListTypeModel._internal({required this.id, List<EnumModel?>? value})
-      : _value = value;
+  const EnumListTypeModel._internal(
+      {required this.id,
+      List<EnumModel?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt})
+      : _value = value,
+        _createdAt = createdAt,
+        _updatedAt = updatedAt;
 
   factory EnumListTypeModel.fromJson(Map<String, Object?> json) {
     return EnumListTypeModel._internal(
         id: (json['id'] as String),
         value: (json['value'] as List?)
             ?.cast<String?>()
-            .map((el) => EnumModel.values.byValue((el as String?)))
-            .toList());
+            .map((el) => EnumModel.values.byValue(el))
+            .toList(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['createdAt'] as String)),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : TemporalDateTime.fromString((json['updatedAt'] as String)));
   }
 
   static const _EnumListTypeModelModelType classType =
@@ -52,6 +70,10 @@ class EnumListTypeModel extends Model {
   final String id;
 
   final List<EnumModel?>? _value;
+
+  final TemporalDateTime? _createdAt;
+
+  final TemporalDateTime? _updatedAt;
 
   static const ID = QueryField<dynamic>(fieldName: 'id');
 
@@ -65,7 +87,8 @@ class EnumListTypeModel extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
         key: VALUE,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.collection),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'collection'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
@@ -81,7 +104,16 @@ class EnumListTypeModel extends Model {
         isArray: false));
   });
 
+  @override
+  _EnumListTypeModelModelType getInstanceType() => classType;
+  @override
+  String getId() {
+    return id;
+  }
+
   List<EnumModel?>? get value => _value;
+  TemporalDateTime? get createdAt => _createdAt;
+  TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
     return this == other;
   }
@@ -89,7 +121,11 @@ class EnumListTypeModel extends Model {
   @override
   bool operator ==(Object? other) =>
       identical(this, other) ||
-      other is EnumListTypeModel && id == other.id && _value == other._value;
+      other is EnumListTypeModel &&
+          id == other.id &&
+          _value == other._value &&
+          _createdAt == other._createdAt &&
+          _updatedAt == other._updatedAt;
   @override
   int get hashCode => toString().hashCode;
   @override
@@ -98,25 +134,33 @@ class EnumListTypeModel extends Model {
 
     buffer.write('EnumListTypeModel {');
     buffer.write('id=$id, ');
-    buffer.write('value=$_value');
+    buffer.write('value=$_value, ');
+    buffer.write('createdAt=$_createdAt, ');
+    buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
 
     return buffer.toString();
   }
 
-  EnumListTypeModel copyWith({String? id, List<EnumModel?>? value}) {
-    return EnumListTypeModel(id: id ?? this.id, value: value ?? this.value);
+  EnumListTypeModel copyWith(
+      {String? id,
+      List<EnumModel?>? value,
+      TemporalDateTime? createdAt,
+      TemporalDateTime? updatedAt}) {
+    return EnumListTypeModel(
+        id: id ?? this.id,
+        value: value ?? this.value,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 
   @override
-  Map<String, Object?> toJson() =>
-      {'id': id, 'value': _value?.map((el) => el?.value).toList()};
-  @override
-  _EnumListTypeModelModelType getInstanceType() => classType;
-  @override
-  String getId() {
-    return id;
-  }
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'value': _value?.map((el) => el?.value).toList(),
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 }
 
 class _EnumListTypeModelModelType extends ModelType<EnumListTypeModel> {

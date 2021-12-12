@@ -20,16 +20,19 @@ class ModelProviderGenerator extends Generator<Library> {
 
   @override
   Library generate() {
+    final importFilenames = [
+      for (var model in models) model.name.snakeCase + '.dart'
+    ]..sort();
+    final exportFilenames = [
+      for (var model in models) model.name.snakeCase + '.dart',
+      for (var enum$ in enums) enum$.name.value.snakeCase + '.dart'
+    ]..sort();
     return Library((l) => l
       ..name = 'models.model_provider'
       ..directives.addAll([
         Directive.import(datastoreUri),
-        for (var model in models)
-          Directive.import(model.name.snakeCase + '.dart'),
-        for (var model in models)
-          Directive.export(model.name.snakeCase + '.dart'),
-        for (var enum$ in enums)
-          Directive.export(enum$.name.value.snakeCase + '.dart'),
+        ...importFilenames.map(Directive.import),
+        ...exportFilenames.map(Directive.export),
       ])
       ..body.add(_class));
   }
@@ -44,7 +47,15 @@ class ModelProviderGenerator extends Generator<Library> {
     );
   }
 
-  Iterable<Field> get _fields sync* {}
+  Iterable<Field> get _fields sync* {
+    yield Field(
+      (f) => f
+        ..static = true
+        ..modifier = FieldModifier.final$
+        ..name = 'instance'
+        ..assignment = refer('ModelProvider').newInstance([]).code,
+    );
+  }
 
   /// Generate a consistent hash for [schema].
   List<int> get _schemaHash {
@@ -73,12 +84,58 @@ class ModelProviderGenerator extends Generator<Library> {
         ..type = MethodType.getter
         ..lambda = true
         ..body = literalList([
-          for (var model in models)
+          for (var model in models.where((m) => !m.isCustom))
             refer(
-              ReCase(model.name).pascalCase,
-              ReCase(model.name).snakeCase + '.dart',
+              model.name.pascalCase,
+              model.name.snakeCase + '.dart',
             ).property('schema')
         ]).code,
     );
+
+    // customTypeSchemas
+    yield Method(
+      (m) => m
+        ..annotations.add(refer('override'))
+        ..name = 'customTypeSchemas'
+        ..returns = listOf(refer('ModelSchema', datastoreUri))
+        ..type = MethodType.getter
+        ..lambda = true
+        ..body = literalList([
+          for (var model in models.where((m) => m.isCustom))
+            refer(
+              model.name.pascalCase,
+              model.name.snakeCase + '.dart',
+            ).property('schema')
+        ]).code,
+    );
+
+    // getModelTypeByModelName
+    yield Method((m) {
+      m
+        ..annotations.add(refer('override'))
+        ..returns = refer('ModelType', datastoreUri)
+        ..name = 'getModelTypeByModelName'
+        ..requiredParameters.add(Parameter((p) => p
+          ..type = refer('String')
+          ..name = 'modelName'));
+
+      m.body = Block.of([
+        const Code('switch (modelName) {'),
+        for (var model in models.where((m) => !m.isCustom)) ...[
+          Code("case '${model.name}':"),
+          refer(model.name.pascalCase).property('classType').returned.statement,
+        ],
+        const Code('default:'),
+        refer('ArgumentError')
+            .newInstance([
+              literalString(
+                      'Failed to find model in model provider for model name: ')
+                  .operatorAdd(refer('modelName'))
+            ])
+            .thrown
+            .statement,
+        const Code('}'),
+      ]);
+    });
   }
 }

@@ -21,20 +21,22 @@
 
 library models.s3_object;
 
-import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
-import 'model_provider.dart';
+import 'access_level.dart';
+import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 
 /// This is an auto generated class representing the S3Object type in your schema.
 @immutable
 class S3Object {
   factory S3Object(
-      {required String bucket,
+      {String? id,
+      required String bucket,
       required String region,
       required String key,
       String? cognitoId,
       AccessLevel? accessLevel}) {
     return S3Object._internal(
+        id: id ?? UUID.getUUID(),
         bucket: bucket,
         region: region,
         key: key,
@@ -43,7 +45,8 @@ class S3Object {
   }
 
   const S3Object._internal(
-      {required String bucket,
+      {required this.id,
+      required String bucket,
       required String region,
       required String key,
       String? cognitoId,
@@ -56,13 +59,16 @@ class S3Object {
 
   factory S3Object.fromJson(Map<String, Object?> json) {
     return S3Object._internal(
+        id: (json['id'] as String),
         bucket: (json['bucket'] as String),
         region: (json['region'] as String),
         key: (json['key'] as String),
-        cognitoId: (json['cognitoId'] as String?),
+        cognitoId: (json['cognitoId'] as String),
         accessLevel:
             AccessLevel.values.byValue((json['accessLevel'] as String?)));
   }
+
+  final String id;
 
   final String? _bucket;
 
@@ -78,6 +84,7 @@ class S3Object {
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = 'S3Object';
     modelSchemaDefinition.pluralName = 'S3Objects';
+    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: true,
         fieldName: 'bucket',
@@ -103,7 +110,6 @@ class S3Object {
         fieldName: 'accessLevel',
         ofType: const ModelFieldType(ModelFieldTypeEnum.enumeration),
         isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
   });
 
   String get bucket {
@@ -149,6 +155,7 @@ class S3Object {
   bool operator ==(Object? other) =>
       identical(this, other) ||
       other is S3Object &&
+          id == other.id &&
           _bucket == other._bucket &&
           _region == other._region &&
           _key == other._key &&
@@ -161,6 +168,7 @@ class S3Object {
     final buffer = StringBuffer();
 
     buffer.write('S3Object {');
+    buffer.write('id=$id, ');
     buffer.write('bucket=$_bucket, ');
     buffer.write('region=$_region, ');
     buffer.write('key=$_key, ');
@@ -172,12 +180,14 @@ class S3Object {
   }
 
   S3Object copyWith(
-      {String? bucket,
+      {String? id,
+      String? bucket,
       String? region,
       String? key,
       String? cognitoId,
       AccessLevel? accessLevel}) {
     return S3Object(
+        id: id ?? this.id,
         bucket: bucket ?? this.bucket,
         region: region ?? this.region,
         key: key ?? this.key,
@@ -186,6 +196,7 @@ class S3Object {
   }
 
   Map<String, Object?> toJson() => {
+        'id': id,
         'bucket': _bucket,
         'region': _region,
         'key': _key,
