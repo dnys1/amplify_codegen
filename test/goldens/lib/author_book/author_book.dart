@@ -91,7 +91,7 @@ class AuthorBook extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
+  static const ID = QueryField<dynamic>(fieldName: 'authorBook.id');
 
   static const AUTHOR_ID = QueryField<dynamic>(fieldName: 'author_id');
 

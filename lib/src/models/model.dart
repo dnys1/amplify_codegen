@@ -36,13 +36,15 @@ abstract class ModelField implements Built<ModelField, ModelFieldBuilder> {
       ..isPrimaryKey = false
       ..isBelongsTo = false
       ..isHasMany = false
-      ..isHasOne = false;
+      ..isHasOne = false
+      ..ignore = false;
   }
 
   factory ModelField([void Function(ModelFieldBuilder) updates]) = _$ModelField;
   ModelField._();
 
   String get name;
+  bool get ignore;
   bool get isReadOnly;
   BuiltList<AuthRule> get authRules;
   TypeInfo get type;

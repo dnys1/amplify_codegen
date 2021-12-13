@@ -90,7 +90,7 @@ class ModelNestedCustomType extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
+  static const ID = QueryField<dynamic>(fieldName: 'modelNestedCustomType.id');
 
   static const CUSTOM_TYPE_VALUE =
       QueryField<dynamic>(fieldName: 'customTypeValue');

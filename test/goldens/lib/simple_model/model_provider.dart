@@ -31,7 +31,7 @@ class ModelProvider extends ModelProviderInterface {
   static final instance = ModelProvider();
 
   @override
-  String get version => '077588c43bd688388028b6557e56d5ac44d3afbe';
+  String get version => 'f8e23ae10fc09e98c05f238574e5d79ef78a3f4e';
   @override
   List<ModelSchema> get modelSchemas => [SimpleModel.schema];
   @override

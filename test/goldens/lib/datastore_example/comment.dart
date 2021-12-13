@@ -88,7 +88,7 @@ class Comment extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
+  static const ID = QueryField<dynamic>(fieldName: 'comment.id');
 
   static const POST_ID = QueryField<dynamic>(fieldName: 'postID');
 

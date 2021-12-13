@@ -88,6 +88,8 @@ class _$ModelFieldSerializer implements StructuredSerializer<ModelField> {
     final result = <Object?>[
       'name',
       serializers.serialize(object.name, specifiedType: const FullType(String)),
+      'ignore',
+      serializers.serialize(object.ignore, specifiedType: const FullType(bool)),
       'isReadOnly',
       serializers.serialize(object.isReadOnly,
           specifiedType: const FullType(bool)),
@@ -150,6 +152,10 @@ class _$ModelFieldSerializer implements StructuredSerializer<ModelField> {
         case 'name':
           result.name = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
+          break;
+        case 'ignore':
+          result.ignore = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
           break;
         case 'isReadOnly':
           result.isReadOnly = serializers.deserialize(value,
@@ -426,6 +432,8 @@ class _$ModelField extends ModelField {
   @override
   final String name;
   @override
+  final bool ignore;
+  @override
   final bool isReadOnly;
   @override
   final BuiltList<AuthRule> authRules;
@@ -451,6 +459,7 @@ class _$ModelField extends ModelField {
 
   _$ModelField._(
       {required this.name,
+      required this.ignore,
       required this.isReadOnly,
       required this.authRules,
       required this.type,
@@ -463,6 +472,7 @@ class _$ModelField extends ModelField {
       this.associatedType})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(name, 'ModelField', 'name');
+    BuiltValueNullFieldError.checkNotNull(ignore, 'ModelField', 'ignore');
     BuiltValueNullFieldError.checkNotNull(
         isReadOnly, 'ModelField', 'isReadOnly');
     BuiltValueNullFieldError.checkNotNull(authRules, 'ModelField', 'authRules');
@@ -487,6 +497,7 @@ class _$ModelField extends ModelField {
     if (identical(other, this)) return true;
     return other is ModelField &&
         name == other.name &&
+        ignore == other.ignore &&
         isReadOnly == other.isReadOnly &&
         authRules == other.authRules &&
         type == other.type &&
@@ -510,7 +521,9 @@ class _$ModelField extends ModelField {
                             $jc(
                                 $jc(
                                     $jc(
-                                        $jc($jc(0, name.hashCode),
+                                        $jc(
+                                            $jc($jc(0, name.hashCode),
+                                                ignore.hashCode),
                                             isReadOnly.hashCode),
                                         authRules.hashCode),
                                     type.hashCode),
@@ -527,6 +540,7 @@ class _$ModelField extends ModelField {
   String toString() {
     return (newBuiltValueToStringHelper('ModelField')
           ..add('name', name)
+          ..add('ignore', ignore)
           ..add('isReadOnly', isReadOnly)
           ..add('authRules', authRules)
           ..add('type', type)
@@ -547,6 +561,10 @@ class ModelFieldBuilder implements Builder<ModelField, ModelFieldBuilder> {
   String? _name;
   String? get name => _$this._name;
   set name(String? name) => _$this._name = name;
+
+  bool? _ignore;
+  bool? get ignore => _$this._ignore;
+  set ignore(bool? ignore) => _$this._ignore = ignore;
 
   bool? _isReadOnly;
   bool? get isReadOnly => _$this._isReadOnly;
@@ -600,6 +618,7 @@ class ModelFieldBuilder implements Builder<ModelField, ModelFieldBuilder> {
     final $v = _$v;
     if ($v != null) {
       _name = $v.name;
+      _ignore = $v.ignore;
       _isReadOnly = $v.isReadOnly;
       _authRules = $v.authRules.toBuilder();
       _type = $v.type.toBuilder();
@@ -634,6 +653,8 @@ class ModelFieldBuilder implements Builder<ModelField, ModelFieldBuilder> {
           new _$ModelField._(
               name: BuiltValueNullFieldError.checkNotNull(
                   name, 'ModelField', 'name'),
+              ignore: BuiltValueNullFieldError.checkNotNull(
+                  ignore, 'ModelField', 'ignore'),
               isReadOnly: BuiltValueNullFieldError.checkNotNull(
                   isReadOnly, 'ModelField', 'isReadOnly'),
               authRules: authRules.build(),

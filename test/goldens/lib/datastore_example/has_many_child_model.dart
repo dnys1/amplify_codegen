@@ -90,7 +90,7 @@ class HasManyChildModel extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
+  static const ID = QueryField<dynamic>(fieldName: 'hasManyChildModel.id');
 
   static const NAME = QueryField<dynamic>(fieldName: 'name');
 

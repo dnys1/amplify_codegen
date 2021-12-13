@@ -91,7 +91,7 @@ class MultiTypeModel extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
+  static const ID = QueryField<dynamic>(fieldName: 'multiTypeModel.id');
 
   static const STRING_VALUE = QueryField<dynamic>(fieldName: 'stringValue');
 

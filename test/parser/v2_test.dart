@@ -5,41 +5,41 @@ import 'package:test/test.dart';
 void main() {
   group('Parser', () {
     group('V2', () {
-      late Map<String, Model> v2Models;
-      late Map<String, Model> v2IndexedModels;
-
-      setUpAll(() {
-        const v2Schema = '''
-        type Post @model {
-          comments: [Comment] @hasMany(fields: ["id"])
-        }
-
-        type Comment @model {
-          postID: ID! @primaryKey(sortKeyFields: ["content"])
-          content: String!
-          post: Post @belongsTo(fields:["postID"])
-        }
-        ''';
-
-        const v2IndexSchema = '''
-        type Post @model {
-          id: ID!
-          title: String!
-          comments: [Comment] @hasMany(indexName: "byPost", fields: ["id"])
-        }
-
-        type Comment @model {
-          id: ID!
-          postID: ID! @index(name: "byPost", sortKeyFields: ["content"])
-          content: String!
-        }
-        ''';
-
-        v2Models = parseSchema(v2Schema);
-        v2IndexedModels = parseSchema(v2IndexSchema);
-      });
-
       group('Has many comparison', () {
+        late Map<String, Model> v2Models;
+        late Map<String, Model> v2IndexedModels;
+
+        setUpAll(() {
+          const v2Schema = '''
+          type Post @model {
+            comments: [Comment] @hasMany(fields: ["id"])
+          }
+
+          type Comment @model {
+            postID: ID! @primaryKey(sortKeyFields: ["content"])
+            content: String!
+            post: Post @belongsTo(fields:["postID"])
+          }
+          ''';
+
+          const v2IndexSchema = '''
+          type Post @model {
+            id: ID!
+            title: String!
+            comments: [Comment] @hasMany(indexName: "byPost", fields: ["id"])
+          }
+
+          type Comment @model {
+            id: ID!
+            postID: ID! @index(name: "byPost", sortKeyFields: ["content"])
+            content: String!
+          }
+          ''';
+
+          v2Models = parseSchema(v2Schema);
+          v2IndexedModels = parseSchema(v2IndexSchema);
+        });
+
         test('should support connection with @primaryKey on BELONGS_TO side',
             () {
           final postField = v2Models['Comment']!.fieldNamed('post');
@@ -53,7 +53,7 @@ void main() {
 
           expect(commentsField.isHasMany, isTrue);
           expect(commentsField.associatedType, equals('Comment'));
-          expect(commentsField.associatedName, equals('postID'));
+          expect(commentsField.associatedName, equals('post'));
         });
 
         test('Should support connection with @index on BELONGS_TO side', () {
@@ -104,12 +104,7 @@ void main() {
 
           expect(powerSourceField.isHasOne, isTrue);
           expect(powerSourceField.associatedType, equals('PowerSource'));
-          expect(
-            powerSourceField.associatedName,
-            equals(
-              makeConnectionAttributeName('BatteryCharger', 'powerSource'),
-            ),
-          );
+          expect(powerSourceField.associatedName, equals('id'));
         });
 
         test('Should support @hasOne with an explicit primary key', () {
@@ -183,8 +178,7 @@ void main() {
 
           expect(postsField.isHasMany, isTrue);
           expect(postsField.associatedType, equals('Post'));
-          expect(postsField.associatedName,
-              equals(makeConnectionAttributeName('Blog', 'posts')));
+          expect(postsField.associatedName, equals('blog'));
         });
 
         test('Should detect second has many', () {
@@ -192,8 +186,7 @@ void main() {
 
           expect(commentsField.isHasMany, isTrue);
           expect(commentsField.associatedType, equals('Comment'));
-          expect(commentsField.associatedName,
-              equals(makeConnectionAttributeName('Post', 'comments')));
+          expect(commentsField.associatedName, equals('post'));
         });
 
         test('Should detect first belongsTo', () {

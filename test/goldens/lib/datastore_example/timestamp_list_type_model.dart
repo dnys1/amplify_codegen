@@ -74,7 +74,7 @@ class TimestampListTypeModel extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
+  static const ID = QueryField<dynamic>(fieldName: 'timestampListTypeModel.id');
 
   static const VALUE = QueryField<dynamic>(fieldName: 'value');
 

@@ -15,6 +15,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
   final Map<String, Model> allModels;
   late final Model model = allModels[wireName]!;
+  late final Iterable<ModelField> fields = model.fields.where((f) => !f.ignore);
 
   String get modelTypeName => '_${typeName}ModelType';
 
@@ -73,7 +74,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
   /// Adds `final` fields to the class.
   Iterable<Field> get _typeFields sync* {
-    for (var field in model.fields) {
+    for (var field in fields) {
       final nodeField =
           node.fields.singleWhereOrNull((f) => f.wireName == field.name);
       if (field.isPrimaryKey) {
@@ -128,7 +129,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
   }
 
   Iterable<Method> get _instanceMethods sync* {
-    for (var field in model.fields.where((field) => !field.isPrimaryKey)) {
+    for (var field in fields.where((field) => !field.isPrimaryKey)) {
       final nodeField =
           node.fields.singleWhereOrNull((f) => f.wireName == field.wireName);
       // Public getter
@@ -181,7 +182,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         )
         ..lambda = true
         ..body = Code('identical(this, other) || other is $typeName && ' +
-            model.fields.map((field) {
+            fields.map((field) {
               final getter = field.getter;
               return '$getter == other.$getter';
             }).join('&&')),
@@ -210,10 +211,10 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
         buffer.write('$typeName {');
         ''' +
-            model.fields.mapIndexed((index, field) {
+            fields.mapIndexed((index, field) {
               final dartName = field.dartName;
               final getter = field.getter;
-              if (index == model.fields.length - 1) {
+              if (index == fields.length - 1) {
                 return "buffer.write('$dartName=\$$getter');";
               }
               return "buffer.write('$dartName=\$$getter, ');";
@@ -232,7 +233,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         ..returns = refer(typeName)
         ..lambda = false
         ..optionalParameters.addAll([
-          for (var field in model.fields)
+          for (var field in fields)
             Parameter(
               (p) => p
                 ..name = field.dartName
@@ -244,7 +245,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         ]);
 
       final ctorParams = <String, Expression>{};
-      for (var field in model.fields) {
+      for (var field in fields) {
         final name = field.dartName;
         ctorParams[name] = refer(name).ifNullThen(refer('this').property(name));
       }
@@ -263,7 +264,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
       // Gather toJson fields
       final jsonObj = <String, Object?>{};
-      for (var field in model.fields) {
+      for (var field in fields) {
         final jsonName = field.wireName;
         final getter = field.getter;
         final type = field.type;
@@ -292,13 +293,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         ..annotations.add(refer('override').expression)
         ..name = 'getId'
         ..returns = refer('String')
-        ..body = refer(model.fields
-                    .firstWhereOrNull((field) => field.isPrimaryKey)
-                    ?.name
-                    .camelCase ??
-                'id')
-            .returned
-            .statement,
+        ..body = refer(model.primaryKeyField.name).returned.statement,
     );
   }
 
@@ -306,7 +301,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     ..name = '_internal'
     ..constant = true
     ..optionalParameters.addAll([
-      for (var field in model.fields)
+      for (var field in fields)
         Parameter(
           (p) {
             final type = field.typeReference;
@@ -321,7 +316,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         ),
     ])
     ..initializers.addAll([
-      for (var field in model.fields.where((field) => !field.isPrimaryKey))
+      for (var field in fields.where((field) => !field.isPrimaryKey))
         Code('_${field.dartName} = ${field.dartName}'),
     ]));
 
@@ -347,7 +342,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           ..factory = true
           ..lambda = false
           ..optionalParameters.addAll([
-            for (var field in model.fields)
+            for (var field in fields)
               Parameter((p) {
                 final name = field.dartName;
                 final type = field.typeReference.rebuild(
@@ -364,7 +359,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
         // Gather the parameters needed to construct the `_internal` call.
         final Map<String, Expression> params = {
-          for (var field in model.fields) field.dartName: _assignmentFor(field),
+          for (var field in fields) field.dartName: _assignmentFor(field),
         };
         ctor.body = refer(typeName)
             .newInstanceNamed('_internal', [], params)
@@ -385,7 +380,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
         // Gather fromJson fields
         final Map<String, Expression> params = {};
-        for (var field in model.fields) {
+        for (var field in fields) {
           final name = field.dartName;
           final jsonName = field.wireName;
           final jsonProp = refer('json').index(literalString(jsonName));
@@ -558,7 +553,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     if (model.isCustom) {
       return;
     }
-    for (var field in model.fields.where((field) => !field.isReadOnly)) {
+    for (var field in fields.where((field) => !field.isReadOnly)) {
       final modelFieldType = field.modelFieldType(
         isCustom: model.isCustom,
         models: allModels,
@@ -571,7 +566,9 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           ..assignment = refer('QueryField', datastoreUri).constInstance(
             [],
             {
-              'fieldName': literalString(field.name),
+              'fieldName': field.name == 'id'
+                  ? literalString('${model.name.camelCase}.id')
+                  : literalString(field.name),
               if (field.isHasOne || field.isBelongsTo || field.isHasMany)
                 'fieldType': refer('ModelFieldType').newInstance([
                   refer('ModelFieldTypeEnum').property(modelFieldType.name),
@@ -734,7 +731,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
             .statement,
 
         // Fields
-        for (var field in model.fields) _schemaDefinitionField(field),
+        for (var field in fields) _schemaDefinitionField(field),
 
         // Auth Rules
         if (model.authRules.isNotEmpty)

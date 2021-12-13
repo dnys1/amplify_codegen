@@ -96,31 +96,33 @@ Map<String, Model> parseSchema(String schema) {
     final newFields = <ModelField>[];
     final updatedModel = model.rebuild((m) {
       m.fields.map((field) => field.rebuild((field) {
-            final nodeField =
+            final fieldNode =
                 nodeFields.singleWhereOrNull((f) => f.wireName == field.name);
 
             // Node field will be null for injected fields such as `createdAt`.
             // These fields will not have relationships.
-            if (nodeField == null || !nodeField.hasRelationship) {
+            if (fieldNode == null || !fieldNode.hasRelationship) {
               return;
             }
 
-            final isV1 = nodeField.hasDirective('connection');
+            final isV1 = fieldNode.hasDirective('connection');
+            final isV2 = !isV1;
 
             // Get the connected field in the current model, if any.
-            final connectionFields = nodeField.connectionFields;
-            final connectionName = nodeField.connectionName;
+            final connectionFields = fieldNode.connectionFields;
+            final connectionName = fieldNode.connectionName;
 
             // Get the model referred to by this relationship.
-            var relatedModel = models[nodeField.type.typeName]!;
-            final relatedModelNode = _models[nodeField.type.typeName]!;
+            var relatedModel = models[fieldNode.type.typeName]!;
+            final relatedModelNode = _models[fieldNode.type.typeName]!;
 
             String? relatedFieldName;
             FieldDefinitionNode? relatedFieldNode;
             ModelField? relatedField;
+
             // Get foreign field via key/index.
-            if (connectionFields != null) {
-              final indexName = nodeField.indexName;
+            if (connectionFields != null || isV2) {
+              final indexName = fieldNode.indexName;
               final indexFields = relatedModelNode.indexFields[indexName];
               final connectedFieldName =
                   indexFields?.firstOrNull ?? relatedModel.primaryKeyField.name;
@@ -138,22 +140,22 @@ Map<String, Model> parseSchema(String schema) {
                 relatedFieldNode ??= relatedModelNode.fields
                     .singleWhere((f) => f.wireName == connectedFieldName);
               } else {
-                relatedFieldNode ??= relatedModelNode.fields
-                    .singleWhereOrNull((f) => f.wireName == connectedFieldName);
-                relatedFieldNode ??=
+                relatedFieldNode =
                     relatedModelNode.fields.singleWhereOrNull((f) {
-                  if (nodeField.isHasOne) {
+                  if (fieldNode.isHasOne) {
                     return f.isBelongsTo && f.type.typeName == m.name;
                   }
-                  if (nodeField.isHasMany) {
+                  if (fieldNode.isHasMany) {
                     return f.isBelongsTo && f.type.typeName == m.name;
                   }
-                  if (nodeField.isBelongsTo) {
+                  if (fieldNode.isBelongsTo) {
                     return (f.isHasOne || f.isHasMany) &&
                         f.type.typeName == m.name;
                   }
                   return false;
                 });
+                relatedFieldNode ??= relatedModelNode.fields
+                    .singleWhereOrNull((f) => f.wireName == connectedFieldName);
               }
             } else if (connectionName != null) {
               relatedFieldNode = relatedModelNode.fields.singleWhere(
@@ -170,6 +172,7 @@ Map<String, Model> parseSchema(String schema) {
             relatedField = relatedModel.maybeFieldNamed(relatedFieldName) ??
                 ModelField((f) => f
                   ..name = relatedFieldName
+                  ..ignore = true
                   ..type.awsType = AWSType.ID
                   ..type.isRequired = false
                   ..type.isList = false);
@@ -178,7 +181,7 @@ Map<String, Model> parseSchema(String schema) {
                 relatedModel.maybeFieldNamed(relatedFieldName) == null;
             if (isNewField) {
               relatedModel =
-                  relatedModel.rebuild((m) => m..fields.add(relatedField!));
+                  relatedModel.rebuild((m) => m.fields.add(relatedField!));
               models[relatedModel.name] = relatedModel;
             }
 
@@ -187,7 +190,7 @@ Map<String, Model> parseSchema(String schema) {
                 // V1
                 field.type.isList! && !relatedField.type.isList ||
                     // V2
-                    nodeField.hasDirective('hasMany');
+                    fieldNode.hasDirective('hasMany');
             if (isHasMany) {
               field
                 ..isBelongsTo = false
@@ -203,7 +206,7 @@ Map<String, Model> parseSchema(String schema) {
                 // V1
                 (!field.type.isRequired! && relatedField.type.isRequired) ||
                     // V2
-                    nodeField.hasDirective('hasOne');
+                    fieldNode.hasDirective('hasOne');
             if (isHasOne) {
               field
                 ..isBelongsTo = false
@@ -221,24 +224,10 @@ Map<String, Model> parseSchema(String schema) {
                     isNewField ||
                     (field.type.isRequired! && !relatedField.type.isRequired) ||
                     // V2
-                    nodeField.hasDirective('belongsTo');
+                    fieldNode.hasDirective('belongsTo');
             if (isBelongsTo) {
-              var targetName = connectionFields?.single;
-
-              // Create the field if it doesn't already exist.
-              if (targetName == null) {
-                targetName =
-                    makeConnectionAttributeName(model.name, field.name!);
-                if (model.maybeFieldNamed(targetName) == null) {
-                  newFields.add(ModelField(
-                    (f) => f
-                      ..name = targetName
-                      ..type.awsType = AWSType.ID
-                      ..type.isList = false
-                      ..type.isRequired = false,
-                  ));
-                }
-              }
+              var targetName = connectionFields?.single ??
+                  makeConnectionAttributeName(model.name, field.name!);
 
               field
                 ..isBelongsTo = true

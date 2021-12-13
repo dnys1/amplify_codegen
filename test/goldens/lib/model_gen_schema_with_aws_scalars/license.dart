@@ -82,7 +82,7 @@ class License extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
+  static const ID = QueryField<dynamic>(fieldName: 'license.id');
 
   static const NUMBER = QueryField<dynamic>(fieldName: 'number');
 
@@ -101,11 +101,11 @@ class License extends Model {
         key: NUMBER,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         isRequired: false,
         key: BELONGS_TO,
         ofModelName: 'Person',
-        associatedKey: Person.LICENSE));
+        targetName: 'licenseBelongsToId'));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,

@@ -81,7 +81,7 @@ class Comment extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
+  static const ID = QueryField<dynamic>(fieldName: 'comment.id');
 
   static const COMMENT = QueryField<dynamic>(fieldName: 'comment');
 
@@ -100,7 +100,10 @@ class Comment extends Model {
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
-        isRequired: false, key: POST, ofModelName: 'Post', targetName: 'id'));
+        isRequired: false,
+        key: POST,
+        ofModelName: 'Post',
+        targetName: 'commentPostId'));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,

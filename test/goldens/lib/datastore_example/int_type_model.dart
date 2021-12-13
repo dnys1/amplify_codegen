@@ -70,7 +70,7 @@ class IntTypeModel extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
+  static const ID = QueryField<dynamic>(fieldName: 'intTypeModel.id');
 
   static const VALUE = QueryField<dynamic>(fieldName: 'value');
 

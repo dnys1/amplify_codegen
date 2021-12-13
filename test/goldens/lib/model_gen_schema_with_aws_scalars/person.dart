@@ -81,7 +81,7 @@ class Person extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
+  static const ID = QueryField<dynamic>(fieldName: 'person.id');
 
   static const NAME = QueryField<dynamic>(fieldName: 'name');
 
@@ -100,7 +100,7 @@ class Person extends Model {
         key: NAME,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
         isRequired: false,
         key: LICENSE,
         ofModelName: 'License',

@@ -80,7 +80,7 @@ class BelongsToModel extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'id');
+  static const ID = QueryField<dynamic>(fieldName: 'belongsToModel.id');
 
   static const NAME = QueryField<dynamic>(fieldName: 'name');
 
@@ -103,7 +103,7 @@ class BelongsToModel extends Model {
         isRequired: true,
         key: CHILD,
         ofModelName: 'ChildModel',
-        targetName: 'id'));
+        targetName: 'belongsToModelChildId'));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,
