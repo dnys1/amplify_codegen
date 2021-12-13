@@ -37,14 +37,14 @@ type HasManyChildModel @model @key(name: "byParent", fields: ["parentID"]) {
 type ParentModel @model {
   id: ID!
   name: String!
-  childID: ID!
+  childID: ID
   child: ChildModel @connection(fields: ["childID"])
 }
 
 type ChildModel @model {
   id: ID!
   name: String!
-  parent: ParentModel @connection
+  parent: ParentModel! @connection
 }
 
 enum EnumModel {

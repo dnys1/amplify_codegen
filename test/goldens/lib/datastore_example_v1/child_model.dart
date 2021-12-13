@@ -30,7 +30,7 @@ class ChildModel extends Model {
   factory ChildModel(
       {String? id,
       required String name,
-      ParentModel? parent,
+      required ParentModel parent,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
     return ChildModel._internal(
@@ -44,7 +44,7 @@ class ChildModel extends Model {
   const ChildModel._internal(
       {required this.id,
       required String name,
-      ParentModel? parent,
+      required ParentModel parent,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt})
       : _name = name,
@@ -99,7 +99,7 @@ class ChildModel extends Model {
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
-        isRequired: false,
+        isRequired: true,
         key: parent$,
         ofModelName: 'ParentModel',
         targetName: 'childModelParentId'));
@@ -135,7 +135,17 @@ class ChildModel extends Model {
     return _name!;
   }
 
-  ParentModel? get parent => _parent;
+  ParentModel get parent {
+    if (_parent == null) {
+      throw const DataStoreException(
+          DataStoreExceptionMessages
+              .codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion: DataStoreExceptionMessages
+              .codeGenRequiredFieldForceCastRecoverySuggestion);
+    }
+    return _parent!;
+  }
+
   TemporalDateTime? get createdAt => _createdAt;
   TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {

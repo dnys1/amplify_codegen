@@ -41,14 +41,14 @@ type HasManyChildModel @model {
 type ParentModel @model {
   id: ID!
   name: String!
-  childID: ID!
+  childID: ID
   child: ChildModel @hasOne(fields: ["childID"])
 }
 
 type ChildModel @model {
   id: ID!
   name: String!
-  parent: ParentModel @belongsTo
+  parent: ParentModel! @belongsTo
 }
 
 enum EnumModel {

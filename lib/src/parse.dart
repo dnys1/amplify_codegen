@@ -79,7 +79,6 @@ Map<String, Model> parseSchema(String schema) {
             }
 
             final isV1 = fieldNode.hasDirective('connection');
-            final isV2 = !isV1;
 
             // Get the connected field in the current model, if any.
             final connectionFields = fieldNode.connectionFields;
@@ -93,42 +92,8 @@ Map<String, Model> parseSchema(String schema) {
             FieldDefinitionNode? relatedFieldNode;
             ModelField? relatedField;
 
-            // Get foreign field via key/index.
-            if (connectionFields != null || isV2) {
-              final indexName = fieldNode.indexName;
-              final indexFields = relatedModelNode.indexFields[indexName];
-              final connectedFieldName =
-                  indexFields?.firstOrNull ?? relatedModel.primaryKeyField.name;
-
-              relatedFieldNode ??=
-                  relatedModelNode.fields.firstWhereOrNull((f) {
-                return f.relationshipDirective
-                        ?.argumentNamed('fields')
-                        ?.stringListValue
-                        .first ==
-                    connectedFieldName;
-              });
-
-              if (isV2) {
-                relatedFieldNode ??=
-                    relatedModelNode.fields.singleWhereOrNull((f) {
-                  if (fieldNode.isHasOne) {
-                    return f.isBelongsTo && f.type.typeName == m.name;
-                  }
-                  if (fieldNode.isHasMany) {
-                    return f.isBelongsTo && f.type.typeName == m.name;
-                  }
-                  if (fieldNode.isBelongsTo) {
-                    return (f.isHasOne || f.isHasMany) &&
-                        f.type.typeName == m.name;
-                  }
-                  return false;
-                });
-              }
-
-              relatedFieldNode ??= relatedModelNode.fields
-                  .singleWhereOrNull((f) => f.wireName == connectedFieldName);
-            } else if (connectionName != null) {
+            // Get foreign field by connectionName
+            if (connectionName != null) {
               relatedFieldNode ??= relatedModelNode.fields.singleWhere(
                 (f) =>
                     f.relationshipDirective
@@ -137,6 +102,41 @@ Map<String, Model> parseSchema(String schema) {
                     connectionName,
               );
             }
+
+            // Get foreign field by key/index.
+            final indexName = fieldNode.indexName;
+            final indexFields = relatedModelNode.indexFields[indexName];
+            final connectedFieldName =
+                indexFields?.firstOrNull ?? relatedModel.primaryKeyField.name;
+
+            relatedFieldNode ??= relatedModelNode.fields.firstWhereOrNull((f) {
+              return f.relationshipDirective
+                      ?.argumentNamed('fields')
+                      ?.stringListValue
+                      .first ==
+                  connectedFieldName;
+            });
+
+            // Get foreign field by relationship equality.
+            relatedFieldNode ??= relatedModelNode.fields.singleWhereOrNull((f) {
+              // V2
+              if (fieldNode.isHasOne) {
+                return f.isBelongsTo && f.type.typeName == m.name;
+              }
+              if (fieldNode.isHasMany) {
+                return f.isBelongsTo && f.type.typeName == m.name;
+              }
+              if (fieldNode.isBelongsTo) {
+                return (f.isHasOne || f.isHasMany) && f.type.typeName == m.name;
+              }
+
+              // V1
+              return f.hasDirective('connection') && f.type.typeName == m.name;
+            });
+
+            // Get foreign field by field name.
+            relatedFieldNode ??= relatedModelNode.fields
+                .singleWhereOrNull((f) => f.wireName == connectedFieldName);
 
             // Create field if it doesn't exist
             relatedFieldName = relatedFieldNode?.name.value ??

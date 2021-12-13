@@ -108,7 +108,7 @@ void main() {
 
           expect(commentsField.isHasMany, isTrue);
           expect(commentsField.associatedType, equals('Comment'));
-          expect(commentsField.associatedName, equals('postCommentsId'));
+          expect(commentsField.associatedName, equals('post'));
         });
 
         test('should return BELONGS_TO for Comment.post', () {
