@@ -65,8 +65,9 @@ class Post extends Model {
         content: (json['content'] as String?),
         comments: (json['comments'] as List?)
             ?.cast<Map?>()
-            .map((el) => el != null
-                ? Comment.fromJson(el.cast<String, Object?>())
+            .map((el) => (el?['serializedData'] as Map?) != null
+                ? Comment.fromJson(((el as Map)['serializedData'] as Map)
+                    .cast<String, Object?>())
                 : null)
             .toList(),
         createdAt: json['createdAt'] != null

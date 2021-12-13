@@ -60,8 +60,10 @@ class HasManyModel extends Model {
         name: (json['name'] as String),
         children: (json['children'] as List?)
             ?.cast<Map?>()
-            .map((el) => el != null
-                ? HasManyChildModel.fromJson(el.cast<String, Object?>())
+            .map((el) => (el?['serializedData'] as Map?) != null
+                ? HasManyChildModel.fromJson(
+                    ((el as Map)['serializedData'] as Map)
+                        .cast<String, Object?>())
                 : null)
             .toList(),
         createdAt: json['createdAt'] != null

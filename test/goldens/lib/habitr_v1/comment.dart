@@ -71,12 +71,14 @@ class Comment extends Model {
     return Comment._internal(
         id: (json['id'] as String),
         habitId: (json['habitId'] as String),
-        habit: json['habit'] != null
-            ? Habit.fromJson((json['habit'] as Map).cast<String, Object?>())
+        habit: ((json['habit'] as Map?)?['serializedData'] as Map?) != null
+            ? Habit.fromJson(((json['habit'] as Map)['serializedData'] as Map)
+                .cast<String, Object?>())
             : null,
         owner: (json['owner'] as String?),
-        by: json['by'] != null
-            ? User.fromJson((json['by'] as Map).cast<String, Object?>())
+        by: ((json['by'] as Map?)?['serializedData'] as Map?) != null
+            ? User.fromJson(((json['by'] as Map)['serializedData'] as Map)
+                .cast<String, Object?>())
             : null,
         comment: (json['comment'] as String),
         createdAt: json['createdAt'] != null

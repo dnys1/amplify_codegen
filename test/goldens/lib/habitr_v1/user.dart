@@ -83,16 +83,19 @@ class User extends Model {
         username: (json['username'] as String),
         displayUsername: (json['displayUsername'] as String?),
         name: (json['name'] as String?),
-        avatar: json['avatar'] != null
-            ? S3Object.fromJson((json['avatar'] as Map).cast<String, Object?>())
+        avatar: ((json['avatar'] as Map?)?['serializedData'] as Map?) != null
+            ? S3Object.fromJson(((json['avatar'] as Map)['serializedData'] as Map)
+                .cast<String, Object?>())
             : null,
         comments: (json['comments'] as List?)
             ?.cast<Map>()
-            .map((el) => Comment.fromJson(el.cast<String, Object?>()))
+            .map((el) => Comment.fromJson(
+                ((el as Map)['serializedData'] as Map).cast<String, Object?>()))
             .toList(),
         habits: (json['habits'] as List?)
             ?.cast<Map>()
-            .map((el) => Habit.fromJson(el.cast<String, Object?>()))
+            .map((el) => Habit.fromJson(
+                ((el as Map)['serializedData'] as Map).cast<String, Object?>()))
             .toList(),
         upvotedHabits: (json['upvotedHabits'] as List?)?.cast<String>(),
         downvotedHabits: (json['downvotedHabits'] as List?)?.cast<String>(),

@@ -62,9 +62,10 @@ class HasManyChildModel extends Model {
     return HasManyChildModel._internal(
         id: (json['id'] as String),
         name: (json['name'] as String),
-        parent: json['parent'] != null
+        parent: ((json['parent'] as Map?)?['serializedData'] as Map?) != null
             ? HasManyModel.fromJson(
-                (json['parent'] as Map).cast<String, Object?>())
+                ((json['parent'] as Map)['serializedData'] as Map)
+                    .cast<String, Object?>())
             : null,
         parentId: (json['parentID'] as String),
         createdAt: json['createdAt'] != null

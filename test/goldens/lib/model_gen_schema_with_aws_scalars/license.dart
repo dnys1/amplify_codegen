@@ -58,10 +58,12 @@ class License extends Model {
     return License._internal(
         id: (json['id'] as String),
         number: (json['number'] as String),
-        belongsTo: json['belongsTo'] != null
-            ? Person.fromJson(
-                (json['belongsTo'] as Map).cast<String, Object?>())
-            : null,
+        belongsTo:
+            ((json['belongsTo'] as Map?)?['serializedData'] as Map?) != null
+                ? Person.fromJson(
+                    ((json['belongsTo'] as Map)['serializedData'] as Map)
+                        .cast<String, Object?>())
+                : null,
         createdAt: json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,

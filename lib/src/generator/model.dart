@@ -507,11 +507,23 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
                 .call([]);
       }
     } else if (type.isModel) {
+      final isNullable = !type.isRequired;
+      final map = refer('Map');
       final newInst = refer(type.modelName!).newInstanceNamed('fromJson', [
-        (isDynamic ? ref.asA(refer('Map')) : ref)
+        ref
+            .asA(map)
+            .index(literalString('serializedData'))
+            .asA(map)
             .property('cast')
             .call([], {}, [refer('String'), refer('Object').nullable])
       ]);
+      // There is no `nullIndex` field on Expression.
+      ref = CodeExpression(Block.of([
+        (isDynamic ? ref.asA(isNullable ? map.nullable : map) : ref).code,
+        const Code('?')
+      ]))
+          .index(literalString('serializedData'))
+          .asA(isNullable ? map.nullable : map);
       return type.isRequired
           ? newInst
           : ref.notEqualTo(literalNull).conditional(newInst, literalNull);
@@ -624,13 +636,6 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
       definitionCtor = 'id';
       properties = {'name': literalString(field.name)};
     } else {
-      if (modelFieldType == ModelFieldType.embedded ||
-          modelFieldType == ModelFieldType.embeddedCollection) {
-        properties['fieldName'] = literalString(field.name);
-        definitionCtor = 'embedded';
-        // modelTypeProperies['ofCustomTypeName'] = literalString(
-        //     (field.type.modelName ?? field.type.listType?.modelName)!);
-      }
       switch (modelFieldType) {
         case ModelFieldType.string:
         case ModelFieldType.int:
@@ -641,6 +646,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         case ModelFieldType.timestamp:
         case ModelFieldType.bool:
         case ModelFieldType.enumeration:
+        case ModelFieldType.collection:
           if (model.isCustom) {
             definitionCtor = 'customTypeField';
             properties['fieldName'] = literalString(field.name);
@@ -652,22 +658,27 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
             properties['key'] = refer(field.name.constantCase);
           }
           break;
-        case ModelFieldType.collection:
-          definitionCtor = 'field';
-          properties['key'] = refer(field.name.constantCase);
-          modelTypeProperies['ofModelName'] =
-              literalString(modelFieldType.name);
-          break;
         case ModelFieldType.embedded:
-          break;
         case ModelFieldType.embeddedCollection:
-          properties['isArray'] = literalBool(true);
+          properties['fieldName'] = literalString(field.name);
+          definitionCtor = 'embedded';
+          final customTypeName = field.type.modelName!;
+          modelTypeProperies['ofCustomTypeName'] =
+              literalString(customTypeName);
           break;
         case ModelFieldType.model:
           definitionCtor = 'field';
           properties['key'] = refer(field.name.constantCase);
           break;
       }
+    }
+
+    if (modelFieldType == ModelFieldType.collection) {
+      final baseType = field.type.listType!.modelFieldType(
+        isCustom: model.isCustom,
+        models: allModels,
+      );
+      modelTypeProperies['ofModelName'] = literalString(baseType.name);
     }
 
     if (definitionCtor == 'field' ||

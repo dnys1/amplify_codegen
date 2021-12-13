@@ -89,12 +89,14 @@ class Habit extends Model {
         ups: (json['ups'] as int?),
         downs: (json['downs'] as int?),
         owner: (json['owner'] as String?),
-        author: json['author'] != null
-            ? User.fromJson((json['author'] as Map).cast<String, Object?>())
+        author: ((json['author'] as Map?)?['serializedData'] as Map?) != null
+            ? User.fromJson(((json['author'] as Map)['serializedData'] as Map)
+                .cast<String, Object?>())
             : null,
         comments: (json['comments'] as List?)
             ?.cast<Map>()
-            .map((el) => Comment.fromJson(el.cast<String, Object?>()))
+            .map((el) => Comment.fromJson(
+                ((el as Map)['serializedData'] as Map).cast<String, Object?>()))
             .toList(),
         createdAt: json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))

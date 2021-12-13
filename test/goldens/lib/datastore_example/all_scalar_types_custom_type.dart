@@ -99,7 +99,8 @@ class AllScalarTypesCustomType {
         jsonValue: (json['jsonValue'] as String),
         enumValue: EnumModel.values.byValue((json['enumValue'] as String?))!,
         customTypeValue: SimpleCustomType.fromJson(
-            (json['customTypeValue'] as Map).cast<String, Object?>()));
+            ((json['customTypeValue'] as Map)['serializedData'] as Map)
+                .cast<String, Object?>()));
   }
 
   final String id;

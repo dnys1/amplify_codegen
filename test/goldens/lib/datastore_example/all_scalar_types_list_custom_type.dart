@@ -119,8 +119,10 @@ class AllScalarTypesListCustomType {
             .toList(),
         customTypeValues: (json['customTypeValues'] as List?)
             ?.cast<Map?>()
-            .map((el) => el != null
-                ? SimpleCustomType.fromJson(el.cast<String, Object?>())
+            .map((el) => (el?['serializedData'] as Map?) != null
+                ? SimpleCustomType.fromJson(
+                    ((el as Map)['serializedData'] as Map)
+                        .cast<String, Object?>())
                 : null)
             .toList());
   }

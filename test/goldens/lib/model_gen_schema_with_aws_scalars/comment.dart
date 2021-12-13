@@ -58,8 +58,9 @@ class Comment extends Model {
     return Comment._internal(
         id: (json['id'] as String),
         comment: (json['comment'] as String),
-        post: json['post'] != null
-            ? Post.fromJson((json['post'] as Map).cast<String, Object?>())
+        post: ((json['post'] as Map?)?['serializedData'] as Map?) != null
+            ? Post.fromJson(((json['post'] as Map)['serializedData'] as Map)
+                .cast<String, Object?>())
             : null,
         createdAt: json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))

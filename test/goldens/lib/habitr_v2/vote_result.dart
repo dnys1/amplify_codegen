@@ -42,11 +42,13 @@ class VoteResult {
   factory VoteResult.fromJson(Map<String, Object?> json) {
     return VoteResult._internal(
         id: (json['id'] as String),
-        habit: json['habit'] != null
-            ? Habit.fromJson((json['habit'] as Map).cast<String, Object?>())
+        habit: ((json['habit'] as Map?)?['serializedData'] as Map?) != null
+            ? Habit.fromJson(((json['habit'] as Map)['serializedData'] as Map)
+                .cast<String, Object?>())
             : null,
-        user: json['user'] != null
-            ? User.fromJson((json['user'] as Map).cast<String, Object?>())
+        user: ((json['user'] as Map?)?['serializedData'] as Map?) != null
+            ? User.fromJson(((json['user'] as Map)['serializedData'] as Map)
+                .cast<String, Object?>())
             : null);
   }
 

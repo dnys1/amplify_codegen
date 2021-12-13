@@ -60,8 +60,10 @@ class Blog extends Model {
         name: (json['name'] as String),
         posts: (json['posts'] as List?)
             ?.cast<Map?>()
-            .map((el) =>
-                el != null ? Post.fromJson(el.cast<String, Object?>()) : null)
+            .map((el) => (el?['serializedData'] as Map?) != null
+                ? Post.fromJson(((el as Map)['serializedData'] as Map)
+                    .cast<String, Object?>())
+                : null)
             .toList(),
         createdAt: json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))

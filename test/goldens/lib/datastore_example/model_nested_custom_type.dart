@@ -61,12 +61,14 @@ class ModelNestedCustomType extends Model {
     return ModelNestedCustomType._internal(
         id: (json['id'] as String),
         customTypeValue: AllScalarTypesCustomType.fromJson(
-            (json['customTypeValue'] as Map).cast<String, Object?>()),
+            ((json['customTypeValue'] as Map)['serializedData'] as Map)
+                .cast<String, Object?>()),
         listCustomTypeValue: (json['listCustomTypeValue'] as List?)
             ?.cast<Map?>()
-            .map((el) => el != null
+            .map((el) => (el?['serializedData'] as Map?) != null
                 ? AllScalarTypesListCustomType.fromJson(
-                    el.cast<String, Object?>())
+                    ((el as Map)['serializedData'] as Map)
+                        .cast<String, Object?>())
                 : null)
             .toList(),
         createdAt: json['createdAt'] != null

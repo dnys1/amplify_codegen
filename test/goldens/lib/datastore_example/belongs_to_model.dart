@@ -58,8 +58,9 @@ class BelongsToModel extends Model {
     return BelongsToModel._internal(
         id: (json['id'] as String),
         name: (json['name'] as String),
-        child:
-            ChildModel.fromJson((json['child'] as Map).cast<String, Object?>()),
+        child: ChildModel.fromJson(
+            ((json['child'] as Map)['serializedData'] as Map)
+                .cast<String, Object?>()),
         createdAt: json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,

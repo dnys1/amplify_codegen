@@ -58,8 +58,10 @@ class Person extends Model {
     return Person._internal(
         id: (json['id'] as String),
         name: (json['name'] as String),
-        license: json['license'] != null
-            ? License.fromJson((json['license'] as Map).cast<String, Object?>())
+        license: ((json['license'] as Map?)?['serializedData'] as Map?) != null
+            ? License.fromJson(
+                ((json['license'] as Map)['serializedData'] as Map)
+                    .cast<String, Object?>())
             : null,
         createdAt: json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))

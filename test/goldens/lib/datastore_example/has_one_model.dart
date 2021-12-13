@@ -63,9 +63,10 @@ class HasOneModel extends Model {
         id: (json['id'] as String),
         name: (json['name'] as String),
         childId: (json['childID'] as String),
-        child: json['child'] != null
+        child: ((json['child'] as Map?)?['serializedData'] as Map?) != null
             ? ChildModel.fromJson(
-                (json['child'] as Map).cast<String, Object?>())
+                ((json['child'] as Map)['serializedData'] as Map)
+                    .cast<String, Object?>())
             : null,
         createdAt: json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
