@@ -31,14 +31,12 @@ class HasManyChildModel extends Model {
       {String? id,
       required String name,
       HasManyModel? parent,
-      required String parentId,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
     return HasManyChildModel._internal(
         id: id ?? UUID.getUUID(),
         name: name,
         parent: parent,
-        parentId: parentId,
         createdAt: createdAt,
         updatedAt: updatedAt);
   }
@@ -47,12 +45,10 @@ class HasManyChildModel extends Model {
       {required this.id,
       required String name,
       HasManyModel? parent,
-      required String parentId,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt})
       : _name = name,
         _parent = parent,
-        _parentId = parentId,
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
@@ -65,7 +61,6 @@ class HasManyChildModel extends Model {
                 ((json['parent'] as Map)['serializedData'] as Map)
                     .cast<String, Object?>())
             : null,
-        parentId: (json['parentID'] as String),
         createdAt: json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
@@ -83,8 +78,6 @@ class HasManyChildModel extends Model {
 
   final HasManyModel? _parent;
 
-  final String? _parentId;
-
   final TemporalDateTime? _createdAt;
 
   final TemporalDateTime? _updatedAt;
@@ -97,8 +90,6 @@ class HasManyChildModel extends Model {
       fieldName: 'parent',
       fieldType: ModelFieldType(ModelFieldTypeEnum.model,
           ofModelName: 'HasManyModel'));
-
-  static const parentId$ = QueryField<dynamic>(fieldName: 'parentID');
 
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
@@ -115,11 +106,6 @@ class HasManyChildModel extends Model {
         key: parent$,
         ofModelName: 'HasManyModel',
         targetName: 'parentID'));
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        isRequired: true,
-        key: parentId$,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
-        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,
@@ -153,17 +139,6 @@ class HasManyChildModel extends Model {
   }
 
   HasManyModel? get parent => _parent;
-  String get parentId {
-    if (_parentId == null) {
-      throw const DataStoreException(
-          DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion: DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastRecoverySuggestion);
-    }
-    return _parentId!;
-  }
-
   TemporalDateTime? get createdAt => _createdAt;
   TemporalDateTime? get updatedAt => _updatedAt;
   bool equals(Object? other) {
@@ -177,7 +152,6 @@ class HasManyChildModel extends Model {
           id == other.id &&
           _name == other._name &&
           _parent == other._parent &&
-          _parentId == other._parentId &&
           _createdAt == other._createdAt &&
           _updatedAt == other._updatedAt;
   @override
@@ -189,7 +163,6 @@ class HasManyChildModel extends Model {
     buffer.write('id=$id, ');
     buffer.write('name=$_name, ');
     buffer.write('parent=$_parent, ');
-    buffer.write('parentId=$_parentId, ');
     buffer.write('createdAt=$_createdAt, ');
     buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
@@ -200,14 +173,12 @@ class HasManyChildModel extends Model {
       {String? id,
       String? name,
       HasManyModel? parent,
-      String? parentId,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
     return HasManyChildModel(
         id: id ?? this.id,
         name: name ?? this.name,
         parent: parent ?? this.parent,
-        parentId: parentId ?? this.parentId,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt);
   }
@@ -217,7 +188,6 @@ class HasManyChildModel extends Model {
         'id': id,
         'name': _name,
         'parent': _parent?.toJson(),
-        'parentID': _parentId,
         'createdAt': _createdAt?.format(),
         'updatedAt': _updatedAt?.format()
       };

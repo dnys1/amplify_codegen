@@ -29,14 +29,12 @@ import 'post.dart';
 class Comment extends Model {
   factory Comment(
       {String? id,
-      required String postId,
       Post? post,
       required String content,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
     return Comment._internal(
         id: id ?? UUID.getUUID(),
-        postId: postId,
         post: post,
         content: content,
         createdAt: createdAt,
@@ -45,13 +43,11 @@ class Comment extends Model {
 
   const Comment._internal(
       {required this.id,
-      required String postId,
       Post? post,
       required String content,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt})
-      : _postId = postId,
-        _post = post,
+      : _post = post,
         _content = content,
         _createdAt = createdAt,
         _updatedAt = updatedAt;
@@ -59,7 +55,6 @@ class Comment extends Model {
   factory Comment.fromJson(Map<String, Object?> json) {
     return Comment._internal(
         id: (json['id'] as String),
-        postId: (json['postID'] as String),
         post: ((json['post'] as Map?)?['serializedData'] as Map?) != null
             ? Post.fromJson(((json['post'] as Map)['serializedData'] as Map)
                 .cast<String, Object?>())
@@ -77,8 +72,6 @@ class Comment extends Model {
 
   final String id;
 
-  final String? _postId;
-
   final Post? _post;
 
   final String? _content;
@@ -88,8 +81,6 @@ class Comment extends Model {
   final TemporalDateTime? _updatedAt;
 
   static const id$ = QueryField<dynamic>(fieldName: 'comment.id');
-
-  static const postId$ = QueryField<dynamic>(fieldName: 'postID');
 
   static const post$ = QueryField<dynamic>(
       fieldName: 'post',
@@ -102,11 +93,6 @@ class Comment extends Model {
     modelSchemaDefinition.name = 'Comment';
     modelSchemaDefinition.pluralName = 'Comments';
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        isRequired: true,
-        key: postId$,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
-        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         isRequired: false,
         key: post$,
@@ -138,17 +124,6 @@ class Comment extends Model {
     return id;
   }
 
-  String get postId {
-    if (_postId == null) {
-      throw const DataStoreException(
-          DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion: DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastRecoverySuggestion);
-    }
-    return _postId!;
-  }
-
   Post? get post => _post;
   String get content {
     if (_content == null) {
@@ -172,7 +147,6 @@ class Comment extends Model {
       identical(this, other) ||
       other is Comment &&
           id == other.id &&
-          _postId == other._postId &&
           _post == other._post &&
           _content == other._content &&
           _createdAt == other._createdAt &&
@@ -184,7 +158,6 @@ class Comment extends Model {
     final buffer = StringBuffer();
     buffer.write('Comment {');
     buffer.write('id=$id, ');
-    buffer.write('postId=$_postId, ');
     buffer.write('post=$_post, ');
     buffer.write('content=$_content, ');
     buffer.write('createdAt=$_createdAt, ');
@@ -195,14 +168,12 @@ class Comment extends Model {
 
   Comment copyWith(
       {String? id,
-      String? postId,
       Post? post,
       String? content,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
     return Comment(
         id: id ?? this.id,
-        postId: postId ?? this.postId,
         post: post ?? this.post,
         content: content ?? this.content,
         createdAt: createdAt ?? this.createdAt,
@@ -212,7 +183,6 @@ class Comment extends Model {
   @override
   Map<String, Object?> toJson() => {
         'id': id,
-        'postID': _postId,
         'post': _post?.toJson(),
         'content': _content,
         'createdAt': _createdAt?.format(),

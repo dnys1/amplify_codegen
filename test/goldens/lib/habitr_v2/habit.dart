@@ -36,7 +36,6 @@ class Habit extends Model {
       String? details,
       int? ups,
       int? downs,
-      String? owner,
       User? author,
       List<Comment>? comments,
       TemporalDateTime? createdAt,
@@ -48,7 +47,6 @@ class Habit extends Model {
         details: details,
         ups: ups,
         downs: downs,
-        owner: owner,
         author: author,
         comments: comments != null ? List.unmodifiable(comments) : null,
         createdAt: createdAt,
@@ -62,7 +60,6 @@ class Habit extends Model {
       String? details,
       int? ups,
       int? downs,
-      String? owner,
       User? author,
       List<Comment>? comments,
       TemporalDateTime? createdAt,
@@ -72,7 +69,6 @@ class Habit extends Model {
         _details = details,
         _ups = ups,
         _downs = downs,
-        _owner = owner,
         _author = author,
         _comments = comments,
         _createdAt = createdAt,
@@ -86,7 +82,6 @@ class Habit extends Model {
         details: (json['details'] as String?),
         ups: (json['ups'] as int?),
         downs: (json['downs'] as int?),
-        owner: (json['owner'] as String?),
         author: ((json['author'] as Map?)?['serializedData'] as Map?) != null
             ? User.fromJson(((json['author'] as Map)['serializedData'] as Map)
                 .cast<String, Object?>())
@@ -118,8 +113,6 @@ class Habit extends Model {
 
   final int? _downs;
 
-  final String? _owner;
-
   final User? _author;
 
   final List<Comment>? _comments;
@@ -139,8 +132,6 @@ class Habit extends Model {
   static const ups$ = QueryField<dynamic>(fieldName: 'ups');
 
   static const downs$ = QueryField<dynamic>(fieldName: 'downs');
-
-  static const owner$ = QueryField<dynamic>(fieldName: 'owner');
 
   static const author$ = QueryField<dynamic>(
       fieldName: 'author',
@@ -237,11 +228,6 @@ class Habit extends Model {
               ownerField: 'owner',
               identityClaim: 'cognito:username')
         ]));
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        isRequired: false,
-        key: owner$,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
-        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         isRequired: false,
         key: author$,
@@ -326,7 +312,6 @@ class Habit extends Model {
   String? get details => _details;
   int? get ups => _ups;
   int? get downs => _downs;
-  String? get owner => _owner;
   User? get author => _author;
   List<Comment>? get comments => _comments;
   TemporalDateTime? get createdAt => _createdAt;
@@ -345,7 +330,6 @@ class Habit extends Model {
           _details == other._details &&
           _ups == other._ups &&
           _downs == other._downs &&
-          _owner == other._owner &&
           _author == other._author &&
           _comments == other._comments &&
           _createdAt == other._createdAt &&
@@ -362,7 +346,6 @@ class Habit extends Model {
     buffer.write('details=$_details, ');
     buffer.write('ups=$_ups, ');
     buffer.write('downs=$_downs, ');
-    buffer.write('owner=$_owner, ');
     buffer.write('author=$_author, ');
     buffer.write('comments=$_comments, ');
     buffer.write('createdAt=$_createdAt, ');
@@ -378,7 +361,6 @@ class Habit extends Model {
       String? details,
       int? ups,
       int? downs,
-      String? owner,
       User? author,
       List<Comment>? comments,
       TemporalDateTime? createdAt,
@@ -390,7 +372,6 @@ class Habit extends Model {
         details: details ?? this.details,
         ups: ups ?? this.ups,
         downs: downs ?? this.downs,
-        owner: owner ?? this.owner,
         author: author ?? this.author,
         comments: comments ?? this.comments,
         createdAt: createdAt ?? this.createdAt,
@@ -405,7 +386,6 @@ class Habit extends Model {
         'details': _details,
         'ups': _ups,
         'downs': _downs,
-        'owner': _owner,
         'author': _author?.toJson(),
         'comments': _comments?.map((el) => el.toJson()).toList(),
         'createdAt': _createdAt?.format(),

@@ -30,18 +30,14 @@ import 'user.dart';
 class Comment extends Model {
   factory Comment(
       {String? id,
-      required String habitId,
       Habit? habit,
-      String? owner,
       User? by,
       required String comment,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
     return Comment._internal(
         id: id ?? UUID.getUUID(),
-        habitId: habitId,
         habit: habit,
-        owner: owner,
         by: by,
         comment: comment,
         createdAt: createdAt,
@@ -50,16 +46,12 @@ class Comment extends Model {
 
   const Comment._internal(
       {required this.id,
-      required String habitId,
       Habit? habit,
-      String? owner,
       User? by,
       required String comment,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt})
-      : _habitId = habitId,
-        _habit = habit,
-        _owner = owner,
+      : _habit = habit,
         _by = by,
         _comment = comment,
         _createdAt = createdAt,
@@ -68,12 +60,10 @@ class Comment extends Model {
   factory Comment.fromJson(Map<String, Object?> json) {
     return Comment._internal(
         id: (json['id'] as String),
-        habitId: (json['habitId'] as String),
         habit: ((json['habit'] as Map?)?['serializedData'] as Map?) != null
             ? Habit.fromJson(((json['habit'] as Map)['serializedData'] as Map)
                 .cast<String, Object?>())
             : null,
-        owner: (json['owner'] as String?),
         by: ((json['by'] as Map?)?['serializedData'] as Map?) != null
             ? User.fromJson(((json['by'] as Map)['serializedData'] as Map)
                 .cast<String, Object?>())
@@ -91,11 +81,7 @@ class Comment extends Model {
 
   final String id;
 
-  final String? _habitId;
-
   final Habit? _habit;
-
-  final String? _owner;
 
   final User? _by;
 
@@ -107,14 +93,10 @@ class Comment extends Model {
 
   static const id$ = QueryField<dynamic>(fieldName: 'comment.id');
 
-  static const habitId$ = QueryField<dynamic>(fieldName: 'habitId');
-
   static const habit$ = QueryField<dynamic>(
       fieldName: 'habit',
       fieldType:
           ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Habit'));
-
-  static const owner$ = QueryField<dynamic>(fieldName: 'owner');
 
   static const by$ = QueryField<dynamic>(
       fieldName: 'by',
@@ -127,21 +109,11 @@ class Comment extends Model {
     modelSchemaDefinition.name = 'Comment';
     modelSchemaDefinition.pluralName = 'Comments';
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        isRequired: true,
-        key: habitId$,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
-        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         isRequired: false,
         key: habit$,
         ofModelName: 'Habit',
         targetName: 'habitId'));
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        isRequired: false,
-        key: owner$,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
-        isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         isRequired: false, key: by$, ofModelName: 'User', targetName: 'owner'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
@@ -202,19 +174,7 @@ class Comment extends Model {
     return id;
   }
 
-  String get habitId {
-    if (_habitId == null) {
-      throw const DataStoreException(
-          DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion: DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastRecoverySuggestion);
-    }
-    return _habitId!;
-  }
-
   Habit? get habit => _habit;
-  String? get owner => _owner;
   User? get by => _by;
   String get comment {
     if (_comment == null) {
@@ -238,9 +198,7 @@ class Comment extends Model {
       identical(this, other) ||
       other is Comment &&
           id == other.id &&
-          _habitId == other._habitId &&
           _habit == other._habit &&
-          _owner == other._owner &&
           _by == other._by &&
           _comment == other._comment &&
           _createdAt == other._createdAt &&
@@ -252,9 +210,7 @@ class Comment extends Model {
     final buffer = StringBuffer();
     buffer.write('Comment {');
     buffer.write('id=$id, ');
-    buffer.write('habitId=$_habitId, ');
     buffer.write('habit=$_habit, ');
-    buffer.write('owner=$_owner, ');
     buffer.write('by=$_by, ');
     buffer.write('comment=$_comment, ');
     buffer.write('createdAt=$_createdAt, ');
@@ -265,18 +221,14 @@ class Comment extends Model {
 
   Comment copyWith(
       {String? id,
-      String? habitId,
       Habit? habit,
-      String? owner,
       User? by,
       String? comment,
       TemporalDateTime? createdAt,
       TemporalDateTime? updatedAt}) {
     return Comment(
         id: id ?? this.id,
-        habitId: habitId ?? this.habitId,
         habit: habit ?? this.habit,
-        owner: owner ?? this.owner,
         by: by ?? this.by,
         comment: comment ?? this.comment,
         createdAt: createdAt ?? this.createdAt,
@@ -286,9 +238,7 @@ class Comment extends Model {
   @override
   Map<String, Object?> toJson() => {
         'id': id,
-        'habitId': _habitId,
         'habit': _habit?.toJson(),
-        'owner': _owner,
         'by': _by?.toJson(),
         'comment': _comment,
         'createdAt': _createdAt?.format(),

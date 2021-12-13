@@ -33,7 +33,6 @@ class Post extends Model {
       required String title,
       required int rating,
       TemporalDateTime? created,
-      required String blogId,
       Blog? blog,
       List<Comment?>? comments,
       TemporalDateTime? createdAt,
@@ -43,7 +42,6 @@ class Post extends Model {
         title: title,
         rating: rating,
         created: created,
-        blogId: blogId,
         blog: blog,
         comments: comments != null ? List.unmodifiable(comments) : null,
         createdAt: createdAt,
@@ -55,7 +53,6 @@ class Post extends Model {
       required String title,
       required int rating,
       TemporalDateTime? created,
-      required String blogId,
       Blog? blog,
       List<Comment?>? comments,
       TemporalDateTime? createdAt,
@@ -63,7 +60,6 @@ class Post extends Model {
       : _title = title,
         _rating = rating,
         _created = created,
-        _blogId = blogId,
         _blog = blog,
         _comments = comments,
         _createdAt = createdAt,
@@ -77,7 +73,6 @@ class Post extends Model {
         created: json['created'] != null
             ? TemporalDateTime.fromString((json['created'] as String))
             : null,
-        blogId: (json['blogID'] as String),
         blog: ((json['blog'] as Map?)?['serializedData'] as Map?) != null
             ? Blog.fromJson(((json['blog'] as Map)['serializedData'] as Map)
                 .cast<String, Object?>())
@@ -107,8 +102,6 @@ class Post extends Model {
 
   final TemporalDateTime? _created;
 
-  final String? _blogId;
-
   final Blog? _blog;
 
   final List<Comment?>? _comments;
@@ -124,8 +117,6 @@ class Post extends Model {
   static const rating$ = QueryField<dynamic>(fieldName: 'rating');
 
   static const created$ = QueryField<dynamic>(fieldName: 'created');
-
-  static const blogId$ = QueryField<dynamic>(fieldName: 'blogID');
 
   static const blog$ = QueryField<dynamic>(
       fieldName: 'blog',
@@ -155,11 +146,6 @@ class Post extends Model {
         isRequired: false,
         key: created$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
-        isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        isRequired: true,
-        key: blogId$,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         isRequired: false,
@@ -215,17 +201,6 @@ class Post extends Model {
   }
 
   TemporalDateTime? get created => _created;
-  String get blogId {
-    if (_blogId == null) {
-      throw const DataStoreException(
-          DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion: DataStoreExceptionMessages
-              .codeGenRequiredFieldForceCastRecoverySuggestion);
-    }
-    return _blogId!;
-  }
-
   Blog? get blog => _blog;
   List<Comment?>? get comments => _comments;
   TemporalDateTime? get createdAt => _createdAt;
@@ -242,7 +217,6 @@ class Post extends Model {
           _title == other._title &&
           _rating == other._rating &&
           _created == other._created &&
-          _blogId == other._blogId &&
           _blog == other._blog &&
           _comments == other._comments &&
           _createdAt == other._createdAt &&
@@ -257,7 +231,6 @@ class Post extends Model {
     buffer.write('title=$_title, ');
     buffer.write('rating=$_rating, ');
     buffer.write('created=$_created, ');
-    buffer.write('blogId=$_blogId, ');
     buffer.write('blog=$_blog, ');
     buffer.write('comments=$_comments, ');
     buffer.write('createdAt=$_createdAt, ');
@@ -271,7 +244,6 @@ class Post extends Model {
       String? title,
       int? rating,
       TemporalDateTime? created,
-      String? blogId,
       Blog? blog,
       List<Comment?>? comments,
       TemporalDateTime? createdAt,
@@ -281,7 +253,6 @@ class Post extends Model {
         title: title ?? this.title,
         rating: rating ?? this.rating,
         created: created ?? this.created,
-        blogId: blogId ?? this.blogId,
         blog: blog ?? this.blog,
         comments: comments ?? this.comments,
         createdAt: createdAt ?? this.createdAt,
@@ -294,7 +265,6 @@ class Post extends Model {
         'title': _title,
         'rating': _rating,
         'created': _created?.format(),
-        'blogID': _blogId,
         'blog': _blog?.toJson(),
         'comments': _comments?.map((el) => el?.toJson()).toList(),
         'createdAt': _createdAt?.format(),
