@@ -40,7 +40,7 @@ class ModelProvider extends ModelProviderInterface {
   static final instance = ModelProvider();
 
   @override
-  String get version => 'c5ab010b27ce81f36c5312ca77abddae41018d87';
+  String get version => '34f2d40d6799173e3d0a3dda9c0443415c5d1c37';
   @override
   List<ModelSchema> get modelSchemas => [
         Attration.schema,

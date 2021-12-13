@@ -93,44 +93,36 @@ Map<String, Model> parseSchema(String schema) {
             ModelField? relatedField;
 
             // Get foreign field via key/index.
-            if (connectionFields != null || isV2) {
+            if (connectionFields != null || isV2 && !fieldNode.isBelongsTo) {
               final indexName = fieldNode.indexName;
               final indexFields = relatedModelNode.indexFields[indexName];
               final connectedFieldName =
                   indexFields?.firstOrNull ?? relatedModel.primaryKeyField.name;
 
-              if (isV1) {
-                relatedFieldNode =
-                    relatedModelNode.fields.firstWhereOrNull((f) {
-                  return f.relationshipDirective
-                          ?.argumentNamed('fields')
-                          ?.stringListValue
-                          .first ==
-                      connectedFieldName;
-                });
+              relatedFieldNode ??=
+                  relatedModelNode.fields.firstWhereOrNull((f) {
+                return f.relationshipDirective
+                        ?.argumentNamed('fields')
+                        ?.stringListValue
+                        .first ==
+                    connectedFieldName;
+              });
 
-                relatedFieldNode ??= relatedModelNode.fields
-                    .singleWhere((f) => f.wireName == connectedFieldName);
-              } else {
-                relatedFieldNode =
-                    relatedModelNode.fields.singleWhereOrNull((f) {
-                  if (fieldNode.isHasOne) {
-                    return f.isBelongsTo && f.type.typeName == m.name;
-                  }
-                  if (fieldNode.isHasMany) {
-                    return f.isBelongsTo && f.type.typeName == m.name;
-                  }
-                  if (fieldNode.isBelongsTo) {
-                    return (f.isHasOne || f.isHasMany) &&
-                        f.type.typeName == m.name;
-                  }
-                  return false;
-                });
-                relatedFieldNode ??= relatedModelNode.fields
-                    .singleWhereOrNull((f) => f.wireName == connectedFieldName);
-              }
+              relatedFieldNode ??= relatedModelNode.fields
+                  .singleWhereOrNull((f) => f.wireName == connectedFieldName);
+
+              relatedFieldNode ??=
+                  relatedModelNode.fields.singleWhereOrNull((f) {
+                if (fieldNode.isHasOne) {
+                  return f.isBelongsTo && f.type.typeName == m.name;
+                }
+                if (fieldNode.isHasMany) {
+                  return f.isBelongsTo && f.type.typeName == m.name;
+                }
+                return false;
+              });
             } else if (connectionName != null) {
-              relatedFieldNode = relatedModelNode.fields.singleWhere(
+              relatedFieldNode ??= relatedModelNode.fields.singleWhere(
                 (f) =>
                     f.relationshipDirective
                         ?.argumentNamed(isV1 ? 'name' : 'indexName')
@@ -149,6 +141,8 @@ Map<String, Model> parseSchema(String schema) {
                   ..type.awsType = AWSType.ID
                   ..type.isRequired = false
                   ..type.isList = false);
+            field.targetName = connectionFields?.first ??
+                makeConnectionAttributeName(model.name, field.name!);
 
             final isNewField =
                 relatedModel.maybeFieldNamed(relatedFieldName) == null;
@@ -199,14 +193,10 @@ Map<String, Model> parseSchema(String schema) {
                     // V2
                     fieldNode.hasDirective('belongsTo');
             if (isBelongsTo) {
-              var targetName = connectionFields?.single ??
-                  makeConnectionAttributeName(model.name, field.name!);
-
               field
                 ..isBelongsTo = true
                 ..isHasMany = false
-                ..isHasOne = false
-                ..targetName = targetName;
+                ..isHasOne = false;
               return;
             }
 

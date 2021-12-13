@@ -1,3 +1,5 @@
+import 'package:amplify_codegen/src/helpers/language.dart';
+import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/models/model.dart';
 import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
@@ -19,6 +21,18 @@ extension ModelHelpers on Model {
   ///
   /// Throws a [StateError] if not present.
   ModelField get primaryKeyField => fields.singleWhere((f) => f.isPrimaryKey);
+
+  /// This type's name as a library name.
+  String get libraryName {
+    final libName = name.snakeCase;
+    if (hardReservedWords.contains(libName)) {
+      return '${libName}_';
+    }
+    return libName;
+  }
+
+  /// This type's name as a class name.
+  String get className => name.pascalCase;
 }
 
 extension ModelDefinitionHelpers on ObjectTypeDefinitionNode {

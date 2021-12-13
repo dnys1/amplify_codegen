@@ -1,17 +1,27 @@
 import 'package:amplify_codegen/amplify_codegen.dart';
+import 'package:amplify_codegen/src/generator/model.dart';
+import 'package:amplify_codegen/src/helpers/language.dart';
 import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/helpers/types.dart';
+import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
 
 import 'node.dart';
 
 /// Returns the query field name for [fieldName].
-String queryFieldName(String fieldName) => fieldName.camelCase + '\$';
+String queryFieldName(String fieldName) => (fieldName + '\$').camelCase;
 
 extension ModelFieldHelpers on ModelField {
   /// The Dart identifier for this field.
-  String get dartName => name.camelCase;
+  String get dartName {
+    final fieldName = name.camelCase;
+    if (softReservedWords.contains(fieldName) ||
+        hardReservedWords.contains(fieldName)) {
+      return '$fieldName\$';
+    }
+    return fieldName;
+  }
 
   /// The wire name as it shows in JSON.
   String get wireName => name;
@@ -40,6 +50,16 @@ extension DirectiveHelpers on DirectiveNode {
   /// Gets the argument named [argumentName], if present.
   ArgumentNode? argumentNamed(String argumentName) =>
       arguments.firstWhereOrNull((arg) => arg.name.value == argumentName);
+}
+
+extension ModelFieldTypes on ModelField {
+  TypeReference get typeReference => type.typeReference;
+
+  ModelFieldType modelFieldType({
+    required bool isCustom,
+    required Map<String, Model> models,
+  }) =>
+      type.modelFieldType(isCustom: isCustom, models: models);
 }
 
 extension FieldHelpers on FieldDefinitionNode {

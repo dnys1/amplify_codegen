@@ -176,7 +176,6 @@ class Post extends Model {
   @override
   String toString() {
     final buffer = StringBuffer();
-
     buffer.write('Post {');
     buffer.write('id=$id, ');
     buffer.write('title=$_title, ');
@@ -185,7 +184,6 @@ class Post extends Model {
     buffer.write('createdAt=$_createdAt, ');
     buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
-
     return buffer.toString();
   }
 

@@ -159,7 +159,6 @@ class License extends Model {
   @override
   String toString() {
     final buffer = StringBuffer();
-
     buffer.write('License {');
     buffer.write('id=$id, ');
     buffer.write('number=$_number, ');
@@ -167,7 +166,6 @@ class License extends Model {
     buffer.write('createdAt=$_createdAt, ');
     buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
-
     return buffer.toString();
   }
 

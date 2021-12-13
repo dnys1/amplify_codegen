@@ -326,7 +326,6 @@ class User extends Model {
   @override
   String toString() {
     final buffer = StringBuffer();
-
     buffer.write('User {');
     buffer.write('username=$username, ');
     buffer.write('displayUsername=$_displayUsername, ');
@@ -339,7 +338,6 @@ class User extends Model {
     buffer.write('createdAt=$_createdAt, ');
     buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
-
     return buffer.toString();
   }
 

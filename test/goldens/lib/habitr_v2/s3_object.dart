@@ -165,7 +165,6 @@ class S3Object {
   @override
   String toString() {
     final buffer = StringBuffer();
-
     buffer.write('S3Object {');
     buffer.write('id=$id, ');
     buffer.write('bucket=$_bucket, ');
@@ -174,7 +173,6 @@ class S3Object {
     buffer.write('cognitoId=$_cognitoId, ');
     buffer.write('accessLevel=$_accessLevel');
     buffer.write('}');
-
     return buffer.toString();
   }
 

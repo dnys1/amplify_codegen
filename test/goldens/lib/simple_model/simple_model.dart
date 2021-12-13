@@ -139,7 +139,6 @@ class SimpleModel extends Model {
   @override
   String toString() {
     final buffer = StringBuffer();
-
     buffer.write('SimpleModel {');
     buffer.write('id=$id, ');
     buffer.write('name=$_name, ');
@@ -147,7 +146,6 @@ class SimpleModel extends Model {
     buffer.write('createdAt=$_createdAt, ');
     buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
-
     return buffer.toString();
   }
 

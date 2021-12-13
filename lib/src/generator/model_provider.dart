@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/generator/generator.dart';
-import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/helpers/types.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:convert/convert.dart';
@@ -24,8 +23,8 @@ class ModelProviderGenerator extends Generator<Library> {
   @override
   Library generate() {
     final exportFilenames = [
-      for (var model in models) model.name.snakeCase + '.dart',
-      for (var enum$ in enums) enum$.name.value.snakeCase + '.dart'
+      for (var model in models) model.libraryName + '.dart',
+      for (var enum$ in enums) enum$.libraryName + '.dart'
     ]..sort();
     return Library((l) => l
       ..name = 'models.model_provider'
@@ -86,8 +85,8 @@ class ModelProviderGenerator extends Generator<Library> {
         ..body = literalList([
           for (var model in models.where((m) => !m.isCustom))
             refer(
-              model.name.pascalCase,
-              model.name.snakeCase + '.dart',
+              model.className,
+              model.libraryName + '.dart',
             ).property('schema')
         ]).code,
     );
@@ -103,11 +102,47 @@ class ModelProviderGenerator extends Generator<Library> {
         ..body = literalList([
           for (var model in models.where((m) => m.isCustom))
             refer(
-              model.name.pascalCase,
-              model.name.snakeCase + '.dart',
+              model.className,
+              model.libraryName + '.dart',
             ).property('schema')
         ]).code,
     );
+
+    // // getModelType
+    // final modelTypeT = TypeReference((t) => t
+    //   ..symbol = 'ModelType'
+    //   ..url = datastoreUri
+    //   ..types.add(refer('T')));
+    // yield Method((m) {
+    //   m
+    //     ..annotations.add(refer('override'))
+    //     ..returns = modelTypeT
+    //     ..name = 'getModelType'
+    //     ..types.add(refer('T')
+    //         .typeRef
+    //         .rebuild((t) => t.bound = refer('Model', datastoreUri)));
+
+    //   m.body = Block.of([
+    //     const Code('switch (T) {'),
+    //     for (var model in models.where((m) => !m.isCustom)) ...[
+    //       Code('case ${model.className}:'),
+    //       refer(model.className)
+    //           .property('classType')
+    //           .asA(modelTypeT)
+    //           .returned
+    //           .statement,
+    //     ],
+    //     const Code('default:'),
+    //     refer('ArgumentError')
+    //         .newInstance([
+    //           literalString(
+    //               'Failed to find model in model provider for model type: \$T')
+    //         ])
+    //         .thrown
+    //         .statement,
+    //     const Code('}'),
+    //   ]);
+    // });
 
     // getModelTypeByModelName
     yield Method((m) {
@@ -123,7 +158,7 @@ class ModelProviderGenerator extends Generator<Library> {
         const Code('switch (modelName) {'),
         for (var model in models.where((m) => !m.isCustom)) ...[
           Code("case '${model.name}':"),
-          refer(model.name.pascalCase).property('classType').returned.statement,
+          refer(model.className).property('classType').returned.statement,
         ],
         const Code('default:'),
         refer('ArgumentError')

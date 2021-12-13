@@ -250,7 +250,6 @@ class Comment extends Model {
   @override
   String toString() {
     final buffer = StringBuffer();
-
     buffer.write('Comment {');
     buffer.write('id=$id, ');
     buffer.write('habitId=$_habitId, ');
@@ -261,7 +260,6 @@ class Comment extends Model {
     buffer.write('createdAt=$_createdAt, ');
     buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
-
     return buffer.toString();
   }
 

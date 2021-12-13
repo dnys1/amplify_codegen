@@ -1,5 +1,6 @@
 import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/generator/generator.dart';
+import 'package:amplify_codegen/src/helpers/language.dart';
 import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/helpers/types.dart';
 import 'package:code_builder/code_builder.dart';
@@ -204,31 +205,35 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     );
 
     // toString
-    yield Method(
-      (m) => m
-        ..annotations.add(refer('override').expression)
-        ..name = 'toString'
-        ..returns = refer('String')
-        ..lambda = false
-        ..body = Code('''
-        final buffer = StringBuffer();
-
-        buffer.write('$modelName {');
-        ''' +
-            fields.mapIndexed((index, field) {
-              final dartName = field.dartName;
-              final getter = field.getter;
-              if (index == fields.length - 1) {
-                return "buffer.write('$dartName=\$$getter');";
-              }
-              return "buffer.write('$dartName=\$$getter, ');";
-            }).join('\n') +
-            '''
-        buffer.write('}');
-
-        return buffer.toString();
-        '''),
-    );
+    final buffer = refer('buffer');
+    yield Method((m) => m
+      ..annotations.add(refer('override').expression)
+      ..name = 'toString'
+      ..returns = refer('String')
+      ..lambda = false
+      ..body = Block.of([
+        refer('StringBuffer').newInstance([]).assignFinal('buffer').statement,
+        buffer
+            .property('write')
+            .call([literalString('$modelName {')]).statement,
+        ...fields.mapIndexed((index, field) {
+          final dartName = dartEscape(field.dartName);
+          var getter = field.getter;
+          // '$_class$' -> '${_class$}'
+          if (getter.contains('\$')) {
+            getter = '{$getter}';
+          }
+          var assignment = '$dartName=\$$getter';
+          if (index < fields.length - 1) {
+            assignment += ', ';
+          }
+          return buffer
+              .property('write')
+              .call([literalString(assignment)]).statement;
+        }),
+        buffer.property('write').call([literalString('}')]).statement,
+        buffer.property('toString').call([]).returned.statement,
+      ]));
 
     // copyWith
     yield Method((m) {
@@ -578,7 +583,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
       );
       yield Field(
         (f) => f
-          ..name = queryFieldName(field.name)
+          ..name = queryFieldName(field.dartName)
           ..static = true
           ..modifier = FieldModifier.constant
           ..assignment = refer('QueryField', datastoreUri).constInstance(
@@ -619,7 +624,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     if (field.isHasOne) {
       definitionCtor = 'hasOne';
       properties.addAll({
-        'key': refer(queryFieldName(field.name)),
+        'key': refer(queryFieldName(field.dartName)),
         'ofModelName': literalString(field.type.modelName!),
         'associatedKey': refer(field.type.modelName!)
             .property(queryFieldName(field.associatedName!)),
@@ -627,14 +632,14 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     } else if (field.isBelongsTo) {
       definitionCtor = 'belongsTo';
       properties.addAll({
-        'key': refer(queryFieldName(field.name)),
+        'key': refer(queryFieldName(field.dartName)),
         'ofModelName': literalString(field.type.modelName!),
         'targetName': literalString(field.targetName!),
       });
     } else if (field.isHasMany) {
       definitionCtor = 'hasMany';
       properties.addAll({
-        'key': refer(queryFieldName(field.name)),
+        'key': refer(queryFieldName(field.dartName)),
         'ofModelName': literalString(field.type.modelName!),
         'associatedKey': refer(field.type.modelName!)
             .property(queryFieldName(field.associatedName!)),
@@ -663,7 +668,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
             properties['fieldName'] = literalString(field.name);
           } else {
             definitionCtor = 'field';
-            properties['key'] = refer(queryFieldName(field.name));
+            properties['key'] = refer(queryFieldName(field.dartName));
           }
           break;
         case ModelFieldType.embedded:

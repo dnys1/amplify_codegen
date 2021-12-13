@@ -191,7 +191,6 @@ class AuthorBook extends Model {
   @override
   String toString() {
     final buffer = StringBuffer();
-
     buffer.write('AuthorBook {');
     buffer.write('id=$id, ');
     buffer.write('authorId=$_authorId, ');
@@ -201,7 +200,6 @@ class AuthorBook extends Model {
     buffer.write('createdAt=$_createdAt, ');
     buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
-
     return buffer.toString();
   }
 

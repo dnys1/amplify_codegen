@@ -1,5 +1,6 @@
 import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/generator/model.dart';
+import 'package:amplify_codegen/src/helpers/language.dart';
 import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:gql/ast.dart';
@@ -238,12 +239,13 @@ extension TypeInfoHelpers on TypeInfo {
   }
 }
 
-extension ModelFieldTypes on ModelField {
-  TypeReference get typeReference => type.typeReference;
-
-  ModelFieldType modelFieldType({
-    required bool isCustom,
-    required Map<String, Model> models,
-  }) =>
-      type.modelFieldType(isCustom: isCustom, models: models);
+extension TypeDefinitionHelpers on TypeDefinitionNode {
+  /// This type's name as a library name.
+  String get libraryName {
+    final libName = name.value.snakeCase;
+    if (hardReservedWords.contains(libName)) {
+      return '${libName}_';
+    }
+    return libName;
+  }
 }

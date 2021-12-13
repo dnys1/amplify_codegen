@@ -34,26 +34,51 @@ void main() {
 
     // V1 and V2 schemas should produce the same result if they are semantically
     // equal to each other.
-    test('v1 -> v2', () {
-      const habitrV1 = 'habitr_v1.graphql';
-      const habitrV2 = 'habitr_v2.graphql';
+    group('v1 -> v2', () {
+      test('Habitr', () {
+        const habitrV1 = 'habitr_v1.graphql';
+        const habitrV2 = 'habitr_v2.graphql';
 
-      final habitrV1Schema =
-          File.fromUri(schemaDir.uri.resolve(habitrV1)).readAsStringSync();
-      final habitrV2Schema =
-          File.fromUri(schemaDir.uri.resolve(habitrV2)).readAsStringSync();
+        final habitrV1Schema =
+            File.fromUri(schemaDir.uri.resolve(habitrV1)).readAsStringSync();
+        final habitrV2Schema =
+            File.fromUri(schemaDir.uri.resolve(habitrV2)).readAsStringSync();
 
-      final habitrV1Generated = generateForSchema(habitrV1Schema);
-      final habitrV2Generated = generateForSchema(habitrV2Schema);
+        final habitrV1Generated = generateForSchema(habitrV1Schema);
+        final habitrV2Generated = generateForSchema(habitrV2Schema);
 
-      expect(habitrV1Generated.keys, unorderedEquals(habitrV2Generated.keys));
+        expect(habitrV1Generated.keys, unorderedEquals(habitrV2Generated.keys));
 
-      for (var key in habitrV1Generated.keys) {
-        final v1Library = habitrV1Generated[key]!;
-        final v2Library = habitrV2Generated[key]!;
+        for (var key in habitrV1Generated.keys) {
+          final v1Library = habitrV1Generated[key]!;
+          final v2Library = habitrV2Generated[key]!;
 
-        expect(v1Library, equals(v2Library));
-      }
+          expect(v1Library, equals(v2Library));
+        }
+      });
+
+      test('DataStore Example', () {
+        const dsExampleV1 = 'datastore_example_v1.graphql';
+        const dsExampleV2 = 'datastore_example_v2.graphql';
+
+        final dsExampleV1Schema =
+            File.fromUri(schemaDir.uri.resolve(dsExampleV1)).readAsStringSync();
+        final dsExampleV2Schema =
+            File.fromUri(schemaDir.uri.resolve(dsExampleV2)).readAsStringSync();
+
+        final dsExampleV1Generated = generateForSchema(dsExampleV1Schema);
+        final dsExampleV2Generated = generateForSchema(dsExampleV2Schema);
+
+        expect(dsExampleV1Generated.keys,
+            unorderedEquals(dsExampleV2Generated.keys));
+
+        for (var key in dsExampleV1Generated.keys) {
+          final v1Library = dsExampleV1Generated[key]!;
+          final v2Library = dsExampleV2Generated[key]!;
+
+          expect(v1Library, equals(v2Library));
+        }
+      });
     });
   });
 }

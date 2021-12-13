@@ -91,13 +91,11 @@ class VoteResult {
   @override
   String toString() {
     final buffer = StringBuffer();
-
     buffer.write('VoteResult {');
     buffer.write('id=$id, ');
     buffer.write('habit=$_habit, ');
     buffer.write('user=$_user');
     buffer.write('}');
-
     return buffer.toString();
   }
 

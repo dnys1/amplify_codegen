@@ -104,7 +104,7 @@ class Person extends Model {
         isRequired: false,
         key: license$,
         ofModelName: 'License',
-        associatedKey: License.belongsTo$));
+        associatedKey: License.id$));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,
@@ -158,7 +158,6 @@ class Person extends Model {
   @override
   String toString() {
     final buffer = StringBuffer();
-
     buffer.write('Person {');
     buffer.write('id=$id, ');
     buffer.write('name=$_name, ');
@@ -166,7 +165,6 @@ class Person extends Model {
     buffer.write('createdAt=$_createdAt, ');
     buffer.write('updatedAt=$_updatedAt');
     buffer.write('}');
-
     return buffer.toString();
   }
 
