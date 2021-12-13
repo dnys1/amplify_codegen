@@ -773,21 +773,36 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           ..url = datastoreUri,
       );
       c.constructors.add(Constructor((ctor) => ctor.constant = true));
-      c.methods.add(Method(
-        (m) => m
-          ..annotations.add(
-            refer('override').expression,
-          )
-          ..name = 'fromJson'
-          ..requiredParameters.add(Parameter(
-            (p) => p
-              ..name = 'jsonData'
-              ..type = mapOf('String', 'Object?')
-              ..named = false,
-          ))
-          ..returns = refer(typeName)
-          ..body = Code('return $typeName.fromJson(jsonData);'),
-      ));
+      c.methods.addAll([
+        // modelName
+        Method(
+          (m) => m
+            ..annotations.add(
+              refer('override').expression,
+            )
+            ..name = 'modelName'
+            ..returns = refer('String')
+            ..lambda = true
+            ..body = literalString(wireName).code,
+        ),
+
+        // fromJson
+        Method(
+          (m) => m
+            ..annotations.add(
+              refer('override').expression,
+            )
+            ..name = 'fromJson'
+            ..requiredParameters.add(Parameter(
+              (p) => p
+                ..name = 'jsonData'
+                ..type = mapOf('String', 'Object?')
+                ..named = false,
+            ))
+            ..returns = refer(typeName)
+            ..body = Code('return $typeName.fromJson(jsonData);'),
+        ),
+      ]);
     }));
   }
 }

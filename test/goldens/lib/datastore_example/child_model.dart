@@ -169,6 +169,8 @@ class _ChildModelModelType extends ModelType<ChildModel> {
   const _ChildModelModelType();
 
   @override
+  String modelName() => 'ChildModel';
+  @override
   ChildModel fromJson(Map<String, Object?> jsonData) {
     return ChildModel.fromJson(jsonData);
   }

@@ -161,6 +161,8 @@ class _JsonListTypeModelModelType extends ModelType<JsonListTypeModel> {
   const _JsonListTypeModelModelType();
 
   @override
+  String modelName() => 'JSONListTypeModel';
+  @override
   JsonListTypeModel fromJson(Map<String, Object?> jsonData) {
     return JsonListTypeModel.fromJson(jsonData);
   }

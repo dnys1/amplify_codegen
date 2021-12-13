@@ -229,6 +229,8 @@ class _HasManyChildModelModelType extends ModelType<HasManyChildModel> {
   const _HasManyChildModelModelType();
 
   @override
+  String modelName() => 'HasManyChildModel';
+  @override
   HasManyChildModel fromJson(Map<String, Object?> jsonData) {
     return HasManyChildModel.fromJson(jsonData);
   }

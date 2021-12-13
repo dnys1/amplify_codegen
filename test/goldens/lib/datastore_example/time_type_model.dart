@@ -161,6 +161,8 @@ class _TimeTypeModelModelType extends ModelType<TimeTypeModel> {
   const _TimeTypeModelModelType();
 
   @override
+  String modelName() => 'TimeTypeModel';
+  @override
   TimeTypeModel fromJson(Map<String, Object?> jsonData) {
     return TimeTypeModel.fromJson(jsonData);
   }

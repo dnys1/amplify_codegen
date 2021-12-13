@@ -83,11 +83,9 @@ extension FieldHelpers on FieldDefinitionNode {
     if (!hasRelationship) {
       return null;
     }
-    return ((isV1 ? directiveNamed('connection') : directiveNamed('index'))
-            ?.arguments
-            .singleWhereOrNull((arg) => arg.name.value == 'name')
-            ?.value as StringValueNode?)
-        ?.value;
+    return (isV1 ? directiveNamed('connection') : directiveNamed('index'))
+        ?.argumentNamed('name')
+        ?.stringValue;
   }
 
   /// The name of the connection `keyName` (V1) or `indexName` (V2) property,
@@ -96,11 +94,10 @@ extension FieldHelpers on FieldDefinitionNode {
     if (!hasRelationship) {
       return null;
     }
-    return (relationshipDirective?.arguments
-            .singleWhereOrNull((arg) =>
-                arg.name.value == 'keyName' || arg.name.value == 'indexName')
-            ?.value as StringValueNode?)
-        ?.value;
+    return relationshipDirective?.arguments
+        .singleWhereOrNull((arg) =>
+            arg.name.value == 'keyName' || arg.name.value == 'indexName')
+        ?.stringValue;
   }
 
   /// The value of the connection `fields` property, if any.
@@ -115,7 +112,7 @@ extension FieldHelpers on FieldDefinitionNode {
   bool get isHasMany =>
       // v2
       hasDirective('hasMany') ||
-      // v1
+      // v1 (cannot determine)
       false;
 
   /// Whether this field represents a `hasOne` relationship.

@@ -220,6 +220,8 @@ class _MultiTypeModelModelType extends ModelType<MultiTypeModel> {
   const _MultiTypeModelModelType();
 
   @override
+  String modelName() => 'MultiTypeModel';
+  @override
   MultiTypeModel fromJson(Map<String, Object?> jsonData) {
     return MultiTypeModel.fromJson(jsonData);
   }

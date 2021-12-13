@@ -160,6 +160,8 @@ class _StringTypeModelModelType extends ModelType<StringTypeModel> {
   const _StringTypeModelModelType();
 
   @override
+  String modelName() => 'StringTypeModel';
+  @override
   StringTypeModel fromJson(Map<String, Object?> jsonData) {
     return StringTypeModel.fromJson(jsonData);
   }

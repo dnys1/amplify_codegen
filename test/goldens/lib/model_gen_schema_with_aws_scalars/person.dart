@@ -198,6 +198,8 @@ class _PersonModelType extends ModelType<Person> {
   const _PersonModelType();
 
   @override
+  String modelName() => 'Person';
+  @override
   Person fromJson(Map<String, Object?> jsonData) {
     return Person.fromJson(jsonData);
   }

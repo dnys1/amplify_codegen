@@ -200,6 +200,8 @@ class _BlogModelType extends ModelType<Blog> {
   const _BlogModelType();
 
   @override
+  String modelName() => 'Blog';
+  @override
   Blog fromJson(Map<String, Object?> jsonData) {
     return Blog.fromJson(jsonData);
   }

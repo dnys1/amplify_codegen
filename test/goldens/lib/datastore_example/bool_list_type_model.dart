@@ -161,6 +161,8 @@ class _BoolListTypeModelModelType extends ModelType<BoolListTypeModel> {
   const _BoolListTypeModelModelType();
 
   @override
+  String modelName() => 'BoolListTypeModel';
+  @override
   BoolListTypeModel fromJson(Map<String, Object?> jsonData) {
     return BoolListTypeModel.fromJson(jsonData);
   }

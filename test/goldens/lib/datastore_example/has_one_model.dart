@@ -228,6 +228,8 @@ class _HasOneModelModelType extends ModelType<HasOneModel> {
   const _HasOneModelModelType();
 
   @override
+  String modelName() => 'HasOneModel';
+  @override
   HasOneModel fromJson(Map<String, Object?> jsonData) {
     return HasOneModel.fromJson(jsonData);
   }

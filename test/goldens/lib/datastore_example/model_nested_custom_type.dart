@@ -210,6 +210,8 @@ class _ModelNestedCustomTypeModelType extends ModelType<ModelNestedCustomType> {
   const _ModelNestedCustomTypeModelType();
 
   @override
+  String modelName() => 'ModelNestedCustomType';
+  @override
   ModelNestedCustomType fromJson(Map<String, Object?> jsonData) {
     return ModelNestedCustomType.fromJson(jsonData);
   }

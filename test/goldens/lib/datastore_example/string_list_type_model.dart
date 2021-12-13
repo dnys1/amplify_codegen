@@ -161,6 +161,8 @@ class _StringListTypeModelModelType extends ModelType<StringListTypeModel> {
   const _StringListTypeModelModelType();
 
   @override
+  String modelName() => 'StringListTypeModel';
+  @override
   StringListTypeModel fromJson(Map<String, Object?> jsonData) {
     return StringListTypeModel.fromJson(jsonData);
   }

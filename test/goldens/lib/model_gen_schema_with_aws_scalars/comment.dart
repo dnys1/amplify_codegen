@@ -196,6 +196,8 @@ class _CommentModelType extends ModelType<Comment> {
   const _CommentModelType();
 
   @override
+  String modelName() => 'Comment';
+  @override
   Comment fromJson(Map<String, Object?> jsonData) {
     return Comment.fromJson(jsonData);
   }

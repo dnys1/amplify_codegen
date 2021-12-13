@@ -160,6 +160,8 @@ class _DoubleTypeModelModelType extends ModelType<DoubleTypeModel> {
   const _DoubleTypeModelModelType();
 
   @override
+  String modelName() => 'DoubleTypeModel';
+  @override
   DoubleTypeModel fromJson(Map<String, Object?> jsonData) {
     return DoubleTypeModel.fromJson(jsonData);
   }

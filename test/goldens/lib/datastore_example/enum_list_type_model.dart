@@ -166,6 +166,8 @@ class _EnumListTypeModelModelType extends ModelType<EnumListTypeModel> {
   const _EnumListTypeModelModelType();
 
   @override
+  String modelName() => 'EnumListTypeModel';
+  @override
   EnumListTypeModel fromJson(Map<String, Object?> jsonData) {
     return EnumListTypeModel.fromJson(jsonData);
   }

@@ -161,6 +161,8 @@ class _DoubleListTypeModelModelType extends ModelType<DoubleListTypeModel> {
   const _DoubleListTypeModelModelType();
 
   @override
+  String modelName() => 'DoubleListTypeModel';
+  @override
   DoubleListTypeModel fromJson(Map<String, Object?> jsonData) {
     return DoubleListTypeModel.fromJson(jsonData);
   }

@@ -220,6 +220,8 @@ class _PostModelType extends ModelType<Post> {
   const _PostModelType();
 
   @override
+  String modelName() => 'Post';
+  @override
   Post fromJson(Map<String, Object?> jsonData) {
     return Post.fromJson(jsonData);
   }

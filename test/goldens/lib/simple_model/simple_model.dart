@@ -179,6 +179,8 @@ class _SimpleModelModelType extends ModelType<SimpleModel> {
   const _SimpleModelModelType();
 
   @override
+  String modelName() => 'SimpleModel';
+  @override
   SimpleModel fromJson(Map<String, Object?> jsonData) {
     return SimpleModel.fromJson(jsonData);
   }

@@ -159,6 +159,8 @@ class _IntTypeModelModelType extends ModelType<IntTypeModel> {
   const _IntTypeModelModelType();
 
   @override
+  String modelName() => 'IntTypeModel';
+  @override
   IntTypeModel fromJson(Map<String, Object?> jsonData) {
     return IntTypeModel.fromJson(jsonData);
   }

@@ -206,6 +206,8 @@ class _BelongsToModelModelType extends ModelType<BelongsToModel> {
   const _BelongsToModelModelType();
 
   @override
+  String modelName() => 'BelongsToModel';
+  @override
   BelongsToModel fromJson(Map<String, Object?> jsonData) {
     return BelongsToModel.fromJson(jsonData);
   }

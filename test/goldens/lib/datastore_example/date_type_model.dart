@@ -161,6 +161,8 @@ class _DateTypeModelModelType extends ModelType<DateTypeModel> {
   const _DateTypeModelModelType();
 
   @override
+  String modelName() => 'DateTypeModel';
+  @override
   DateTypeModel fromJson(Map<String, Object?> jsonData) {
     return DateTypeModel.fromJson(jsonData);
   }

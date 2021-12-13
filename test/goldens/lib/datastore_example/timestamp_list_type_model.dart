@@ -166,6 +166,8 @@ class _TimestampListTypeModelModelType
   const _TimestampListTypeModelModelType();
 
   @override
+  String modelName() => 'TimestampListTypeModel';
+  @override
   TimestampListTypeModel fromJson(Map<String, Object?> jsonData) {
     return TimestampListTypeModel.fromJson(jsonData);
   }

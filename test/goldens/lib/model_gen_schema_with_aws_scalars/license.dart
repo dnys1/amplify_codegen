@@ -199,6 +199,8 @@ class _LicenseModelType extends ModelType<License> {
   const _LicenseModelType();
 
   @override
+  String modelName() => 'License';
+  @override
   License fromJson(Map<String, Object?> jsonData) {
     return License.fromJson(jsonData);
   }

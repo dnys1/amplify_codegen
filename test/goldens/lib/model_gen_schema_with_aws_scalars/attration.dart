@@ -252,6 +252,8 @@ class _AttrationModelType extends ModelType<Attration> {
   const _AttrationModelType();
 
   @override
+  String modelName() => 'Attration';
+  @override
   Attration fromJson(Map<String, Object?> jsonData) {
     return Attration.fromJson(jsonData);
   }

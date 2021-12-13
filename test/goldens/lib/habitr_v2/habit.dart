@@ -419,6 +419,8 @@ class _HabitModelType extends ModelType<Habit> {
   const _HabitModelType();
 
   @override
+  String modelName() => 'Habit';
+  @override
   Habit fromJson(Map<String, Object?> jsonData) {
     return Habit.fromJson(jsonData);
   }

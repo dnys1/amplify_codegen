@@ -239,6 +239,8 @@ class _AuthorBookModelType extends ModelType<AuthorBook> {
   const _AuthorBookModelType();
 
   @override
+  String modelName() => 'authorBook';
+  @override
   AuthorBook fromJson(Map<String, Object?> jsonData) {
     return AuthorBook.fromJson(jsonData);
   }
