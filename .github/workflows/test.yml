@@ -1,0 +1,42 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  unit_test:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2.1.7
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;sdk:dev;packages:amplify_codegen;commands:unit_test"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;sdk:dev;packages:amplify_codegen
+            os:ubuntu-latest;pub-cache-hosted;sdk:dev
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: dart-lang/setup-dart@v1.3
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v2.4.0
+      - id: pub_upgrade
+        name: dart pub upgrade
+        if: "always() && steps.checkout.conclusion == 'success'"
+        run: dart pub upgrade
+      - name: dart test --coverage=coverage
+        if: "always() && steps.pub_upgrade.conclusion == 'success'"
+        run: "dart test --coverage=coverage"
+      - name: ./tool/coverage.sh
+        if: "always() && steps.pub_upgrade.conclusion == 'success'"
+        run: ./tool/coverage.sh
