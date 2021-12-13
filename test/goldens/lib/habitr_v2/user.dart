@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.user;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -84,18 +82,19 @@ class User extends Model {
         displayUsername: (json['displayUsername'] as String?),
         name: (json['name'] as String?),
         avatar: ((json['avatar'] as Map?)?['serializedData'] as Map?) != null
-            ? S3Object.fromJson(((json['avatar'] as Map)['serializedData'] as Map)
-                .cast<String, Object?>())
+            ? S3Object.fromJson(
+                ((json['avatar'] as Map)['serializedData'] as Map)
+                    .cast<String, Object?>())
             : null,
         comments: (json['comments'] as List?)
             ?.cast<Map>()
             .map((el) => Comment.fromJson(
-                ((el as Map)['serializedData'] as Map).cast<String, Object?>()))
+                (el['serializedData'] as Map).cast<String, Object?>()))
             .toList(),
         habits: (json['habits'] as List?)
             ?.cast<Map>()
             .map((el) => Habit.fromJson(
-                ((el as Map)['serializedData'] as Map).cast<String, Object?>()))
+                (el['serializedData'] as Map).cast<String, Object?>()))
             .toList(),
         upvotedHabits: (json['upvotedHabits'] as List?)?.cast<String>(),
         downvotedHabits: (json['downvotedHabits'] as List?)?.cast<String>(),
@@ -129,28 +128,28 @@ class User extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const USERNAME = QueryField<dynamic>(fieldName: 'username');
+  static const username$ = QueryField<dynamic>(fieldName: 'username');
 
-  static const DISPLAY_USERNAME =
+  static const displayUsername$ =
       QueryField<dynamic>(fieldName: 'displayUsername');
 
-  static const NAME = QueryField<dynamic>(fieldName: 'name');
+  static const name$ = QueryField<dynamic>(fieldName: 'name');
 
-  static const AVATAR = QueryField<dynamic>(fieldName: 'avatar');
+  static const avatar$ = QueryField<dynamic>(fieldName: 'avatar');
 
-  static const COMMENTS = QueryField<dynamic>(
+  static const comments$ = QueryField<dynamic>(
       fieldName: 'comments',
       fieldType: ModelFieldType(ModelFieldTypeEnum.collection,
           ofModelName: 'Comment'));
 
-  static const HABITS = QueryField<dynamic>(
+  static const habits$ = QueryField<dynamic>(
       fieldName: 'habits',
       fieldType:
           ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: 'Habit'));
 
-  static const UPVOTED_HABITS = QueryField<dynamic>(fieldName: 'upvotedHabits');
+  static const upvotedHabits$ = QueryField<dynamic>(fieldName: 'upvotedHabits');
 
-  static const DOWNVOTED_HABITS =
+  static const downvotedHabits$ =
       QueryField<dynamic>(fieldName: 'downvotedHabits');
 
   static final schema =
@@ -160,12 +159,12 @@ class User extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'username'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: DISPLAY_USERNAME,
+        key: displayUsername$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: NAME,
+        key: name$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
@@ -176,17 +175,17 @@ class User extends Model {
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
         isRequired: false,
-        key: COMMENTS,
+        key: comments$,
         ofModelName: 'Comment',
-        associatedKey: Comment.BY));
+        associatedKey: Comment.by$));
     modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
         isRequired: false,
-        key: HABITS,
+        key: habits$,
         ofModelName: 'Habit',
-        associatedKey: Habit.AUTHOR));
+        associatedKey: Habit.author$));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: UPVOTED_HABITS,
+        key: upvotedHabits$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
             ofModelName: 'string'),
         isArray: true,
@@ -217,7 +216,7 @@ class User extends Model {
         ]));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: DOWNVOTED_HABITS,
+        key: downvotedHabits$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
             ofModelName: 'string'),
         isArray: true,

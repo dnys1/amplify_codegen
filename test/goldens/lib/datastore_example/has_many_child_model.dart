@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.has_many_child_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -91,16 +89,16 @@ class HasManyChildModel extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'hasManyChildModel.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'hasManyChildModel.id');
 
-  static const NAME = QueryField<dynamic>(fieldName: 'name');
+  static const name$ = QueryField<dynamic>(fieldName: 'name');
 
-  static const PARENT = QueryField<dynamic>(
+  static const parent$ = QueryField<dynamic>(
       fieldName: 'parent',
       fieldType: ModelFieldType(ModelFieldTypeEnum.model,
           ofModelName: 'HasManyModel'));
 
-  static const PARENT_ID = QueryField<dynamic>(fieldName: 'parentID');
+  static const parentId$ = QueryField<dynamic>(fieldName: 'parentID');
 
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
@@ -109,17 +107,17 @@ class HasManyChildModel extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: NAME,
+        key: name$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         isRequired: false,
-        key: PARENT,
+        key: parent$,
         ofModelName: 'HasManyModel',
         targetName: 'parentID'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: PARENT_ID,
+        key: parentId$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

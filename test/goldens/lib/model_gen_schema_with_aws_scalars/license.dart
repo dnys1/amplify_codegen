@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.license;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -84,11 +82,11 @@ class License extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'license.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'license.id');
 
-  static const NUMBER = QueryField<dynamic>(fieldName: 'number');
+  static const number$ = QueryField<dynamic>(fieldName: 'number');
 
-  static const BELONGS_TO = QueryField<dynamic>(
+  static const belongsTo$ = QueryField<dynamic>(
       fieldName: 'belongsTo',
       fieldType:
           ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Person'));
@@ -100,12 +98,12 @@ class License extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: NUMBER,
+        key: number$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         isRequired: false,
-        key: BELONGS_TO,
+        key: belongsTo$,
         ofModelName: 'Person',
         targetName: 'licenseBelongsToId'));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

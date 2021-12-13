@@ -6,6 +6,9 @@ import 'package:gql/ast.dart';
 
 import 'node.dart';
 
+/// Returns the query field name for [fieldName].
+String queryFieldName(String fieldName) => fieldName.camelCase + '\$';
+
 extension ModelFieldHelpers on ModelField {
   /// The Dart identifier for this field.
   String get dartName => name.camelCase;

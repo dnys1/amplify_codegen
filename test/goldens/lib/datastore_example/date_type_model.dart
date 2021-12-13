@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.date_type_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -72,9 +70,9 @@ class DateTypeModel extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'dateTypeModel.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'dateTypeModel.id');
 
-  static const VALUE = QueryField<dynamic>(fieldName: 'value');
+  static const value$ = QueryField<dynamic>(fieldName: 'value');
 
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
@@ -83,7 +81,7 @@ class DateTypeModel extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: VALUE,
+        key: value$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.date),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

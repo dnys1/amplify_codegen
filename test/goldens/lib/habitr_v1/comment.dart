@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.comment;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -107,22 +105,22 @@ class Comment extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'comment.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'comment.id');
 
-  static const HABIT_ID = QueryField<dynamic>(fieldName: 'habitId');
+  static const habitId$ = QueryField<dynamic>(fieldName: 'habitId');
 
-  static const HABIT = QueryField<dynamic>(
+  static const habit$ = QueryField<dynamic>(
       fieldName: 'habit',
       fieldType:
           ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Habit'));
 
-  static const OWNER = QueryField<dynamic>(fieldName: 'owner');
+  static const owner$ = QueryField<dynamic>(fieldName: 'owner');
 
-  static const BY = QueryField<dynamic>(
+  static const by$ = QueryField<dynamic>(
       fieldName: 'by',
       fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'User'));
 
-  static const COMMENT = QueryField<dynamic>(fieldName: 'comment');
+  static const comment$ = QueryField<dynamic>(fieldName: 'comment');
 
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
@@ -131,24 +129,24 @@ class Comment extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: HABIT_ID,
+        key: habitId$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         isRequired: false,
-        key: HABIT,
+        key: habit$,
         ofModelName: 'Habit',
         targetName: 'habitId'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: OWNER,
+        key: owner$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
-        isRequired: false, key: BY, ofModelName: 'User', targetName: 'owner'));
+        isRequired: false, key: by$, ofModelName: 'User', targetName: 'owner'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: COMMENT,
+        key: comment$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.attration;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -93,15 +91,15 @@ class Attration extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'attration.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'attration.id');
 
-  static const NAME = QueryField<dynamic>(fieldName: 'name');
+  static const name$ = QueryField<dynamic>(fieldName: 'name');
 
-  static const STATUS = QueryField<dynamic>(fieldName: 'status');
+  static const status$ = QueryField<dynamic>(fieldName: 'status');
 
-  static const TAGS = QueryField<dynamic>(fieldName: 'tags');
+  static const tags$ = QueryField<dynamic>(fieldName: 'tags');
 
-  static const LAST_UPDATE = QueryField<dynamic>(fieldName: 'lastUpdate');
+  static const lastUpdate$ = QueryField<dynamic>(fieldName: 'lastUpdate');
 
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
@@ -110,23 +108,23 @@ class Attration extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: NAME,
+        key: name$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: STATUS,
+        key: status$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.enumeration),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: TAGS,
+        key: tags$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
             ofModelName: 'string'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: LAST_UPDATE,
+        key: lastUpdate$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.date),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

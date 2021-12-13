@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.post;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -92,13 +90,13 @@ class Post extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'post.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'post.id');
 
-  static const TITLE = QueryField<dynamic>(fieldName: 'title');
+  static const title$ = QueryField<dynamic>(fieldName: 'title');
 
-  static const CONTENT = QueryField<dynamic>(fieldName: 'content');
+  static const content$ = QueryField<dynamic>(fieldName: 'content');
 
-  static const COMMENTS = QueryField<dynamic>(
+  static const comments$ = QueryField<dynamic>(
       fieldName: 'comments',
       fieldType: ModelFieldType(ModelFieldTypeEnum.collection,
           ofModelName: 'Comment'));
@@ -110,19 +108,19 @@ class Post extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: TITLE,
+        key: title$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: CONTENT,
+        key: content$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
         isRequired: false,
-        key: COMMENTS,
+        key: comments$,
         ofModelName: 'Comment',
-        associatedKey: Comment.POST));
+        associatedKey: Comment.post$));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,

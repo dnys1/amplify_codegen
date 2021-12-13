@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.has_many_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -86,11 +84,11 @@ class HasManyModel extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'hasManyModel.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'hasManyModel.id');
 
-  static const NAME = QueryField<dynamic>(fieldName: 'name');
+  static const name$ = QueryField<dynamic>(fieldName: 'name');
 
-  static const CHILDREN = QueryField<dynamic>(
+  static const children$ = QueryField<dynamic>(
       fieldName: 'children',
       fieldType: ModelFieldType(ModelFieldTypeEnum.collection,
           ofModelName: 'HasManyChildModel'));
@@ -102,14 +100,14 @@ class HasManyModel extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: NAME,
+        key: name$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
         isRequired: false,
-        key: CHILDREN,
+        key: children$,
         ofModelName: 'HasManyChildModel',
-        associatedKey: HasManyChildModel.PARENT));
+        associatedKey: HasManyChildModel.parent$));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,

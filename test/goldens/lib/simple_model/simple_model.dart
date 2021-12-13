@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.simple_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -77,11 +75,11 @@ class SimpleModel extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'simpleModel.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'simpleModel.id');
 
-  static const NAME = QueryField<dynamic>(fieldName: 'name');
+  static const name$ = QueryField<dynamic>(fieldName: 'name');
 
-  static const BAR = QueryField<dynamic>(fieldName: 'bar');
+  static const bar$ = QueryField<dynamic>(fieldName: 'bar');
 
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
@@ -90,12 +88,12 @@ class SimpleModel extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: NAME,
+        key: name$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: BAR,
+        key: bar$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

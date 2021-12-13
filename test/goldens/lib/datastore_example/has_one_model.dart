@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.has_one_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -90,13 +88,13 @@ class HasOneModel extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'hasOneModel.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'hasOneModel.id');
 
-  static const NAME = QueryField<dynamic>(fieldName: 'name');
+  static const name$ = QueryField<dynamic>(fieldName: 'name');
 
-  static const CHILD_ID = QueryField<dynamic>(fieldName: 'childID');
+  static const childId$ = QueryField<dynamic>(fieldName: 'childID');
 
-  static const CHILD = QueryField<dynamic>(
+  static const child$ = QueryField<dynamic>(
       fieldName: 'child',
       fieldType:
           ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'ChildModel'));
@@ -108,19 +106,19 @@ class HasOneModel extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: NAME,
+        key: name$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: CHILD_ID,
+        key: childId$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
         isRequired: false,
-        key: CHILD,
+        key: child$,
         ofModelName: 'ChildModel',
-        associatedKey: ChildModel.ID));
+        associatedKey: ChildModel.id$));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,

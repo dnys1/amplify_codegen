@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.post;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -119,21 +117,21 @@ class Post extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'post.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'post.id');
 
-  static const TITLE = QueryField<dynamic>(fieldName: 'title');
+  static const title$ = QueryField<dynamic>(fieldName: 'title');
 
-  static const RATING = QueryField<dynamic>(fieldName: 'rating');
+  static const rating$ = QueryField<dynamic>(fieldName: 'rating');
 
-  static const CREATED = QueryField<dynamic>(fieldName: 'created');
+  static const created$ = QueryField<dynamic>(fieldName: 'created');
 
-  static const BLOG_ID = QueryField<dynamic>(fieldName: 'blogID');
+  static const blogId$ = QueryField<dynamic>(fieldName: 'blogID');
 
-  static const BLOG = QueryField<dynamic>(
+  static const blog$ = QueryField<dynamic>(
       fieldName: 'blog',
       fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Blog'));
 
-  static const COMMENTS = QueryField<dynamic>(
+  static const comments$ = QueryField<dynamic>(
       fieldName: 'comments',
       fieldType: ModelFieldType(ModelFieldTypeEnum.collection,
           ofModelName: 'Comment'));
@@ -145,34 +143,34 @@ class Post extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: TITLE,
+        key: title$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: RATING,
+        key: rating$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.int),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: CREATED,
+        key: created$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: BLOG_ID,
+        key: blogId$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         isRequired: false,
-        key: BLOG,
+        key: blog$,
         ofModelName: 'Blog',
         targetName: 'blogID'));
     modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
         isRequired: false,
-        key: COMMENTS,
+        key: comments$,
         ofModelName: 'Comment',
-        associatedKey: Comment.POST));
+        associatedKey: Comment.post$));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,

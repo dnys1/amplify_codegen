@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.author_book;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -91,15 +89,15 @@ class AuthorBook extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'authorBook.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'authorBook.id');
 
-  static const AUTHOR_ID = QueryField<dynamic>(fieldName: 'author_id');
+  static const authorId$ = QueryField<dynamic>(fieldName: 'author_id');
 
-  static const BOOK_ID = QueryField<dynamic>(fieldName: 'book_id');
+  static const bookId$ = QueryField<dynamic>(fieldName: 'book_id');
 
-  static const AUTHOR = QueryField<dynamic>(fieldName: 'author');
+  static const author$ = QueryField<dynamic>(fieldName: 'author');
 
-  static const BOOK = QueryField<dynamic>(fieldName: 'book');
+  static const book$ = QueryField<dynamic>(fieldName: 'book');
 
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
@@ -108,22 +106,22 @@ class AuthorBook extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: AUTHOR_ID,
+        key: authorId$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: BOOK_ID,
+        key: bookId$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: AUTHOR,
+        key: author$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: BOOK,
+        key: book$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

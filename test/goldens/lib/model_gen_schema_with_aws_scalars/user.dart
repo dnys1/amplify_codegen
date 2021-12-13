@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.user;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -150,30 +148,29 @@ class User extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'user.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'user.id');
 
-  static const NAME = QueryField<dynamic>(fieldName: 'name');
+  static const name$ = QueryField<dynamic>(fieldName: 'name');
 
-  static const EMAIL = QueryField<dynamic>(fieldName: 'email');
+  static const email$ = QueryField<dynamic>(fieldName: 'email');
 
-  static const META = QueryField<dynamic>(fieldName: 'meta');
+  static const meta$ = QueryField<dynamic>(fieldName: 'meta');
 
-  static const AVATAR = QueryField<dynamic>(fieldName: 'avatar');
+  static const avatar$ = QueryField<dynamic>(fieldName: 'avatar');
 
-  static const LAST_IP_ADDRESS =
-      QueryField<dynamic>(fieldName: 'lastIPAddress');
+  static const lastIpAddress$ = QueryField<dynamic>(fieldName: 'lastIPAddress');
 
-  static const PHONE = QueryField<dynamic>(fieldName: 'phone');
+  static const phone$ = QueryField<dynamic>(fieldName: 'phone');
 
-  static const LAST_ACTIVITY = QueryField<dynamic>(fieldName: 'lastActivity');
+  static const lastActivity$ = QueryField<dynamic>(fieldName: 'lastActivity');
 
-  static const WORK_START = QueryField<dynamic>(fieldName: 'workStart');
+  static const workStart$ = QueryField<dynamic>(fieldName: 'workStart');
 
-  static const WORK_END = QueryField<dynamic>(fieldName: 'workEnd');
+  static const workEnd$ = QueryField<dynamic>(fieldName: 'workEnd');
 
-  static const BIRTHDAY = QueryField<dynamic>(fieldName: 'birthday');
+  static const birthday$ = QueryField<dynamic>(fieldName: 'birthday');
 
-  static const JOINED_ON = QueryField<dynamic>(fieldName: 'joinedOn');
+  static const joinedOn$ = QueryField<dynamic>(fieldName: 'joinedOn');
 
   static final schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
@@ -182,57 +179,57 @@ class User extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: NAME,
+        key: name$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: EMAIL,
+        key: email$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: META,
+        key: meta$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: AVATAR,
+        key: avatar$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: LAST_IP_ADDRESS,
+        key: lastIpAddress$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: PHONE,
+        key: phone$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: LAST_ACTIVITY,
+        key: lastActivity$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.timestamp),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: WORK_START,
+        key: workStart$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.time),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: WORK_END,
+        key: workEnd$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.time),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: BIRTHDAY,
+        key: birthday$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.date),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
-        key: JOINED_ON,
+        key: joinedOn$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.dateTime),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

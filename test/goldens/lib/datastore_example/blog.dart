@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.blog;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -85,11 +83,11 @@ class Blog extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'blog.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'blog.id');
 
-  static const NAME = QueryField<dynamic>(fieldName: 'name');
+  static const name$ = QueryField<dynamic>(fieldName: 'name');
 
-  static const POSTS = QueryField<dynamic>(
+  static const posts$ = QueryField<dynamic>(
       fieldName: 'posts',
       fieldType:
           ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: 'Post'));
@@ -101,14 +99,14 @@ class Blog extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: NAME,
+        key: name$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
         isRequired: false,
-        key: POSTS,
+        key: posts$,
         ofModelName: 'Post',
-        associatedKey: Post.BLOG));
+        associatedKey: Post.blog$));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,

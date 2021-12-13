@@ -89,7 +89,6 @@ Map<String, Model> parseSchema(String schema) {
     }
     final nodeFields = definition.fields;
     final model = models[definition.name.value]!;
-    final newFields = <ModelField>[];
     final updatedModel = model.rebuild((m) {
       m.fields.map((field) => field.rebuild((field) {
             final fieldNode =
@@ -237,7 +236,7 @@ Map<String, Model> parseSchema(String schema) {
           }));
     });
     models[model.name] =
-        updatedModel.rebuild((b) => b.fields.addAll(newFields));
+        updatedModel;
   }
 
   return models;

@@ -510,14 +510,13 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
       final isNullable = !type.isRequired;
       final map = refer('Map');
       final newInst = refer(type.modelName!).newInstanceNamed('fromJson', [
-        ref
-            .asA(map)
+        (isDynamic || isNullable ? ref.asA(map) : ref)
             .index(literalString('serializedData'))
             .asA(map)
             .property('cast')
             .call([], {}, [refer('String'), refer('Object').nullable])
       ]);
-      // There is no `nullIndex` field on Expression.
+      // There is no `nullIndex` method on Expression.
       ref = CodeExpression(Block.of([
         (isDynamic ? ref.asA(isNullable ? map.nullable : map) : ref).code,
         const Code('?')
@@ -549,7 +548,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           final decode = refer(typeName).newInstanceNamed(ctorName, [
             // At depth == 0, refs are null checked below.
             // At depth > 1, refs have already been cast.
-            depth == 0 ? ref.asA(wireType.nonNull) : ref,
+            isDynamic ? ref.asA(wireType.nonNull) : ref,
           ]);
           return isNullable
               ? ref.notEqualTo(literalNull).conditional(decode, literalNull)
@@ -572,7 +571,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
       );
       yield Field(
         (f) => f
-          ..name = field.name.constantCase
+          ..name = queryFieldName(field.name)
           ..static = true
           ..modifier = FieldModifier.constant
           ..assignment = refer('QueryField', datastoreUri).constInstance(
@@ -612,25 +611,25 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     if (field.isHasOne) {
       definitionCtor = 'hasOne';
       properties.addAll({
-        'key': refer(field.name.constantCase),
+        'key': refer(queryFieldName(field.name)),
         'ofModelName': literalString(field.type.modelName!),
         'associatedKey': refer(field.type.modelName!)
-            .property(field.associatedName!.constantCase),
+            .property(queryFieldName(field.associatedName!)),
       });
     } else if (field.isBelongsTo) {
       definitionCtor = 'belongsTo';
       properties.addAll({
-        'key': refer(field.name.constantCase),
+        'key': refer(queryFieldName(field.name)),
         'ofModelName': literalString(field.type.modelName!),
         'targetName': literalString(field.targetName!),
       });
     } else if (field.isHasMany) {
       definitionCtor = 'hasMany';
       properties.addAll({
-        'key': refer(field.name.constantCase),
+        'key': refer(queryFieldName(field.name)),
         'ofModelName': literalString(field.type.modelName!),
         'associatedKey': refer(field.type.modelName!)
-            .property(field.associatedName!.constantCase),
+            .property(queryFieldName(field.associatedName!)),
       });
     } else if (field.isPrimaryKey) {
       definitionCtor = 'id';
@@ -656,7 +655,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
             properties['fieldName'] = literalString(field.name);
           } else {
             definitionCtor = 'field';
-            properties['key'] = refer(field.name.constantCase);
+            properties['key'] = refer(queryFieldName(field.name));
           }
           break;
         case ModelFieldType.embedded:

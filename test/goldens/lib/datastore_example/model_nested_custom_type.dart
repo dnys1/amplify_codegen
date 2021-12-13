@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.model_nested_custom_type;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -92,12 +90,12 @@ class ModelNestedCustomType extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'modelNestedCustomType.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'modelNestedCustomType.id');
 
-  static const CUSTOM_TYPE_VALUE =
+  static const customTypeValue$ =
       QueryField<dynamic>(fieldName: 'customTypeValue');
 
-  static const LIST_CUSTOM_TYPE_VALUE =
+  static const listCustomTypeValue$ =
       QueryField<dynamic>(fieldName: 'listCustomTypeValue');
 
   static final schema =

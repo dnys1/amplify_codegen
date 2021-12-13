@@ -17,8 +17,6 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: constant_identifier_names
-
 library models.belongs_to_model;
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
@@ -81,11 +79,11 @@ class BelongsToModel extends Model {
 
   final TemporalDateTime? _updatedAt;
 
-  static const ID = QueryField<dynamic>(fieldName: 'belongsToModel.id');
+  static const id$ = QueryField<dynamic>(fieldName: 'belongsToModel.id');
 
-  static const NAME = QueryField<dynamic>(fieldName: 'name');
+  static const name$ = QueryField<dynamic>(fieldName: 'name');
 
-  static const CHILD = QueryField<dynamic>(
+  static const child$ = QueryField<dynamic>(
       fieldName: 'child',
       fieldType:
           ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'ChildModel'));
@@ -97,12 +95,12 @@ class BelongsToModel extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,
-        key: NAME,
+        key: name$,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         isRequired: true,
-        key: CHILD,
+        key: child$,
         ofModelName: 'ChildModel',
         targetName: 'belongsToModelChildId'));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
