@@ -178,7 +178,7 @@ void main() {
 
           expect(postsField.isHasMany, isTrue);
           expect(postsField.associatedType, equals('Post'));
-          expect(postsField.associatedName, equals('id'));
+          expect(postsField.associatedName, equals('blog'));
         });
 
         test('Should detect second has many', () {
@@ -186,7 +186,7 @@ void main() {
 
           expect(commentsField.isHasMany, isTrue);
           expect(commentsField.associatedType, equals('Comment'));
-          expect(commentsField.associatedName, equals('id'));
+          expect(commentsField.associatedName, equals('post'));
         });
 
         test('Should detect first belongsTo', () {

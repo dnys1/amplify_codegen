@@ -116,7 +116,7 @@ class ParentModel extends Model {
         isRequired: false,
         key: child$,
         ofModelName: 'ChildModel',
-        associatedKey: ChildModel.id$));
+        associatedKey: ChildModel.parent$));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,

@@ -92,7 +92,7 @@ class ModelProvider extends ModelProviderInterface {
   static final instance = ModelProvider();
 
   @override
-  String get version => '33478efb7b20a98a2b931720784546c76097d7b3';
+  String get version => '2bee990b17de6c8faf50ca38e070c032305471dd';
   @override
   List<ModelSchema> get modelSchemas => [
         Blog.schema,

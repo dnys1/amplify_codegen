@@ -103,7 +103,7 @@ class Person extends Model {
         isRequired: false,
         key: license$,
         ofModelName: 'License',
-        associatedKey: License.id$));
+        associatedKey: License.belongsTo$));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
         isReadOnly: true,

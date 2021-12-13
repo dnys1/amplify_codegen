@@ -94,7 +94,7 @@ Map<String, Model> parseSchema(String schema) {
             ModelField? relatedField;
 
             // Get foreign field via key/index.
-            if (connectionFields != null || isV2 && !fieldNode.isBelongsTo) {
+            if (connectionFields != null || isV2) {
               final indexName = fieldNode.indexName;
               final indexFields = relatedModelNode.indexFields[indexName];
               final connectedFieldName =
@@ -109,19 +109,25 @@ Map<String, Model> parseSchema(String schema) {
                     connectedFieldName;
               });
 
+              if (isV2) {
+                relatedFieldNode ??=
+                    relatedModelNode.fields.singleWhereOrNull((f) {
+                  if (fieldNode.isHasOne) {
+                    return f.isBelongsTo && f.type.typeName == m.name;
+                  }
+                  if (fieldNode.isHasMany) {
+                    return f.isBelongsTo && f.type.typeName == m.name;
+                  }
+                  if (fieldNode.isBelongsTo) {
+                    return (f.isHasOne || f.isHasMany) &&
+                        f.type.typeName == m.name;
+                  }
+                  return false;
+                });
+              }
+
               relatedFieldNode ??= relatedModelNode.fields
                   .singleWhereOrNull((f) => f.wireName == connectedFieldName);
-
-              relatedFieldNode ??=
-                  relatedModelNode.fields.singleWhereOrNull((f) {
-                if (fieldNode.isHasOne) {
-                  return f.isBelongsTo && f.type.typeName == m.name;
-                }
-                if (fieldNode.isHasMany) {
-                  return f.isBelongsTo && f.type.typeName == m.name;
-                }
-                return false;
-              });
             } else if (connectionName != null) {
               relatedFieldNode ??= relatedModelNode.fields.singleWhere(
                 (f) =>
