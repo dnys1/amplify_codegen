@@ -1,12 +1,8 @@
 import 'package:amplify_codegen/src/helpers/field.dart';
 import 'package:amplify_codegen/src/helpers/model.dart';
-import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/helpers/types.dart';
-import 'package:amplify_codegen/src/models/auth_rule.dart';
 import 'package:amplify_codegen/src/models/model.dart';
 import 'package:amplify_codegen/src/parser/connection.dart';
-import 'package:built_collection/built_collection.dart';
-import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
