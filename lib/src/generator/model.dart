@@ -324,7 +324,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     final name = field.dartName;
     if (field.isPrimaryKey && field.type.awsType == AWSType.ID) {
       return refer(name).ifNullThen(
-        refer('UUID').property('getUUID').call([]),
+        refer('UUID', datastoreUri).property('getUUID').call([]),
       );
     }
     if (field.type.isList) {
@@ -647,6 +647,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         case ModelFieldType.bool:
         case ModelFieldType.enumeration:
         case ModelFieldType.collection:
+        case ModelFieldType.model:
           if (model.isCustom) {
             definitionCtor = 'customTypeField';
             properties['fieldName'] = literalString(field.name);
@@ -665,10 +666,6 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           final customTypeName = field.type.modelName!;
           modelTypeProperies['ofCustomTypeName'] =
               literalString(customTypeName);
-          break;
-        case ModelFieldType.model:
-          definitionCtor = 'field';
-          properties['key'] = refer(field.name.constantCase);
           break;
       }
     }

@@ -168,10 +168,11 @@ class User extends Model {
         key: NAME,
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
-        key: AVATAR,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.model),
+        fieldName: 'avatar',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded,
+            ofCustomTypeName: 'S3Object'),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
         isRequired: false,

@@ -63,17 +63,15 @@ class VoteResult {
     modelSchemaDefinition.name = 'VoteResult';
     modelSchemaDefinition.pluralName = 'VoteResults';
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'habit',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded,
-            ofCustomTypeName: 'Habit'),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.model),
         isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'user',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded,
-            ofCustomTypeName: 'User'),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.model),
         isArray: false));
   });
 

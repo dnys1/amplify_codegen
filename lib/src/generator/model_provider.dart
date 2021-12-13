@@ -51,7 +51,8 @@ class ModelProviderGenerator extends Generator<Library> {
         ..static = true
         ..modifier = FieldModifier.final$
         ..name = 'instance'
-        ..assignment = refer('ModelProvider').newInstance([]).code,
+        ..assignment =
+            refer('ModelProvider', datastoreUri).newInstance([]).code,
     );
   }
 

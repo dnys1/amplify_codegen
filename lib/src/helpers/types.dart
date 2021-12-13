@@ -195,9 +195,9 @@ extension TypeInfoHelpers on TypeInfo {
     if (isList) {
       final baseType =
           listType!.modelFieldType(isCustom: isCustom, models: models);
-      return isCustom &&
-              (baseType == ModelFieldType.model ||
-                  baseType == ModelFieldType.embedded)
+      return (baseType == ModelFieldType.model ||
+                  baseType == ModelFieldType.embedded) &&
+              models[listType!.modelName!]!.isCustom
           ? ModelFieldType.embeddedCollection
           : ModelFieldType.collection;
     }
@@ -229,9 +229,9 @@ extension TypeInfoHelpers on TypeInfo {
         break;
     }
 
-    final isModel = models[modelName!] != null;
-    if (isModel) {
-      return isCustom ? ModelFieldType.embedded : ModelFieldType.model;
+    final model = models[modelName!];
+    if (model != null) {
+      return model.isCustom ? ModelFieldType.embedded : ModelFieldType.model;
     }
 
     return ModelFieldType.enumeration;

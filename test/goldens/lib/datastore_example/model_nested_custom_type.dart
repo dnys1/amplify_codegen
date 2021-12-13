@@ -105,16 +105,17 @@ class ModelNestedCustomType extends Model {
     modelSchemaDefinition.name = 'ModelNestedCustomType';
     modelSchemaDefinition.pluralName = 'ModelNestedCustomTypes';
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: true,
-        key: CUSTOM_TYPE_VALUE,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.model),
+        fieldName: 'customTypeValue',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded,
+            ofCustomTypeName: 'AllScalarTypesCustomType'),
         isArray: false));
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
-        key: LIST_CUSTOM_TYPE_VALUE,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
-            ofModelName: 'model'),
+        fieldName: 'listCustomTypeValue',
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection,
+            ofCustomTypeName: 'AllScalarTypesListCustomType'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
