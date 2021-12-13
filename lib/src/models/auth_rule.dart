@@ -104,10 +104,11 @@ abstract class AuthRule implements Built<AuthRule, AuthRuleBuilder> {
             'cannot use both static and dynamic group authorization',
           );
         }
+        b.groupsField ??= 'groups';
         break;
       case AuthStrategy.owner:
         b.ownerField ??= 'owner';
-        b.identityClaim ??= 'username';
+        b.identityClaim ??= 'cognito:username';
         break;
       case AuthStrategy.private:
         break;
