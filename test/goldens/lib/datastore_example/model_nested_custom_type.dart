@@ -112,7 +112,7 @@ class ModelNestedCustomType extends Model {
         isRequired: false,
         key: LIST_CUSTOM_TYPE_VALUE,
         ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
-            ofModelName: 'collection'),
+            ofModelName: 'model'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,

@@ -84,7 +84,7 @@ class DoubleListTypeModel extends Model {
         isRequired: false,
         key: VALUE,
         ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
-            ofModelName: 'collection'),
+            ofModelName: 'double'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,

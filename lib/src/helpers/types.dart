@@ -193,7 +193,11 @@ extension TypeInfoHelpers on TypeInfo {
     required Map<String, Model> models,
   }) {
     if (isList) {
-      return isCustom
+      final baseType =
+          listType!.modelFieldType(isCustom: isCustom, models: models);
+      return isCustom &&
+              (baseType == ModelFieldType.model ||
+                  baseType == ModelFieldType.embedded)
           ? ModelFieldType.embeddedCollection
           : ModelFieldType.collection;
     }

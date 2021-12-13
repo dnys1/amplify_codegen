@@ -87,7 +87,7 @@ class DateTimeListTypeModel extends Model {
         isRequired: false,
         key: VALUE,
         ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
-            ofModelName: 'collection'),
+            ofModelName: 'dateTime'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,

@@ -122,7 +122,7 @@ class Attration extends Model {
         isRequired: false,
         key: TAGS,
         ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
-            ofModelName: 'collection'),
+            ofModelName: 'string'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: true,

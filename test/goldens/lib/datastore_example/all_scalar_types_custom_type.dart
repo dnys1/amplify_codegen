@@ -184,7 +184,8 @@ class AllScalarTypesCustomType {
     modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: true,
         fieldName: 'customTypeValue',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded,
+            ofCustomTypeName: 'SimpleCustomType'),
         isArray: false));
   });
 

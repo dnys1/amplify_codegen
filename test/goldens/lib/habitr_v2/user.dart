@@ -184,7 +184,7 @@ class User extends Model {
         isRequired: false,
         key: UPVOTED_HABITS,
         ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
-            ofModelName: 'collection'),
+            ofModelName: 'string'),
         isArray: true,
         authRules: const [
           AuthRule(
@@ -215,7 +215,7 @@ class User extends Model {
         isRequired: false,
         key: DOWNVOTED_HABITS,
         ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
-            ofModelName: 'collection'),
+            ofModelName: 'string'),
         isArray: true,
         authRules: const [
           AuthRule(

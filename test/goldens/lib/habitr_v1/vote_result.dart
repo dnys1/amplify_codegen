@@ -64,12 +64,14 @@ class VoteResult {
     modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'habit',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded,
+            ofCustomTypeName: 'Habit'),
         isArray: false));
     modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'user',
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded),
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embedded,
+            ofCustomTypeName: 'User'),
         isArray: false));
   });
 

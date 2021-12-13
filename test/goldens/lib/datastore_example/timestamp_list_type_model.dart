@@ -87,7 +87,7 @@ class TimestampListTypeModel extends Model {
         isRequired: false,
         key: VALUE,
         ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
-            ofModelName: 'collection'),
+            ofModelName: 'timestamp'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,

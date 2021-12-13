@@ -84,7 +84,7 @@ class JsonListTypeModel extends Model {
         isRequired: false,
         key: VALUE,
         ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
-            ofModelName: 'collection'),
+            ofModelName: 'string'),
         isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,

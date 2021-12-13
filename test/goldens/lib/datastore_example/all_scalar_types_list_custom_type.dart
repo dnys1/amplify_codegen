@@ -154,61 +154,72 @@ class AllScalarTypesListCustomType {
     modelSchemaDefinition.name = 'AllScalarTypesListCustomType';
     modelSchemaDefinition.pluralName = 'AllScalarTypesListCustomTypes';
     modelSchemaDefinition.addField(ModelFieldDefinition.id(name: 'id'));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'stringValues',
-        isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'string'),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'intValues',
-        isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'int'),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'floatValues',
-        isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'double'),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'boolValues',
-        isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'bool'),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'dateValues',
-        isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'date'),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'dateTimeValues',
-        isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'dateTime'),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'timeValues',
-        isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'time'),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'timestampValues',
-        isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'timestamp'),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'jsonValues',
-        isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
-    modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'string'),
+        isArray: true));
+    modelSchemaDefinition.addField(ModelFieldDefinition.customTypeField(
         isRequired: false,
         fieldName: 'enumValues',
-        isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.collection,
+            ofModelName: 'enumeration'),
+        isArray: true));
     modelSchemaDefinition.addField(ModelFieldDefinition.embedded(
         isRequired: false,
         fieldName: 'customTypeValues',
-        isArray: true,
-        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection)));
+        ofType: const ModelFieldType(ModelFieldTypeEnum.embeddedCollection,
+            ofCustomTypeName: 'SimpleCustomType'),
+        isArray: true));
   });
 
   List<String?>? get stringValues => _stringValues;
