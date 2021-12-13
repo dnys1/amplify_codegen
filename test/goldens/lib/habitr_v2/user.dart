@@ -213,7 +213,7 @@ class User extends Model {
               authStrategy: AuthStrategy.OWNER,
               operations: [ModelOperation.READ],
               ownerField: 'username',
-              identityClaim: 'username')
+              identityClaim: 'cognito:username')
         ]));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
@@ -244,7 +244,7 @@ class User extends Model {
               authStrategy: AuthStrategy.OWNER,
               operations: [ModelOperation.READ],
               ownerField: 'username',
-              identityClaim: 'username')
+              identityClaim: 'cognito:username')
         ]));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
@@ -284,7 +284,7 @@ class User extends Model {
           authStrategy: AuthStrategy.OWNER,
           operations: [ModelOperation.UPDATE],
           ownerField: 'username',
-          identityClaim: 'username')
+          identityClaim: 'cognito:username')
     ];
   });
 

@@ -193,7 +193,7 @@ class Comment extends Model {
             ModelOperation.UPDATE
           ],
           ownerField: 'owner',
-          identityClaim: 'username')
+          identityClaim: 'cognito:username')
     ];
   });
 

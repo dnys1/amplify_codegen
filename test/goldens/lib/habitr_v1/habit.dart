@@ -204,7 +204,7 @@ class Habit extends Model {
               authStrategy: AuthStrategy.OWNER,
               operations: [ModelOperation.CREATE],
               ownerField: 'owner',
-              identityClaim: 'username')
+              identityClaim: 'cognito:username')
         ]));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
@@ -237,7 +237,7 @@ class Habit extends Model {
               authStrategy: AuthStrategy.OWNER,
               operations: [ModelOperation.CREATE],
               ownerField: 'owner',
-              identityClaim: 'username')
+              identityClaim: 'cognito:username')
         ]));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
@@ -292,7 +292,7 @@ class Habit extends Model {
           authStrategy: AuthStrategy.OWNER,
           operations: [ModelOperation.CREATE, ModelOperation.DELETE],
           ownerField: 'owner',
-          identityClaim: 'username')
+          identityClaim: 'cognito:username')
     ];
   });
 
