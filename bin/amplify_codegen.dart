@@ -38,7 +38,6 @@ void main(List<String> args) {
     final filename = key.substring('models.'.length) + '.dart';
     final filepath = modelsDir.resolve(filename);
     final output = File.fromUri(filepath);
-    print('writing to $filepath');
     output.writeAsStringSync(value);
   });
   print('Successfully generated models');

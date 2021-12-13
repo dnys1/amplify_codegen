@@ -5,3 +5,4 @@ analyzer:
     - '**/*.g.dart'
   errors:
     public_member_api_docs: ignore
+    avoid_print: ignore
