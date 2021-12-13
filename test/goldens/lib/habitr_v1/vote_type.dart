@@ -21,7 +21,7 @@ library models.vote_type;
 
 enum VoteType { upvote, downvote, removeUpvote, removeDownvote }
 
-extension $VoteType on VoteType {
+extension VoteTypeValue on VoteType {
   String get value {
     switch (this) {
       case VoteType.upvote:
@@ -36,7 +36,7 @@ extension $VoteType on VoteType {
   }
 }
 
-extension $VoteTypeList on List<VoteType> {
+extension VoteTypeByValue on List<VoteType> {
   VoteType? byValue(String? value) {
     try {
       return VoteType.values.firstWhere((el) => el.value == value);

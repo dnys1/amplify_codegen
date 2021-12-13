@@ -21,7 +21,7 @@ library models.access_level;
 
 enum AccessLevel { guest, private, protected }
 
-extension $AccessLevel on AccessLevel {
+extension AccessLevelValue on AccessLevel {
   String get value {
     switch (this) {
       case AccessLevel.guest:
@@ -34,7 +34,7 @@ extension $AccessLevel on AccessLevel {
   }
 }
 
-extension $AccessLevelList on List<AccessLevel> {
+extension AccessLevelByValue on List<AccessLevel> {
   AccessLevel? byValue(String? value) {
     try {
       return AccessLevel.values.firstWhere((el) => el.value == value);

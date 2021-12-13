@@ -35,6 +35,17 @@ class ModelProvider extends ModelProviderInterface {
   @override
   List<ModelSchema> get customTypeSchemas => [];
   @override
+  ModelType<T> getModelType<T extends Model>() {
+    switch (T) {
+      case AuthorBook:
+        return (AuthorBook.classType as ModelType<T>);
+      default:
+        throw ArgumentError(
+            'Failed to find model in model provider for model type: $T');
+    }
+  }
+
+  @override
   ModelType getModelTypeByModelName(String modelName) {
     switch (modelName) {
       case 'authorBook':

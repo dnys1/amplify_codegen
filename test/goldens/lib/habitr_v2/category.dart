@@ -21,7 +21,7 @@ library models.category;
 
 enum Category { health, finance, productivity, relationships }
 
-extension $Category on Category {
+extension CategoryValue on Category {
   String get value {
     switch (this) {
       case Category.health:
@@ -36,7 +36,7 @@ extension $Category on Category {
   }
 }
 
-extension $CategoryList on List<Category> {
+extension CategoryByValue on List<Category> {
   Category? byValue(String? value) {
     try {
       return Category.values.firstWhere((el) => el.value == value);

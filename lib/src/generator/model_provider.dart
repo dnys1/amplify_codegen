@@ -109,6 +109,42 @@ class ModelProviderGenerator extends Generator<Library> {
         ]).code,
     );
 
+    // getModelType
+    final modelTypeT = TypeReference((t) => t
+      ..symbol = 'ModelType'
+      ..url = datastoreUri
+      ..types.add(refer('T')));
+    yield Method((m) {
+      m
+        ..annotations.add(refer('override'))
+        ..returns = modelTypeT
+        ..name = 'getModelType'
+        ..types.add(refer('T')
+            .typeRef
+            .rebuild((t) => t.bound = refer('Model', datastoreUri)));
+
+      m.body = Block.of([
+        const Code('switch (T) {'),
+        for (var model in models.where((m) => !m.isCustom)) ...[
+          Code('case ${model.name.pascalCase}:'),
+          refer(model.name.pascalCase)
+              .property('classType')
+              .asA(modelTypeT)
+              .returned
+              .statement,
+        ],
+        const Code('default:'),
+        refer('ArgumentError')
+            .newInstance([
+              literalString(
+                  'Failed to find model in model provider for model type: \$T')
+            ])
+            .thrown
+            .statement,
+        const Code('}'),
+      ]);
+    });
+
     // getModelTypeByModelName
     yield Method((m) {
       m

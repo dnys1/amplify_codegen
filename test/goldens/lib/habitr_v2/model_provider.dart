@@ -48,6 +48,21 @@ class ModelProvider extends ModelProviderInterface {
   List<ModelSchema> get customTypeSchemas =>
       [S3Object.schema, VoteResult.schema];
   @override
+  ModelType<T> getModelType<T extends Model>() {
+    switch (T) {
+      case Comment:
+        return (Comment.classType as ModelType<T>);
+      case Habit:
+        return (Habit.classType as ModelType<T>);
+      case User:
+        return (User.classType as ModelType<T>);
+      default:
+        throw ArgumentError(
+            'Failed to find model in model provider for model type: $T');
+    }
+  }
+
+  @override
   ModelType getModelTypeByModelName(String modelName) {
     switch (modelName) {
       case 'Comment':

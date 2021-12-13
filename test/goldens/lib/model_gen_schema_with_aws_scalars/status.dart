@@ -21,7 +21,7 @@ library models.status;
 
 enum Status { public, private }
 
-extension $Status on Status {
+extension StatusValue on Status {
   String get value {
     switch (this) {
       case Status.public:
@@ -32,7 +32,7 @@ extension $Status on Status {
   }
 }
 
-extension $StatusList on List<Status> {
+extension StatusByValue on List<Status> {
   Status? byValue(String? value) {
     try {
       return Status.values.firstWhere((el) => el.value == value);

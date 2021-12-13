@@ -1,1 +1,1 @@
-A simple command-line application.
+Goldens for `amplify_codegen` package.

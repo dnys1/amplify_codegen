@@ -22,11 +22,15 @@ extension ModelHelpers on Model {
 }
 
 extension ModelDefinitionHelpers on ObjectTypeDefinitionNode {
-  /// Returns whether `this` is a [Model].
+  /// Whether `this` is a [Model] (non-custom).
   bool get isModel =>
       directives.any((directive) => directive.name.value == 'model');
 
-  ///
+  /// Whether `this` is a custom Model type.
+  bool get isCustom => !isModel;
+
+  /// The keys/indexes for this model + their associated `fields` property.
+  /// Unnamed primary keys are indexed by `null` in the returned map.
   Map<String?, List<String>> get indexFields {
     // V1: The @key directives, by name, and their associated fields.
     final v1KeyDirectives =
@@ -53,6 +57,7 @@ extension ModelDefinitionHelpers on ObjectTypeDefinitionNode {
               field.directiveNamed('index')!.argumentNamed('name')!.stringValue,
               [field.wireName],
             )));
+    // + the primary key, which is the primary index
     final primaryKey =
         fields.firstWhereOrNull((field) => field.hasDirective('primaryKey'));
     if (primaryKey != null) {
@@ -61,6 +66,9 @@ extension ModelDefinitionHelpers on ObjectTypeDefinitionNode {
 
     return {...v1Map, ...indexedFields};
   }
+
+  /// The name of the primary key field, if any.
+  String? get primaryKeyField => indexFields[null]?.firstOrNull;
 
   /// Returns all fields as [ModelField] objects.
   Iterable<ModelField> modelFields({

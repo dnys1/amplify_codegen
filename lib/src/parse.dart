@@ -23,33 +23,16 @@ Map<String, Model> parseSchema(String schema) {
         .map((el) => MapEntry((el as ObjectTypeDefinitionNode).name.value, el)),
   );
 
-  for (var definition in doc.definitions) {
-    final isModel = definition is ObjectTypeDefinitionNode &&
-        _models.keys.contains(definition.name.value);
-    if (!isModel) {
-      continue;
-    }
-    final isCustom = definition.directives
-        .every((directive) => directive.name.value != 'model');
+  for (var modelDefinition in _models.values) {
+    final isCustom = modelDefinition.isCustom;
     final model = Model((b) {
-      final authRules = definition.directives.authRules;
-      final v1PrimaryKey = ((definition.directives
-                  .firstWhereOrNull((directive) {
-                    return directive.name.value == 'key' &&
-                        directive.arguments
-                            .every((arg) => arg.name.value != 'name');
-                  })
-                  ?.arguments
-                  .singleWhere((arg) => arg.name.value == 'fields')
-                  .value as ListValueNode?)
-              ?.values
-              .first as StringValueNode?)
-          ?.value;
+      final authRules = modelDefinition.directives.authRules;
+      final primaryKey = modelDefinition.primaryKeyField;
       b
-        ..name = definition.name.value
+        ..name = modelDefinition.name.value
         ..authRules.addAll(authRules)
-        ..fields.addAll(definition.modelFields(
-          primaryKey: v1PrimaryKey,
+        ..fields.addAll(modelDefinition.modelFields(
+          primaryKey: primaryKey,
           isCustom: isCustom,
           models: _models,
         )..sorted((a, b) {
@@ -77,24 +60,18 @@ Map<String, Model> parseSchema(String schema) {
   }
 
   // Second pass to establish hasMany/hasOne/belongsTo relationships
-  for (var definition in doc.definitions) {
-    final isModel = definition is ObjectTypeDefinitionNode;
-    if (!isModel) {
+  for (var modelDefinition in _models.values) {
+    if (modelDefinition.isCustom) {
       continue;
     }
-    final isCustom = definition.directives
-        .every((directive) => directive.name.value != 'model');
-    if (isCustom) {
-      continue;
-    }
-    final nodeFields = definition.fields;
-    final model = models[definition.name.value]!;
+    final nodeFields = modelDefinition.fields;
+    final model = models[modelDefinition.name.value]!;
     final updatedModel = model.rebuild((m) {
       m.fields.map((field) => field.rebuild((field) {
             final fieldNode =
                 nodeFields.singleWhereOrNull((f) => f.wireName == field.name);
 
-            // Node field will be null for injected fields such as `createdAt`.
+            // Field node will be null for injected fields such as `createdAt`.
             // These fields will not have relationships.
             if (fieldNode == null || !fieldNode.hasRelationship) {
               return;
@@ -162,6 +139,7 @@ Map<String, Model> parseSchema(String schema) {
               );
             }
 
+            // Create field if it doesn't exist
             relatedFieldName = relatedFieldNode?.name.value ??
                 makeConnectionAttributeName(model.name, field.name!);
             relatedField = relatedModel.maybeFieldNamed(relatedFieldName) ??
@@ -235,8 +213,7 @@ Map<String, Model> parseSchema(String schema) {
             throw StateError('Invalid connection type');
           }));
     });
-    models[model.name] =
-        updatedModel;
+    models[model.name] = updatedModel;
   }
 
   return models;

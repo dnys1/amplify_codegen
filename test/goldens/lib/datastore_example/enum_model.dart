@@ -21,7 +21,7 @@ library models.enum_model;
 
 enum EnumModel { yes, no }
 
-extension $EnumModel on EnumModel {
+extension EnumModelValue on EnumModel {
   String get value {
     switch (this) {
       case EnumModel.yes:
@@ -32,7 +32,7 @@ extension $EnumModel on EnumModel {
   }
 }
 
-extension $EnumModelList on List<EnumModel> {
+extension EnumModelByValue on List<EnumModel> {
   EnumModel? byValue(String? value) {
     try {
       return EnumModel.values.firstWhere((el) => el.value == value);
