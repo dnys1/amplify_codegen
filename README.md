@@ -1,1 +1,3 @@
-A simple command-line application.
+# amplify_codegen
+
+A code generator for Amplify models.
