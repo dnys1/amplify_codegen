@@ -87,10 +87,8 @@ class Habit extends Model {
             : null,
         _comments = (json['comments'] as List?)
             ?.cast<Map>()
-            .map((el) => (el?['serializedData'] as Map?) != null
-                ? Comment.fromJson(((el as Map)['serializedData'] as Map)
-                    .cast<String, Object?>())
-                : null)
+            .map((el) => Comment.fromJson(
+                (el['serializedData'] as Map).cast<String, Object?>()))
             .toList(),
         _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))

@@ -480,7 +480,8 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     // TODO: Remove when client libraries are fixed
     // Make no assumptions about the data being deserialized - only primary key
     // we can say for sure is non-null.
-    final isNullable = !isPrimaryKey; // !type.isRequired
+    final isNullable =
+        !type.isRequired || !isPrimaryKey && depth == 0; // !type.isRequired
     final isRequired = !isNullable;
     if (type.isList) {
       final list = ref.asA(TypeReference((t) => t
@@ -488,16 +489,14 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         ..isNullable = isNullable));
       final listType = type.listType!;
       final List<Reference> castArgs = [listType.wireTypeReference];
-      final newInst = Method(
-        (m) => m
-          ..lambda = true
-          ..requiredParameters.add(Parameter((p) => p..name = 'el'))
-          ..body = _deserialize(
-            refer('el'),
-            listType,
-            depth: depth + 1,
-          ).code,
-      ).closure;
+      final newInst = Method((m) => m
+        ..lambda = true
+        ..requiredParameters.add(Parameter((p) => p..name = 'el'))
+        ..body = _deserialize(
+          refer('el'),
+          listType,
+          depth: depth + 1,
+        ).code).closure;
 
       // Do not `map` for simple types.
       // e.g. `.map((el) => el).toList()` is redundant.

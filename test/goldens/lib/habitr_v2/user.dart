@@ -87,17 +87,13 @@ class User extends Model {
             : null,
         _comments = (json['comments'] as List?)
             ?.cast<Map>()
-            .map((el) => (el?['serializedData'] as Map?) != null
-                ? Comment.fromJson(((el as Map)['serializedData'] as Map)
-                    .cast<String, Object?>())
-                : null)
+            .map((el) => Comment.fromJson(
+                (el['serializedData'] as Map).cast<String, Object?>()))
             .toList(),
         _habits = (json['habits'] as List?)
             ?.cast<Map>()
-            .map((el) => (el?['serializedData'] as Map?) != null
-                ? Habit.fromJson(((el as Map)['serializedData'] as Map)
-                    .cast<String, Object?>())
-                : null)
+            .map((el) => Habit.fromJson(
+                (el['serializedData'] as Map).cast<String, Object?>()))
             .toList(),
         _upvotedHabits = (json['upvotedHabits'] as List?)?.cast<String>(),
         _downvotedHabits = (json['downvotedHabits'] as List?)?.cast<String>(),
