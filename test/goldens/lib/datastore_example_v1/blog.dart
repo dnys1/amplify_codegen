@@ -52,24 +52,22 @@ class Blog extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory Blog.fromJson(Map<String, Object?> json) {
-    return Blog._internal(
-        id: (json['id'] as String),
-        name: (json['name'] as String),
-        posts: (json['posts'] as List?)
+  Blog.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _name = (json['name'] as String?),
+        _posts = (json['posts'] as List?)
             ?.cast<Map?>()
             .map((el) => (el?['serializedData'] as Map?) != null
                 ? Post.fromJson(((el as Map)['serializedData'] as Map)
                     .cast<String, Object?>())
                 : null)
             .toList(),
-        createdAt: json['createdAt'] != null
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _BlogModelType classType = _BlogModelType();
 

@@ -56,16 +56,14 @@ class S3Object {
         _cognitoId = cognitoId,
         _accessLevel = accessLevel;
 
-  factory S3Object.fromJson(Map<String, Object?> json) {
-    return S3Object._internal(
-        id: (json['id'] as String),
-        bucket: (json['bucket'] as String),
-        region: (json['region'] as String),
-        key: (json['key'] as String),
-        cognitoId: (json['cognitoId'] as String?),
-        accessLevel:
-            AccessLevel.values.byValue((json['accessLevel'] as String?)));
-  }
+  S3Object.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _bucket = (json['bucket'] as String?),
+        _region = (json['region'] as String?),
+        _key = (json['key'] as String?),
+        _cognitoId = (json['cognitoId'] as String?),
+        _accessLevel =
+            AccessLevel.values.byValue((json['accessLevel'] as String?));
 
   final String id;
 

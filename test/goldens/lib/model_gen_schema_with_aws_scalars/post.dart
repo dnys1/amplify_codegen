@@ -56,25 +56,23 @@ class Post extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory Post.fromJson(Map<String, Object?> json) {
-    return Post._internal(
-        id: (json['id'] as String),
-        title: (json['title'] as String),
-        content: (json['content'] as String?),
-        comments: (json['comments'] as List?)
+  Post.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _title = (json['title'] as String?),
+        _content = (json['content'] as String?),
+        _comments = (json['comments'] as List?)
             ?.cast<Map?>()
             .map((el) => (el?['serializedData'] as Map?) != null
                 ? Comment.fromJson(((el as Map)['serializedData'] as Map)
                     .cast<String, Object?>())
                 : null)
             .toList(),
-        createdAt: json['createdAt'] != null
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _PostModelType classType = _PostModelType();
 

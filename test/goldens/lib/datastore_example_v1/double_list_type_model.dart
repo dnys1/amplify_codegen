@@ -46,17 +46,15 @@ class DoubleListTypeModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory DoubleListTypeModel.fromJson(Map<String, Object?> json) {
-    return DoubleListTypeModel._internal(
-        id: (json['id'] as String),
-        value: (json['value'] as List?)?.cast<double?>(),
-        createdAt: json['createdAt'] != null
+  DoubleListTypeModel.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _value = (json['value'] as List?)?.cast<double?>(),
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _DoubleListTypeModelModelType classType =
       _DoubleListTypeModelModelType();

@@ -55,13 +55,16 @@ class ModelNestedCustomType extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory ModelNestedCustomType.fromJson(Map<String, Object?> json) {
-    return ModelNestedCustomType._internal(
-        id: (json['id'] as String),
-        customTypeValue: AllScalarTypesCustomType.fromJson(
-            ((json['customTypeValue'] as Map)['serializedData'] as Map)
-                .cast<String, Object?>()),
-        listCustomTypeValue: (json['listCustomTypeValue'] as List?)
+  ModelNestedCustomType.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _customTypeValue =
+            ((json['customTypeValue'] as Map?)?['serializedData'] as Map?) !=
+                    null
+                ? AllScalarTypesCustomType.fromJson(
+                    ((json['customTypeValue'] as Map)['serializedData'] as Map)
+                        .cast<String, Object?>())
+                : null,
+        _listCustomTypeValue = (json['listCustomTypeValue'] as List?)
             ?.cast<Map?>()
             .map((el) => (el?['serializedData'] as Map?) != null
                 ? AllScalarTypesListCustomType.fromJson(
@@ -69,13 +72,12 @@ class ModelNestedCustomType extends Model {
                         .cast<String, Object?>())
                 : null)
             .toList(),
-        createdAt: json['createdAt'] != null
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _ModelNestedCustomTypeModelType classType =
       _ModelNestedCustomTypeModelType();

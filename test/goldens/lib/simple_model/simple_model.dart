@@ -50,18 +50,16 @@ class SimpleModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory SimpleModel.fromJson(Map<String, Object?> json) {
-    return SimpleModel._internal(
-        id: (json['id'] as String),
-        name: (json['name'] as String?),
-        bar: (json['bar'] as String?),
-        createdAt: json['createdAt'] != null
+  SimpleModel.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _name = (json['name'] as String?),
+        _bar = (json['bar'] as String?),
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _SimpleModelModelType classType = _SimpleModelModelType();
 

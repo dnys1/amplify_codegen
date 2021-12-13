@@ -46,17 +46,15 @@ class Class extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory Class.fromJson(Map<String, Object?> json) {
-    return Class._internal(
-        id: (json['id'] as String),
-        name: (json['name'] as String),
-        createdAt: json['createdAt'] != null
+  Class.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _name = (json['name'] as String?),
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _ClassModelType classType = _ClassModelType();
 

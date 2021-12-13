@@ -52,21 +52,19 @@ class Comment extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory Comment.fromJson(Map<String, Object?> json) {
-    return Comment._internal(
-        id: (json['id'] as String),
-        comment: (json['comment'] as String),
-        post: ((json['post'] as Map?)?['serializedData'] as Map?) != null
+  Comment.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _comment = (json['comment'] as String?),
+        _post = ((json['post'] as Map?)?['serializedData'] as Map?) != null
             ? Post.fromJson(((json['post'] as Map)['serializedData'] as Map)
                 .cast<String, Object?>())
             : null,
-        createdAt: json['createdAt'] != null
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _CommentModelType classType = _CommentModelType();
 

@@ -52,22 +52,21 @@ class Person extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory Person.fromJson(Map<String, Object?> json) {
-    return Person._internal(
-        id: (json['id'] as String),
-        name: (json['name'] as String),
-        license: ((json['license'] as Map?)?['serializedData'] as Map?) != null
-            ? License.fromJson(
-                ((json['license'] as Map)['serializedData'] as Map)
-                    .cast<String, Object?>())
-            : null,
-        createdAt: json['createdAt'] != null
+  Person.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _name = (json['name'] as String?),
+        _license =
+            ((json['license'] as Map?)?['serializedData'] as Map?) != null
+                ? License.fromJson(
+                    ((json['license'] as Map)['serializedData'] as Map)
+                        .cast<String, Object?>())
+                : null,
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _PersonModelType classType = _PersonModelType();
 

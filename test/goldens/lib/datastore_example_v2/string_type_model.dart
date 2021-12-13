@@ -46,17 +46,15 @@ class StringTypeModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory StringTypeModel.fromJson(Map<String, Object?> json) {
-    return StringTypeModel._internal(
-        id: (json['id'] as String),
-        value: (json['value'] as String?),
-        createdAt: json['createdAt'] != null
+  StringTypeModel.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _value = (json['value'] as String?),
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _StringTypeModelModelType classType =
       _StringTypeModelModelType();

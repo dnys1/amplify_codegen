@@ -46,20 +46,18 @@ class TimeListTypeModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory TimeListTypeModel.fromJson(Map<String, Object?> json) {
-    return TimeListTypeModel._internal(
-        id: (json['id'] as String),
-        value: (json['value'] as List?)
+  TimeListTypeModel.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _value = (json['value'] as List?)
             ?.cast<String?>()
             .map((el) => el != null ? TemporalTime.fromString(el) : null)
             .toList(),
-        createdAt: json['createdAt'] != null
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _TimeListTypeModelModelType classType =
       _TimeListTypeModelModelType();

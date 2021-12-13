@@ -46,19 +46,17 @@ class DateTimeTypeModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory DateTimeTypeModel.fromJson(Map<String, Object?> json) {
-    return DateTimeTypeModel._internal(
-        id: (json['id'] as String),
-        value: json['value'] != null
+  DateTimeTypeModel.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _value = json['value'] != null
             ? TemporalDateTime.fromString((json['value'] as String))
             : null,
-        createdAt: json['createdAt'] != null
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _DateTimeTypeModelModelType classType =
       _DateTimeTypeModelModelType();

@@ -32,10 +32,9 @@ class SimpleCustomType {
   const SimpleCustomType._internal({required this.id, required String foo})
       : _foo = foo;
 
-  factory SimpleCustomType.fromJson(Map<String, Object?> json) {
-    return SimpleCustomType._internal(
-        id: (json['id'] as String), foo: (json['foo'] as String));
-  }
+  SimpleCustomType.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _foo = (json['foo'] as String?);
 
   final String id;
 

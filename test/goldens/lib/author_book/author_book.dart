@@ -58,20 +58,18 @@ class AuthorBook extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory AuthorBook.fromJson(Map<String, Object?> json) {
-    return AuthorBook._internal(
-        id: (json['id'] as String),
-        authorId: (json['author_id'] as String),
-        bookId: (json['book_id'] as String),
-        author: (json['author'] as String?),
-        book: (json['book'] as String?),
-        createdAt: json['createdAt'] != null
+  AuthorBook.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _authorId = (json['author_id'] as String?),
+        _bookId = (json['book_id'] as String?),
+        _author = (json['author'] as String?),
+        _book = (json['book'] as String?),
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _AuthorBookModelType classType = _AuthorBookModelType();
 

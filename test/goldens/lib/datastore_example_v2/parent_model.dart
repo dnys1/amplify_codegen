@@ -56,23 +56,21 @@ class ParentModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory ParentModel.fromJson(Map<String, Object?> json) {
-    return ParentModel._internal(
-        id: (json['id'] as String),
-        name: (json['name'] as String),
-        childId: (json['childID'] as String),
-        child: ((json['child'] as Map?)?['serializedData'] as Map?) != null
+  ParentModel.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _name = (json['name'] as String?),
+        _childId = (json['childID'] as String?),
+        _child = ((json['child'] as Map?)?['serializedData'] as Map?) != null
             ? ChildModel.fromJson(
                 ((json['child'] as Map)['serializedData'] as Map)
                     .cast<String, Object?>())
             : null,
-        createdAt: json['createdAt'] != null
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _ParentModelModelType classType = _ParentModelModelType();
 

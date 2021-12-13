@@ -87,43 +87,41 @@ class AllScalarTypesListCustomType {
         _enumValues = enumValues,
         _customTypeValues = customTypeValues;
 
-  factory AllScalarTypesListCustomType.fromJson(Map<String, Object?> json) {
-    return AllScalarTypesListCustomType._internal(
-        id: (json['id'] as String),
-        stringValues: (json['stringValues'] as List?)?.cast<String?>(),
-        intValues: (json['intValues'] as List?)?.cast<int?>(),
-        floatValues: (json['floatValues'] as List?)?.cast<double?>(),
-        boolValues: (json['boolValues'] as List?)?.cast<bool?>(),
-        dateValues: (json['dateValues'] as List?)
+  AllScalarTypesListCustomType.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _stringValues = (json['stringValues'] as List?)?.cast<String?>(),
+        _intValues = (json['intValues'] as List?)?.cast<int?>(),
+        _floatValues = (json['floatValues'] as List?)?.cast<double?>(),
+        _boolValues = (json['boolValues'] as List?)?.cast<bool?>(),
+        _dateValues = (json['dateValues'] as List?)
             ?.cast<String?>()
             .map((el) => el != null ? TemporalDate.fromString(el) : null)
             .toList(),
-        dateTimeValues: (json['dateTimeValues'] as List?)
+        _dateTimeValues = (json['dateTimeValues'] as List?)
             ?.cast<String?>()
             .map((el) => el != null ? TemporalDateTime.fromString(el) : null)
             .toList(),
-        timeValues: (json['timeValues'] as List?)
+        _timeValues = (json['timeValues'] as List?)
             ?.cast<String?>()
             .map((el) => el != null ? TemporalTime.fromString(el) : null)
             .toList(),
-        timestampValues: (json['timestampValues'] as List?)
+        _timestampValues = (json['timestampValues'] as List?)
             ?.cast<int?>()
             .map((el) => el != null ? TemporalTimestamp.fromSeconds(el) : null)
             .toList(),
-        jsonValues: (json['jsonValues'] as List?)?.cast<String?>(),
-        enumValues: (json['enumValues'] as List?)
+        _jsonValues = (json['jsonValues'] as List?)?.cast<String?>(),
+        _enumValues = (json['enumValues'] as List?)
             ?.cast<String?>()
             .map((el) => EnumModel.values.byValue(el))
             .toList(),
-        customTypeValues: (json['customTypeValues'] as List?)
+        _customTypeValues = (json['customTypeValues'] as List?)
             ?.cast<Map?>()
             .map((el) => (el?['serializedData'] as Map?) != null
                 ? SimpleCustomType.fromJson(
                     ((el as Map)['serializedData'] as Map)
                         .cast<String, Object?>())
                 : null)
-            .toList());
-  }
+            .toList();
 
   final String id;
 

@@ -65,32 +65,30 @@ class Post extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory Post.fromJson(Map<String, Object?> json) {
-    return Post._internal(
-        id: (json['id'] as String),
-        title: (json['title'] as String),
-        rating: (json['rating'] as int),
-        created: json['created'] != null
+  Post.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _title = (json['title'] as String?),
+        _rating = (json['rating'] as int?),
+        _created = json['created'] != null
             ? TemporalDateTime.fromString((json['created'] as String))
             : null,
-        blog: ((json['blog'] as Map?)?['serializedData'] as Map?) != null
+        _blog = ((json['blog'] as Map?)?['serializedData'] as Map?) != null
             ? Blog.fromJson(((json['blog'] as Map)['serializedData'] as Map)
                 .cast<String, Object?>())
             : null,
-        comments: (json['comments'] as List?)
+        _comments = (json['comments'] as List?)
             ?.cast<Map?>()
             .map((el) => (el?['serializedData'] as Map?) != null
                 ? Comment.fromJson(((el as Map)['serializedData'] as Map)
                     .cast<String, Object?>())
                 : null)
             .toList(),
-        createdAt: json['createdAt'] != null
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _PostModelType classType = _PostModelType();
 

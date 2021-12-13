@@ -81,25 +81,33 @@ class AllScalarTypesCustomType {
         _enumValue = enumValue,
         _customTypeValue = customTypeValue;
 
-  factory AllScalarTypesCustomType.fromJson(Map<String, Object?> json) {
-    return AllScalarTypesCustomType._internal(
-        id: (json['id'] as String),
-        stringValue: (json['stringValue'] as String),
-        intValue: (json['intValue'] as int),
-        floatValue: (json['floatValue'] as double),
-        boolValue: (json['boolValue'] as bool),
-        dateValue: TemporalDate.fromString((json['dateValue'] as String)),
-        dateTimeValue:
-            TemporalDateTime.fromString((json['dateTimeValue'] as String)),
-        timeValue: TemporalTime.fromString((json['timeValue'] as String)),
-        timestampValue:
-            TemporalTimestamp.fromSeconds((json['timestampValue'] as int)),
-        jsonValue: (json['jsonValue'] as String),
-        enumValue: EnumModel.values.byValue((json['enumValue'] as String?))!,
-        customTypeValue: SimpleCustomType.fromJson(
-            ((json['customTypeValue'] as Map)['serializedData'] as Map)
-                .cast<String, Object?>()));
-  }
+  AllScalarTypesCustomType.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _stringValue = (json['stringValue'] as String?),
+        _intValue = (json['intValue'] as int?),
+        _floatValue = (json['floatValue'] as double?),
+        _boolValue = (json['boolValue'] as bool?),
+        _dateValue = json['dateValue'] != null
+            ? TemporalDate.fromString((json['dateValue'] as String))
+            : null,
+        _dateTimeValue = json['dateTimeValue'] != null
+            ? TemporalDateTime.fromString((json['dateTimeValue'] as String))
+            : null,
+        _timeValue = json['timeValue'] != null
+            ? TemporalTime.fromString((json['timeValue'] as String))
+            : null,
+        _timestampValue = json['timestampValue'] != null
+            ? TemporalTimestamp.fromSeconds((json['timestampValue'] as int))
+            : null,
+        _jsonValue = (json['jsonValue'] as String?),
+        _enumValue = EnumModel.values.byValue((json['enumValue'] as String?)),
+        _customTypeValue =
+            ((json['customTypeValue'] as Map?)?['serializedData'] as Map?) !=
+                    null
+                ? SimpleCustomType.fromJson(
+                    ((json['customTypeValue'] as Map)['serializedData'] as Map)
+                        .cast<String, Object?>())
+                : null;
 
   final String id;
 

@@ -74,30 +74,30 @@ class Habit extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory Habit.fromJson(Map<String, Object?> json) {
-    return Habit._internal(
-        id: (json['id'] as String),
-        tagline: (json['tagline'] as String),
-        category: Category.values.byValue((json['category'] as String?))!,
-        details: (json['details'] as String?),
-        ups: (json['ups'] as int?),
-        downs: (json['downs'] as int?),
-        author: ((json['author'] as Map?)?['serializedData'] as Map?) != null
+  Habit.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _tagline = (json['tagline'] as String?),
+        _category = Category.values.byValue((json['category'] as String?)),
+        _details = (json['details'] as String?),
+        _ups = (json['ups'] as int?),
+        _downs = (json['downs'] as int?),
+        _author = ((json['author'] as Map?)?['serializedData'] as Map?) != null
             ? User.fromJson(((json['author'] as Map)['serializedData'] as Map)
                 .cast<String, Object?>())
             : null,
-        comments: (json['comments'] as List?)
+        _comments = (json['comments'] as List?)
             ?.cast<Map>()
-            .map((el) => Comment.fromJson(
-                (el['serializedData'] as Map).cast<String, Object?>()))
+            .map((el) => (el?['serializedData'] as Map?) != null
+                ? Comment.fromJson(((el as Map)['serializedData'] as Map)
+                    .cast<String, Object?>())
+                : null)
             .toList(),
-        createdAt: json['createdAt'] != null
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _HabitModelType classType = _HabitModelType();
 

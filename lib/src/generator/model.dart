@@ -382,7 +382,6 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
   Constructor get _fromJsonConstructor => Constructor((ctor) {
         ctor
           ..name = 'fromJson'
-          ..factory = true
           ..lambda = false
           ..requiredParameters.add(Parameter((p) {
             p
@@ -391,20 +390,18 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           }));
 
         // Gather fromJson fields
-        final Map<String, Expression> params = {};
         for (var field in fields) {
-          final name = field.dartName;
+          final name = field.getter;
           final jsonName = field.wireName;
           final jsonProp = refer('json').index(literalString(jsonName));
-          params[name] = _deserialize(
-            jsonProp,
-            field.type,
-          );
+          ctor.initializers.add(refer(name)
+              .assign(_deserialize(
+                jsonProp,
+                field.type,
+                isPrimaryKey: field.isPrimaryKey,
+              ))
+              .code);
         }
-        ctor.body = refer(modelName)
-            .newInstanceNamed('_internal', [], params)
-            .returned
-            .statement;
       });
 
   /// Generates the expression to serialize the field named [name] to JSON.
@@ -472,16 +469,23 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
   Expression _deserialize(
     Expression ref,
     TypeInfo type, {
+    bool isPrimaryKey = false,
     int depth = 0,
   }) {
     // All fields are type `dynamic` at depth=0 (from the JSON map). Casts and
     // `cast` expressions ensure types in `map` expressions, and so types do
     // not need to be re-cast (important to avoid unnecessary_casts lint).
     final isDynamic = depth == 0;
+
+    // TODO: Remove when client libraries are fixed
+    // Make no assumptions about the data being deserialized - only primary key
+    // we can say for sure is non-null.
+    final isNullable = !isPrimaryKey; // !type.isRequired
+    final isRequired = !isNullable;
     if (type.isList) {
       final list = ref.asA(TypeReference((t) => t
         ..symbol = 'List'
-        ..isNullable = !type.isRequired));
+        ..isNullable = isNullable));
       final listType = type.listType!;
       final List<Reference> castArgs = [listType.wireTypeReference];
       final newInst = Method(
@@ -497,7 +501,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
       // Do not `map` for simple types.
       // e.g. `.map((el) => el).toList()` is redundant.
-      if (type.isRequired) {
+      if (isRequired) {
         return type.isPrimitive
             ? list.property('cast').call([], {}, castArgs)
             : list
@@ -519,7 +523,6 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
                 .call([]);
       }
     } else if (type.isModel) {
-      final isNullable = !type.isRequired;
       final map = refer('Map');
       final newInst = refer(type.modelName!).newInstanceNamed('fromJson', [
         (isDynamic || isNullable ? ref.asA(map) : ref)
@@ -535,7 +538,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
       ]))
           .index(literalString('serializedData'))
           .asA(isNullable ? map.nullable : map);
-      return type.isRequired
+      return isRequired
           ? newInst
           : ref.notEqualTo(literalNull).conditional(newInst, literalNull);
     } else if (type.isEnum) {
@@ -543,12 +546,14 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           .property('values')
           .property('byValue')
           .call([isDynamic ? ref.asA(refer('String').nullable) : ref]);
-      return type.isRequired ? byValue.nullChecked : byValue;
+      return isRequired ? byValue.nullChecked : byValue;
     } else {
       final typeName = type.typeReference.symbol;
-      final wireType = type.wireTypeReference;
+      var wireType = type.wireTypeReference;
+      if (isNullable) {
+        wireType = wireType.nullable;
+      }
       final awsType = type.awsType;
-      final isNullable = !type.isRequired;
       final castRef = isDynamic ? ref.asA(wireType) : ref;
       switch (awsType!) {
         case AWSType.AWSDate:

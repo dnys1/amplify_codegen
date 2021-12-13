@@ -52,11 +52,10 @@ class HasManyModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory HasManyModel.fromJson(Map<String, Object?> json) {
-    return HasManyModel._internal(
-        id: (json['id'] as String),
-        name: (json['name'] as String),
-        children: (json['children'] as List?)
+  HasManyModel.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _name = (json['name'] as String?),
+        _children = (json['children'] as List?)
             ?.cast<Map?>()
             .map((el) => (el?['serializedData'] as Map?) != null
                 ? HasManyChildModel.fromJson(
@@ -64,13 +63,12 @@ class HasManyModel extends Model {
                         .cast<String, Object?>())
                 : null)
             .toList(),
-        createdAt: json['createdAt'] != null
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _HasManyModelModelType classType = _HasManyModelModelType();
 

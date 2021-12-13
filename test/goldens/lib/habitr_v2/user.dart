@@ -76,35 +76,37 @@ class User extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory User.fromJson(Map<String, Object?> json) {
-    return User._internal(
-        username: (json['username'] as String),
-        displayUsername: (json['displayUsername'] as String?),
-        name: (json['name'] as String?),
-        avatar: ((json['avatar'] as Map?)?['serializedData'] as Map?) != null
+  User.fromJson(Map<String, Object?> json)
+      : username = (json['username'] as String),
+        _displayUsername = (json['displayUsername'] as String?),
+        _name = (json['name'] as String?),
+        _avatar = ((json['avatar'] as Map?)?['serializedData'] as Map?) != null
             ? S3Object.fromJson(
                 ((json['avatar'] as Map)['serializedData'] as Map)
                     .cast<String, Object?>())
             : null,
-        comments: (json['comments'] as List?)
+        _comments = (json['comments'] as List?)
             ?.cast<Map>()
-            .map((el) => Comment.fromJson(
-                (el['serializedData'] as Map).cast<String, Object?>()))
+            .map((el) => (el?['serializedData'] as Map?) != null
+                ? Comment.fromJson(((el as Map)['serializedData'] as Map)
+                    .cast<String, Object?>())
+                : null)
             .toList(),
-        habits: (json['habits'] as List?)
+        _habits = (json['habits'] as List?)
             ?.cast<Map>()
-            .map((el) => Habit.fromJson(
-                (el['serializedData'] as Map).cast<String, Object?>()))
+            .map((el) => (el?['serializedData'] as Map?) != null
+                ? Habit.fromJson(((el as Map)['serializedData'] as Map)
+                    .cast<String, Object?>())
+                : null)
             .toList(),
-        upvotedHabits: (json['upvotedHabits'] as List?)?.cast<String>(),
-        downvotedHabits: (json['downvotedHabits'] as List?)?.cast<String>(),
-        createdAt: json['createdAt'] != null
+        _upvotedHabits = (json['upvotedHabits'] as List?)?.cast<String>(),
+        _downvotedHabits = (json['downvotedHabits'] as List?)?.cast<String>(),
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _UserModelType classType = _UserModelType();
 

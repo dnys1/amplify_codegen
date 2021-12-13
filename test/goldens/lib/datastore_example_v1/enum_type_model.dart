@@ -48,17 +48,15 @@ class EnumTypeModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory EnumTypeModel.fromJson(Map<String, Object?> json) {
-    return EnumTypeModel._internal(
-        id: (json['id'] as String),
-        value: EnumModel.values.byValue((json['value'] as String?)),
-        createdAt: json['createdAt'] != null
+  EnumTypeModel.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _value = EnumModel.values.byValue((json['value'] as String?)),
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _EnumTypeModelModelType classType = _EnumTypeModelModelType();
 

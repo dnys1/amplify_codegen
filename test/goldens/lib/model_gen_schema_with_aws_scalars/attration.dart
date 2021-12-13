@@ -60,20 +60,20 @@ class Attration extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory Attration.fromJson(Map<String, Object?> json) {
-    return Attration._internal(
-        id: (json['id'] as String),
-        name: (json['name'] as String),
-        status: Status.values.byValue((json['status'] as String?))!,
-        tags: (json['tags'] as List?)?.cast<String?>(),
-        lastUpdate: TemporalDate.fromString((json['lastUpdate'] as String)),
-        createdAt: json['createdAt'] != null
+  Attration.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _name = (json['name'] as String?),
+        _status = Status.values.byValue((json['status'] as String?)),
+        _tags = (json['tags'] as List?)?.cast<String?>(),
+        _lastUpdate = json['lastUpdate'] != null
+            ? TemporalDate.fromString((json['lastUpdate'] as String))
+            : null,
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _AttrationModelType classType = _AttrationModelType();
 

@@ -46,17 +46,15 @@ class BoolTypeModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory BoolTypeModel.fromJson(Map<String, Object?> json) {
-    return BoolTypeModel._internal(
-        id: (json['id'] as String),
-        value: (json['value'] as bool?),
-        createdAt: json['createdAt'] != null
+  BoolTypeModel.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _value = (json['value'] as bool?),
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _BoolTypeModelModelType classType = _BoolTypeModelModelType();
 

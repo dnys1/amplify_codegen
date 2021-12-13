@@ -46,17 +46,15 @@ class ReservedWord extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory ReservedWord.fromJson(Map<String, Object?> json) {
-    return ReservedWord._internal(
-        id: (json['id'] as String),
-        class$: (json['class'] as String),
-        createdAt: json['createdAt'] != null
+  ReservedWord.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _class$ = (json['class'] as String?),
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _ReservedWordModelType classType = _ReservedWordModelType();
 

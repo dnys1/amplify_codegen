@@ -52,23 +52,21 @@ class License extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory License.fromJson(Map<String, Object?> json) {
-    return License._internal(
-        id: (json['id'] as String),
-        number: (json['number'] as String),
-        belongsTo:
+  License.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _number = (json['number'] as String?),
+        _belongsTo =
             ((json['belongsTo'] as Map?)?['serializedData'] as Map?) != null
                 ? Person.fromJson(
                     ((json['belongsTo'] as Map)['serializedData'] as Map)
                         .cast<String, Object?>())
                 : null,
-        createdAt: json['createdAt'] != null
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _LicenseModelType classType = _LicenseModelType();
 

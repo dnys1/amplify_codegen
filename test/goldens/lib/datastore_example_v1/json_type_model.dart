@@ -46,17 +46,15 @@ class JsonTypeModel extends Model {
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory JsonTypeModel.fromJson(Map<String, Object?> json) {
-    return JsonTypeModel._internal(
-        id: (json['id'] as String),
-        value: (json['value'] as String?),
-        createdAt: json['createdAt'] != null
+  JsonTypeModel.fromJson(Map<String, Object?> json)
+      : id = (json['id'] as String),
+        _value = (json['value'] as String?),
+        _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString((json['createdAt'] as String))
             : null,
-        updatedAt: json['updatedAt'] != null
+        _updatedAt = json['updatedAt'] != null
             ? TemporalDateTime.fromString((json['updatedAt'] as String))
-            : null);
-  }
+            : null;
 
   static const _JsonTypeModelModelType classType = _JsonTypeModelModelType();
 
