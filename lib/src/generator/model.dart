@@ -34,7 +34,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         '/** This is an auto generated class representing the $modelName '
         'type in your schema. */',
       );
-      c.annotations.add(refer('immutable', metaUri).expression);
+      c.annotations.add(refer('immutable', metaUri));
       c.name = modelName;
 
       if (!model.isCustom) {
@@ -53,8 +53,12 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         ));
       }
 
-      c.fields.addAll(_typeFields);
-      c.fields.addAll(_queryFields);
+      c.fields.addAll([
+        ..._typeFields,
+        ..._queryFields,
+        _schemaField,
+        _pbSchemaField,
+      ]);
 
       if (!model.isCustom) {
         c.methods.addAll(_modelMethods);
@@ -66,8 +70,6 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         _internalConstructor,
         _fromJsonConstructor,
       ]);
-
-      c.fields.add(_schemaField);
     }));
 
     if (!model.isCustom) {
@@ -783,6 +785,25 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         }).code;
     });
   }
+
+  /// The static `pbSchema` field on the Model.
+  Field get _pbSchemaField => Field((f) {
+        const uint8List = Reference('Uint8List', 'dart:typed_data');
+        final schemaBuffer = model.writeToBuffer();
+        f
+          ..docs.add('/// The model schema as a Protocol Buffer.')
+          ..static = true
+          ..late = true
+          ..modifier = FieldModifier.final$
+          ..name = 'pbSchema'
+          ..type = uint8List
+          ..assignment = uint8List.newInstanceNamed('fromList', [
+            literalConstList([
+              for (var byte in schemaBuffer)
+                refer('0x${byte.toRadixString(16).padLeft(2, '0')}'),
+            ])
+          ]).code;
+      });
 
   /// Generates a `ModelType` class for all model types which extends
   /// `ModelType` and provides the `ModelType.fromJson` implementation.

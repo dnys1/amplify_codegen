@@ -19,6 +19,8 @@
 
 library models.simple_custom_type;
 
+import 'dart:typed_data';
+
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'package:meta/meta.dart';
 
@@ -51,6 +53,65 @@ class SimpleCustomType {
         ofType: const ModelFieldType(ModelFieldTypeEnum.string),
         isArray: false));
   });
+
+  /// The model schema as a Protocol Buffer.
+  static late final Uint8List pbSchema = Uint8List.fromList(const [
+    0x0a,
+    0x10,
+    0x53,
+    0x69,
+    0x6d,
+    0x70,
+    0x6c,
+    0x65,
+    0x43,
+    0x75,
+    0x73,
+    0x74,
+    0x6f,
+    0x6d,
+    0x54,
+    0x79,
+    0x70,
+    0x65,
+    0x12,
+    0x10,
+    0x0a,
+    0x02,
+    0x69,
+    0x64,
+    0x12,
+    0x06,
+    0x08,
+    0x01,
+    0x10,
+    0x01,
+    0x18,
+    0x00,
+    0x18,
+    0x01,
+    0x20,
+    0x00,
+    0x12,
+    0x0f,
+    0x0a,
+    0x03,
+    0x66,
+    0x6f,
+    0x6f,
+    0x12,
+    0x04,
+    0x08,
+    0x02,
+    0x10,
+    0x01,
+    0x18,
+    0x00,
+    0x20,
+    0x00,
+    0x20,
+    0x01
+  ]);
 
   String get foo {
     if (_foo == null) {
