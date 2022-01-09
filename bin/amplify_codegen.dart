@@ -8,13 +8,13 @@ import 'package:path/path.dart' as path;
 void main(List<String> args) {
   final workingDir = Directory.current.uri;
   if (!Directory.fromUri(workingDir.resolve('amplify')).existsSync()) {
-    print('No amplify folder found. Must run from project root.');
+    stderr.writeln('No amplify folder found. Must run from project root.');
     exit(1);
   }
   final backendDir =
       Directory.fromUri(workingDir.resolve('amplify/backend/api'));
   if (!backendDir.existsSync()) {
-    print('No APIs found for this project');
+    stderr.writeln('No APIs found for this project');
     exit(1);
   }
   final apiDirs = backendDir
@@ -24,7 +24,7 @@ void main(List<String> args) {
       .listSync()
       .any((el) => path.basename(el.path) == 'schema.graphql'));
   if (schemaDir == null) {
-    print('No GraphQL API found for this project');
+    stderr.writeln('No GraphQL API found for this project');
     exit(1);
   }
   final schema =
