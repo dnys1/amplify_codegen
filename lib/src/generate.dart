@@ -1,5 +1,6 @@
 import 'package:amplify_codegen/src/generator/model_provider.dart';
 import 'package:amplify_codegen/src/generator/visitors.dart';
+import 'package:amplify_codegen/src/options.dart';
 import 'package:amplify_codegen/src/parse.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
@@ -29,7 +30,12 @@ const header = '''
 /// Generates a Dart file for each model type and enum in [schema].
 ///
 /// Returns a map from the library name to its formatted definition file.
-Map<String, String> generateForSchema(String schema) {
+Map<String, String> generateForSchema(
+  String schema, {
+  CodegenOptions? options,
+}) {
+  options ??= CodegenOptions();
+
   // Parse all models before starting
   final allModels = parseSchema(schema);
 
@@ -37,7 +43,7 @@ Map<String, String> generateForSchema(String schema) {
   var libraries = parseString(schema)
       .definitions
       .map((definition) {
-        return definition.accept(LibraryVisitor(allModels));
+        return definition.accept(LibraryVisitor(allModels, options!));
       })
       .whereType<Library>()
       .toList();

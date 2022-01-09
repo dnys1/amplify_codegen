@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/generate.dart';
+import 'package:amplify_codegen/src/options.dart';
 import 'package:collection/collection.dart';
 import 'package:path/path.dart' as path;
 
 void main(List<String> args) {
+  final options = parseCodegenOptions(args);
   final workingDir = Directory.current.uri;
   if (!Directory.fromUri(workingDir.resolve('amplify')).existsSync()) {
     stderr.writeln('No amplify folder found. Must run from project root.');

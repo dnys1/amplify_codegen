@@ -6,6 +6,7 @@ environment:
   sdk: '>=2.15.0 <3.0.0'
 
 dependencies:
+  build_cli_annotations: ^2.0.0
   built_collection: ^5.1.1
   built_value: ^8.1.2
   code_builder: ^4.1.0
@@ -19,6 +20,7 @@ dependencies:
 
 dev_dependencies:
   amplify_lints: ^1.0.0
+  build_cli: ^2.1.4
   build_runner: ^2.0.0
   built_value_generator: ^8.1.2
   path: ^1.8.0

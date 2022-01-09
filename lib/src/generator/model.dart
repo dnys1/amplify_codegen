@@ -3,6 +3,7 @@ import 'package:amplify_codegen/src/generator/generator.dart';
 import 'package:amplify_codegen/src/helpers/language.dart';
 import 'package:amplify_codegen/src/helpers/recase.dart';
 import 'package:amplify_codegen/src/helpers/types.dart';
+import 'package:amplify_codegen/src/options.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
@@ -14,12 +15,18 @@ import '../helpers/field.dart';
 /// Generally, a library consists of two classes: the Model class and the
 /// ModelType class; however, custom types have only a Model class.
 class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
-  ModelGenerator(ObjectTypeDefinitionNode node, this.allModels) : super(node);
+  ModelGenerator(
+    ObjectTypeDefinitionNode node,
+    this.allModels, {
+    required this.options,
+  }) : super(node);
 
   final Map<String, Model> allModels;
   late final Model model = allModels[wireName]!;
   late final Iterable<ModelField> fields =
       model.fields.where((f) => !f.isSynthetic);
+
+  final CodegenOptions options;
 
   String get modelName => wireName.pascalCase;
   String get modelTypeName => '_${modelName}ModelType';
@@ -57,7 +64,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         ..._typeFields,
         ..._queryFields,
         _schemaField,
-        _pbSchemaField,
+        if (!options.useOld) _pbSchemaField,
       ]);
 
       if (!model.isCustom) {
