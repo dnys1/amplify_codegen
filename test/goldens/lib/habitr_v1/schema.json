@@ -1,0 +1,765 @@
+{
+  "User": {
+    "name": "User",
+    "fields": [
+      {
+        "name": "username",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "displayUsername",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "name",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "avatar",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": false,
+          "modelName": "S3Object",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "comments",
+        "type": {
+          "isRequired": false,
+          "isArray": true,
+          "arrayType": {
+            "graphqlType": "TYPE_MODEL",
+            "isRequired": true,
+            "modelName": "Comment",
+            "isEnum": false
+          },
+          "modelName": "Comment",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "association": "IS_HAS_MANY",
+        "targetName": "username",
+        "associatedName": "by",
+        "associatedType": "Comment",
+        "isSynthetic": false
+      },
+      {
+        "name": "habits",
+        "type": {
+          "isRequired": false,
+          "isArray": true,
+          "arrayType": {
+            "graphqlType": "TYPE_MODEL",
+            "isRequired": true,
+            "modelName": "Habit",
+            "isEnum": false
+          },
+          "modelName": "Habit",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "association": "IS_HAS_MANY",
+        "targetName": "username",
+        "associatedName": "author",
+        "associatedType": "Habit",
+        "isSynthetic": false
+      },
+      {
+        "name": "upvotedHabits",
+        "type": {
+          "isRequired": false,
+          "isArray": true,
+          "arrayType": {
+            "graphqlType": "TYPE_ID",
+            "isRequired": true
+          },
+          "modelName": "",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "authRules": [
+          {
+            "allow": "ALLOW_GROUPS",
+            "provider": "BY_USER_POOLS",
+            "groupClaim": "cognito:groups",
+            "groups": [
+              "admin"
+            ],
+            "groupsField": "groups",
+            "operations": [
+              "OP_CREATE",
+              "OP_READ",
+              "OP_UPDATE",
+              "OP_DELETE"
+            ]
+          },
+          {
+            "allow": "ALLOW_PUBLIC",
+            "provider": "BY_API_KEY",
+            "operations": [
+              "OP_CREATE",
+              "OP_READ",
+              "OP_UPDATE",
+              "OP_DELETE"
+            ]
+          },
+          {
+            "allow": "ALLOW_OWNER",
+            "provider": "BY_USER_POOLS",
+            "ownerField": "username",
+            "identityClaim": "cognito:username",
+            "operations": [
+              "OP_READ"
+            ]
+          }
+        ],
+        "isSynthetic": false
+      },
+      {
+        "name": "downvotedHabits",
+        "type": {
+          "isRequired": false,
+          "isArray": true,
+          "arrayType": {
+            "graphqlType": "TYPE_ID",
+            "isRequired": true
+          },
+          "modelName": "",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "authRules": [
+          {
+            "allow": "ALLOW_GROUPS",
+            "provider": "BY_USER_POOLS",
+            "groupClaim": "cognito:groups",
+            "groups": [
+              "admin"
+            ],
+            "groupsField": "groups",
+            "operations": [
+              "OP_CREATE",
+              "OP_READ",
+              "OP_UPDATE",
+              "OP_DELETE"
+            ]
+          },
+          {
+            "allow": "ALLOW_PUBLIC",
+            "provider": "BY_API_KEY",
+            "operations": [
+              "OP_CREATE",
+              "OP_READ",
+              "OP_UPDATE",
+              "OP_DELETE"
+            ]
+          },
+          {
+            "allow": "ALLOW_OWNER",
+            "provider": "BY_USER_POOLS",
+            "ownerField": "username",
+            "identityClaim": "cognito:username",
+            "operations": [
+              "OP_READ"
+            ]
+          }
+        ],
+        "isSynthetic": false
+      },
+      {
+        "name": "createdAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      },
+      {
+        "name": "updatedAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      }
+    ],
+    "authRules": [
+      {
+        "allow": "ALLOW_GROUPS",
+        "provider": "BY_USER_POOLS",
+        "groupClaim": "cognito:groups",
+        "groups": [
+          "admin"
+        ],
+        "groupsField": "groups",
+        "operations": [
+          "OP_CREATE",
+          "OP_READ",
+          "OP_UPDATE",
+          "OP_DELETE"
+        ]
+      },
+      {
+        "allow": "ALLOW_PUBLIC",
+        "provider": "BY_API_KEY",
+        "operations": [
+          "OP_CREATE",
+          "OP_READ",
+          "OP_UPDATE",
+          "OP_DELETE"
+        ]
+      },
+      {
+        "allow": "ALLOW_PRIVATE",
+        "provider": "BY_USER_POOLS",
+        "operations": [
+          "OP_READ"
+        ]
+      },
+      {
+        "allow": "ALLOW_OWNER",
+        "provider": "BY_USER_POOLS",
+        "ownerField": "username",
+        "identityClaim": "cognito:username",
+        "operations": [
+          "OP_UPDATE"
+        ]
+      }
+    ],
+    "isCustom": false
+  },
+  "Habit": {
+    "name": "Habit",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "tagline",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "category",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": true,
+          "modelName": "Category",
+          "isEnum": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "details",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "ups",
+        "type": {
+          "graphqlType": "TYPE_INT",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "authRules": [
+          {
+            "allow": "ALLOW_PUBLIC",
+            "provider": "BY_API_KEY",
+            "operations": [
+              "OP_CREATE",
+              "OP_READ",
+              "OP_UPDATE",
+              "OP_DELETE"
+            ]
+          },
+          {
+            "allow": "ALLOW_PRIVATE",
+            "provider": "BY_USER_POOLS",
+            "operations": [
+              "OP_READ"
+            ]
+          },
+          {
+            "allow": "ALLOW_GROUPS",
+            "provider": "BY_USER_POOLS",
+            "groupClaim": "cognito:groups",
+            "groups": [
+              "admin"
+            ],
+            "groupsField": "groups",
+            "operations": [
+              "OP_CREATE",
+              "OP_READ",
+              "OP_UPDATE",
+              "OP_DELETE"
+            ]
+          },
+          {
+            "allow": "ALLOW_OWNER",
+            "provider": "BY_USER_POOLS",
+            "ownerField": "owner",
+            "identityClaim": "cognito:username",
+            "operations": [
+              "OP_CREATE"
+            ]
+          }
+        ],
+        "isSynthetic": false
+      },
+      {
+        "name": "downs",
+        "type": {
+          "graphqlType": "TYPE_INT",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "authRules": [
+          {
+            "allow": "ALLOW_PUBLIC",
+            "provider": "BY_API_KEY",
+            "operations": [
+              "OP_CREATE",
+              "OP_READ",
+              "OP_UPDATE",
+              "OP_DELETE"
+            ]
+          },
+          {
+            "allow": "ALLOW_PRIVATE",
+            "provider": "BY_USER_POOLS",
+            "operations": [
+              "OP_READ"
+            ]
+          },
+          {
+            "allow": "ALLOW_GROUPS",
+            "provider": "BY_USER_POOLS",
+            "groupClaim": "cognito:groups",
+            "groups": [
+              "admin"
+            ],
+            "groupsField": "groups",
+            "operations": [
+              "OP_CREATE",
+              "OP_READ",
+              "OP_UPDATE",
+              "OP_DELETE"
+            ]
+          },
+          {
+            "allow": "ALLOW_OWNER",
+            "provider": "BY_USER_POOLS",
+            "ownerField": "owner",
+            "identityClaim": "cognito:username",
+            "operations": [
+              "OP_CREATE"
+            ]
+          }
+        ],
+        "isSynthetic": false
+      },
+      {
+        "name": "owner",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": true
+      },
+      {
+        "name": "author",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": false,
+          "modelName": "User",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "association": "IS_BELONGS_TO",
+        "targetName": "owner",
+        "isSynthetic": false
+      },
+      {
+        "name": "comments",
+        "type": {
+          "isRequired": false,
+          "isArray": true,
+          "arrayType": {
+            "graphqlType": "TYPE_MODEL",
+            "isRequired": true,
+            "modelName": "Comment",
+            "isEnum": false
+          },
+          "modelName": "Comment",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "association": "IS_HAS_MANY",
+        "targetName": "id",
+        "associatedName": "habit",
+        "associatedType": "Comment",
+        "isSynthetic": false
+      },
+      {
+        "name": "createdAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      },
+      {
+        "name": "updatedAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      }
+    ],
+    "authRules": [
+      {
+        "allow": "ALLOW_GROUPS",
+        "provider": "BY_USER_POOLS",
+        "groupClaim": "cognito:groups",
+        "groups": [
+          "admin"
+        ],
+        "groupsField": "groups",
+        "operations": [
+          "OP_CREATE",
+          "OP_READ",
+          "OP_UPDATE",
+          "OP_DELETE"
+        ]
+      },
+      {
+        "allow": "ALLOW_PUBLIC",
+        "provider": "BY_API_KEY",
+        "operations": [
+          "OP_CREATE",
+          "OP_READ",
+          "OP_UPDATE",
+          "OP_DELETE"
+        ]
+      },
+      {
+        "allow": "ALLOW_PRIVATE",
+        "provider": "BY_USER_POOLS",
+        "operations": [
+          "OP_READ"
+        ]
+      },
+      {
+        "allow": "ALLOW_OWNER",
+        "provider": "BY_USER_POOLS",
+        "ownerField": "owner",
+        "identityClaim": "cognito:username",
+        "operations": [
+          "OP_CREATE",
+          "OP_DELETE"
+        ]
+      }
+    ],
+    "isCustom": false
+  },
+  "Comment": {
+    "name": "Comment",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "habitId",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": true
+      },
+      {
+        "name": "habit",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": false,
+          "modelName": "Habit",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "association": "IS_BELONGS_TO",
+        "targetName": "habitId",
+        "isSynthetic": false
+      },
+      {
+        "name": "owner",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": true
+      },
+      {
+        "name": "by",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": false,
+          "modelName": "User",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "association": "IS_BELONGS_TO",
+        "targetName": "owner",
+        "isSynthetic": false
+      },
+      {
+        "name": "comment",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "createdAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      },
+      {
+        "name": "updatedAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      }
+    ],
+    "authRules": [
+      {
+        "allow": "ALLOW_GROUPS",
+        "provider": "BY_USER_POOLS",
+        "groupClaim": "cognito:groups",
+        "groups": [
+          "admin"
+        ],
+        "groupsField": "groups",
+        "operations": [
+          "OP_CREATE",
+          "OP_READ",
+          "OP_UPDATE",
+          "OP_DELETE"
+        ]
+      },
+      {
+        "allow": "ALLOW_PUBLIC",
+        "provider": "BY_API_KEY",
+        "operations": [
+          "OP_CREATE",
+          "OP_READ",
+          "OP_UPDATE",
+          "OP_DELETE"
+        ]
+      },
+      {
+        "allow": "ALLOW_PRIVATE",
+        "provider": "BY_USER_POOLS",
+        "operations": [
+          "OP_READ"
+        ]
+      },
+      {
+        "allow": "ALLOW_OWNER",
+        "provider": "BY_USER_POOLS",
+        "ownerField": "owner",
+        "identityClaim": "cognito:username",
+        "operations": [
+          "OP_CREATE",
+          "OP_DELETE",
+          "OP_UPDATE"
+        ]
+      }
+    ],
+    "isCustom": false
+  },
+  "VoteResult": {
+    "name": "VoteResult",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true,
+          "isArray": false
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false
+      },
+      {
+        "name": "habit",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": false,
+          "modelName": "Habit",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false
+      },
+      {
+        "name": "user",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": false,
+          "modelName": "User",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false
+      }
+    ],
+    "isCustom": true
+  },
+  "S3Object": {
+    "name": "S3Object",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true,
+          "isArray": false
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false
+      },
+      {
+        "name": "bucket",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false
+      },
+      {
+        "name": "region",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false
+      },
+      {
+        "name": "key",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false
+      },
+      {
+        "name": "cognitoId",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false
+      },
+      {
+        "name": "accessLevel",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": false,
+          "modelName": "AccessLevel",
+          "isEnum": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false
+      }
+    ],
+    "isCustom": true
+  }
+}

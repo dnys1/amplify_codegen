@@ -1,6 +1,6 @@
+import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/helpers/language.dart';
 import 'package:amplify_codegen/src/helpers/recase.dart';
-import 'package:amplify_codegen/src/models/model.dart';
 import 'package:collection/collection.dart';
 import 'package:gql/ast.dart';
 
@@ -91,78 +91,78 @@ extension ModelDefinitionHelpers on ObjectTypeDefinitionNode {
     required bool isCustom,
   }) sync* {
     for (var field in fields) {
-      yield ModelField(
-        (f) {
-          f
-            ..name = field.name.value
-            ..type.isRequired = field.type.isNonNull
-            ..isReadOnly = false
-            ..authRules.addAll(field.directives.authRules);
+      final modelField = ModelField()
+        ..name = field.name.value
+        ..type = ModelField_TypeInfo(isRequired: field.type.isNonNull)
+        ..isReadOnly = false
+        ..authRules.addAll(field.directives.authRules);
 
-          _buildTypeFor(f.type, field.type, models: models);
-
-          final isPrimaryKey =
-              field.wireName == primaryKey || field.isPrimaryKey;
-          f.isPrimaryKey = isPrimaryKey;
-        },
+      modelField.type = _buildTypeFor(
+        modelField.type.toBuilder() as ModelField_TypeInfo,
+        field.type,
+        models: models,
       );
+
+      final isPrimaryKey = field.wireName == primaryKey || field.isPrimaryKey;
+      modelField.isPrimaryKey = isPrimaryKey;
+      yield modelField;
     }
 
     if (!isCustom) {
       // createdAt
-      yield ModelField(
-        (f) => f
-          ..name = 'createdAt'
-          ..isReadOnly = true
-          ..type.isRequired = false
-          ..type.isList = false
-          ..type.awsType = AWSType.AWSDateTime,
-      );
+      yield ModelField()
+        ..name = 'createdAt'
+        ..isReadOnly = true
+        ..type = ModelField_TypeInfo(
+          isRequired: false,
+          isArray: false,
+          graphqlType: GraphQLType.TYPE_AWS_DATE_TIME,
+        );
 
       // updatedAt
-      yield ModelField(
-        (f) => f
-          ..name = 'updatedAt'
-          ..isReadOnly = true
-          ..type.isRequired = false
-          ..type.isList = false
-          ..type.awsType = AWSType.AWSDateTime,
-      );
+      yield ModelField()
+        ..name = 'updatedAt'
+        ..isReadOnly = true
+        ..type = ModelField_TypeInfo(
+          isRequired: false,
+          isArray: false,
+          graphqlType: GraphQLType.TYPE_AWS_DATE_TIME,
+        );
     }
   }
 
-  TypeInfoBuilder _buildTypeFor(
-    TypeInfoBuilder builder,
+  ModelField_TypeInfo _buildTypeFor(
+    ModelField_TypeInfo typeInfo,
     TypeNode node, {
     required Map<String, ObjectTypeDefinitionNode> models,
   }) {
     if (node is NamedTypeNode) {
-      builder.isList ??= false;
-      builder.isRequired = node.isNonNull;
-      builder.awsType = AWSType.values.firstWhere(
-        (el) => el.name == node.name.value,
+      typeInfo.isRequired = node.isNonNull;
+      typeInfo.graphqlType = GraphQLTypeX.valueOf(
+        node.name.value,
         orElse: () {
           final modelName = node.name.value;
-          builder.modelName = modelName;
-          builder.isEnum = !models.keys.contains(modelName);
-          return AWSType.Model;
+          typeInfo.modelName = modelName;
+          typeInfo.isEnum = !models.keys.contains(modelName);
+          return GraphQLType.TYPE_MODEL;
         },
       );
-      return builder;
+      return typeInfo;
     } else if (node is ListTypeNode) {
-      builder.isList ??= true;
-      builder.isRequired = node.isNonNull;
+      typeInfo.isArray = true;
+      typeInfo.isRequired = node.isNonNull;
 
       final valueBuilder = _buildTypeFor(
-        builder.listType,
+        typeInfo.arrayType.toBuilder() as ModelField_TypeInfo,
         node.type,
         models: models,
       );
-      builder
+      typeInfo
+        ..arrayType = valueBuilder
         ..modelName = valueBuilder.modelName
         ..isEnum = valueBuilder.isEnum;
 
-      return builder;
+      return typeInfo;
     }
     throw ArgumentError(node.runtimeType);
   }

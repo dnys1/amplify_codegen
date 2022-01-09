@@ -1,0 +1,495 @@
+{
+  "Attration": {
+    "name": "Attration",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "name",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "status",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": true,
+          "modelName": "Status",
+          "isEnum": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "tags",
+        "type": {
+          "isRequired": false,
+          "isArray": true,
+          "arrayType": {
+            "graphqlType": "TYPE_STRING",
+            "isRequired": false
+          },
+          "modelName": "",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "lastUpdate",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "createdAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      },
+      {
+        "name": "updatedAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      }
+    ],
+    "isCustom": false
+  },
+  "User": {
+    "name": "User",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true,
+          "isArray": false
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "name",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "email",
+        "type": {
+          "graphqlType": "TYPE_AWS_EMAIL",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "meta",
+        "type": {
+          "graphqlType": "TYPE_AWS_JSON",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "avatar",
+        "type": {
+          "graphqlType": "TYPE_AWS_URL",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "lastIPAddress",
+        "type": {
+          "graphqlType": "TYPE_AWS_IP_ADDRESS",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "phone",
+        "type": {
+          "graphqlType": "TYPE_AWS_PHONE",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "lastActivity",
+        "type": {
+          "graphqlType": "TYPE_AWS_TIMESTAMP",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "workStart",
+        "type": {
+          "graphqlType": "TYPE_AWS_TIME",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "workEnd",
+        "type": {
+          "graphqlType": "TYPE_AWS_TIME",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "birthday",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "joinedOn",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "createdAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      },
+      {
+        "name": "updatedAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      }
+    ],
+    "isCustom": false
+  },
+  "Post": {
+    "name": "Post",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true,
+          "isArray": false
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "title",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "content",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "comments",
+        "type": {
+          "isRequired": false,
+          "isArray": true,
+          "arrayType": {
+            "graphqlType": "TYPE_MODEL",
+            "isRequired": false,
+            "modelName": "Comment",
+            "isEnum": false
+          },
+          "modelName": "Comment",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "association": "IS_HAS_MANY",
+        "targetName": "postCommentsId",
+        "associatedName": "post",
+        "associatedType": "Comment",
+        "isSynthetic": false
+      },
+      {
+        "name": "createdAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      },
+      {
+        "name": "updatedAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      }
+    ],
+    "isCustom": false
+  },
+  "Comment": {
+    "name": "Comment",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true,
+          "isArray": false
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "comment",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "post",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": false,
+          "modelName": "Post",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "association": "IS_BELONGS_TO",
+        "targetName": "commentPostId",
+        "isSynthetic": false
+      },
+      {
+        "name": "createdAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      },
+      {
+        "name": "updatedAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      }
+    ],
+    "isCustom": false
+  },
+  "Person": {
+    "name": "Person",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "name",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "license",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": false,
+          "modelName": "License",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "association": "IS_HAS_ONE",
+        "targetName": "personLicenseId",
+        "associatedName": "belongsTo",
+        "associatedType": "License",
+        "isSynthetic": false
+      },
+      {
+        "name": "createdAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      },
+      {
+        "name": "updatedAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      }
+    ],
+    "isCustom": false
+  },
+  "License": {
+    "name": "License",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "number",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "belongsTo",
+        "type": {
+          "graphqlType": "TYPE_MODEL",
+          "isRequired": false,
+          "modelName": "Person",
+          "isEnum": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "association": "IS_BELONGS_TO",
+        "targetName": "licenseBelongsToId",
+        "isSynthetic": false
+      },
+      {
+        "name": "createdAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      },
+      {
+        "name": "updatedAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      }
+    ],
+    "isCustom": false
+  }
+}

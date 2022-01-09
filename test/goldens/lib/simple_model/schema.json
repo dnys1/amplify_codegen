@@ -1,0 +1,58 @@
+{
+  "SimpleModel": {
+    "name": "SimpleModel",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "name",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "bar",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "createdAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      },
+      {
+        "name": "updatedAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      }
+    ],
+    "isCustom": false
+  }
+}

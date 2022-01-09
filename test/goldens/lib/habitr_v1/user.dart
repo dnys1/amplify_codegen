@@ -191,26 +191,29 @@ class User extends Model {
           AuthRule(
               authStrategy: AuthStrategy.GROUPS,
               groupClaim: 'cognito:groups',
-              groups: [
-                'admin'
-              ],
+              groups: ['admin'],
               operations: [
                 ModelOperation.CREATE,
+                ModelOperation.READ,
                 ModelOperation.UPDATE,
-                ModelOperation.DELETE,
-                ModelOperation.READ
-              ]),
-          AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
-            ModelOperation.CREATE,
-            ModelOperation.UPDATE,
-            ModelOperation.DELETE,
-            ModelOperation.READ
-          ]),
+                ModelOperation.DELETE
+              ],
+              provider: AuthRuleProvider.USERPOOLS),
+          AuthRule(
+              authStrategy: AuthStrategy.PUBLIC,
+              operations: [
+                ModelOperation.CREATE,
+                ModelOperation.READ,
+                ModelOperation.UPDATE,
+                ModelOperation.DELETE
+              ],
+              provider: AuthRuleProvider.APIKEY),
           AuthRule(
               authStrategy: AuthStrategy.OWNER,
               operations: [ModelOperation.READ],
               ownerField: 'username',
-              identityClaim: 'cognito:username')
+              identityClaim: 'cognito:username',
+              provider: AuthRuleProvider.USERPOOLS)
         ]));
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         isRequired: false,
@@ -222,26 +225,29 @@ class User extends Model {
           AuthRule(
               authStrategy: AuthStrategy.GROUPS,
               groupClaim: 'cognito:groups',
-              groups: [
-                'admin'
-              ],
+              groups: ['admin'],
               operations: [
                 ModelOperation.CREATE,
+                ModelOperation.READ,
                 ModelOperation.UPDATE,
-                ModelOperation.DELETE,
-                ModelOperation.READ
-              ]),
-          AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
-            ModelOperation.CREATE,
-            ModelOperation.UPDATE,
-            ModelOperation.DELETE,
-            ModelOperation.READ
-          ]),
+                ModelOperation.DELETE
+              ],
+              provider: AuthRuleProvider.USERPOOLS),
+          AuthRule(
+              authStrategy: AuthStrategy.PUBLIC,
+              operations: [
+                ModelOperation.CREATE,
+                ModelOperation.READ,
+                ModelOperation.UPDATE,
+                ModelOperation.DELETE
+              ],
+              provider: AuthRuleProvider.APIKEY),
           AuthRule(
               authStrategy: AuthStrategy.OWNER,
               operations: [ModelOperation.READ],
               ownerField: 'username',
-              identityClaim: 'cognito:username')
+              identityClaim: 'cognito:username',
+              provider: AuthRuleProvider.USERPOOLS)
         ]));
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         isRequired: false,
@@ -259,29 +265,33 @@ class User extends Model {
       AuthRule(
           authStrategy: AuthStrategy.GROUPS,
           groupClaim: 'cognito:groups',
-          groups: [
-            'admin'
-          ],
+          groups: ['admin'],
           operations: [
             ModelOperation.CREATE,
+            ModelOperation.READ,
             ModelOperation.UPDATE,
-            ModelOperation.DELETE,
-            ModelOperation.READ
-          ]),
-      AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
-        ModelOperation.CREATE,
-        ModelOperation.UPDATE,
-        ModelOperation.DELETE,
-        ModelOperation.READ
-      ]),
+            ModelOperation.DELETE
+          ],
+          provider: AuthRuleProvider.USERPOOLS),
+      AuthRule(
+          authStrategy: AuthStrategy.PUBLIC,
+          operations: [
+            ModelOperation.CREATE,
+            ModelOperation.READ,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE
+          ],
+          provider: AuthRuleProvider.APIKEY),
       AuthRule(
           authStrategy: AuthStrategy.PRIVATE,
-          operations: [ModelOperation.READ]),
+          operations: [ModelOperation.READ],
+          provider: AuthRuleProvider.USERPOOLS),
       AuthRule(
           authStrategy: AuthStrategy.OWNER,
           operations: [ModelOperation.UPDATE],
           ownerField: 'username',
-          identityClaim: 'cognito:username')
+          identityClaim: 'cognito:username',
+          provider: AuthRuleProvider.USERPOOLS)
     ];
   });
 

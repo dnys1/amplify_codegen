@@ -25,7 +25,7 @@ void main() {
           test('should return HAS_MANY for Post.comments field connection info',
               () {
             final commentsField = modelMap['Post']!.fieldNamed('comments');
-            expect(commentsField.isHasMany, isTrue);
+            expect(commentsField.association, ModelAssociation.IS_HAS_MANY);
             expect(commentsField.associatedType, equals('Comment'));
             expect(commentsField.associatedName, equals('post'));
           });
@@ -34,7 +34,7 @@ void main() {
               'should return BELONGS_TO for Comment.post field connection info',
               () {
             final commentsField = modelMap['Comment']!.fieldNamed('post');
-            expect(commentsField.isBelongsTo, isTrue);
+            expect(commentsField.association, ModelAssociation.IS_BELONGS_TO);
             expect(commentsField.targetName,
                 equals(makeConnectionAttributeName('Comment', 'post')));
           });
@@ -58,14 +58,14 @@ void main() {
 
           test('should return HAS_ONE Person.license field', () {
             final licenseField = modelMap['Person']!.fieldNamed('license');
-            expect(licenseField.isHasOne, isTrue);
+            expect(licenseField.association, ModelAssociation.IS_HAS_ONE);
             expect(licenseField.associatedType, equals('License'));
             expect(licenseField.associatedName, equals('person'));
           });
 
           test('should return BELONGS_TO License.person field', () {
             final personField = modelMap['License']!.fieldNamed('person');
-            expect(personField.isBelongsTo, isTrue);
+            expect(personField.association, ModelAssociation.IS_BELONGS_TO);
             expect(personField.targetName,
                 equals(makeConnectionAttributeName('License', 'person')));
           });
@@ -106,7 +106,7 @@ void main() {
         test('should return HAS_MANY for Post.comments', () {
           final commentsField = modelMap['Post']!.fieldNamed('comments');
 
-          expect(commentsField.isHasMany, isTrue);
+          expect(commentsField.association, ModelAssociation.IS_HAS_MANY);
           expect(commentsField.associatedType, equals('Comment'));
           expect(commentsField.associatedName, equals('post'));
         });
@@ -114,7 +114,7 @@ void main() {
         test('should return BELONGS_TO for Comment.post', () {
           final postField = modelMap['Comment']!.fieldNamed('post');
 
-          expect(postField.isBelongsTo, isTrue);
+          expect(postField.association, ModelAssociation.IS_BELONGS_TO);
           expect(postField.targetName, equals('commentPostId'));
         });
       });
@@ -140,7 +140,7 @@ void main() {
         test('should support connection with @key on BELONGS_TO side', () {
           final postField = modelMap['Comment']!.fieldNamed('post');
 
-          expect(postField.isBelongsTo, isTrue);
+          expect(postField.association, ModelAssociation.IS_BELONGS_TO);
           expect(postField.targetName, equals('postID'));
         });
       });

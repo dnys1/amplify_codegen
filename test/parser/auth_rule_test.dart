@@ -1,5 +1,5 @@
+import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:amplify_codegen/src/helpers/field.dart';
-import 'package:amplify_codegen/src/models/auth_rule.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
 import 'package:test/test.dart';
@@ -26,12 +26,12 @@ void main() {
           final authRule = parseAuthRules(schema).single;
           expect(
             authRule,
-            equals(AuthRule((b) => b
-              ..allow = AuthStrategy.owner
+            equals(AuthRule()
+              ..allow = AuthStrategy.ALLOW_OWNER
               ..identityClaim = 'owner'
-              ..operations.add(ModelOperation.read)
-              ..provider = AuthProvider.userPools
-              ..ownerField = 'owner')),
+              ..operations.add(ModelOperation.OP_READ)
+              ..provider = AuthProvider.BY_USER_POOLS
+              ..ownerField = 'owner'),
           );
         });
 
@@ -46,12 +46,12 @@ void main() {
           final authRule = parseAuthRules(schema).single;
           expect(
             authRule,
-            equals(AuthRule((b) => b
-              ..allow = AuthStrategy.owner
+            equals(AuthRule()
+              ..allow = AuthStrategy.ALLOW_OWNER
               ..identityClaim = 'cognito:username'
-              ..operations.add(ModelOperation.read)
-              ..provider = AuthProvider.userPools
-              ..ownerField = 'username')),
+              ..operations.add(ModelOperation.OP_READ)
+              ..provider = AuthProvider.BY_USER_POOLS
+              ..ownerField = 'username'),
           );
         });
 
@@ -64,12 +64,12 @@ void main() {
           final authRule = parseAuthRules(schema).single;
           expect(
             authRule,
-            equals(AuthRule((b) => b
-              ..allow = AuthStrategy.owner
+            equals(AuthRule()
+              ..allow = AuthStrategy.ALLOW_OWNER
               ..identityClaim = 'user_name'
-              ..operations.addAll(ModelOperation.values)
-              ..provider = AuthProvider.userPools
-              ..ownerField = 'username')),
+              ..operations.addAll(ModelOperationX.values)
+              ..provider = AuthProvider.BY_USER_POOLS
+              ..ownerField = 'username'),
           );
         });
 
@@ -82,16 +82,16 @@ void main() {
           final authRule = parseAuthRules(schema).single;
           expect(
             authRule,
-            equals(AuthRule((b) => b
-              ..allow = AuthStrategy.owner
+            equals(AuthRule()
+              ..allow = AuthStrategy.ALLOW_OWNER
               ..identityClaim = 'user_name'
               ..operations.addAll([
-                ModelOperation.create,
-                ModelOperation.update,
-                ModelOperation.delete,
+                ModelOperation.OP_CREATE,
+                ModelOperation.OP_UPDATE,
+                ModelOperation.OP_DELETE,
               ])
-              ..provider = AuthProvider.userPools
-              ..ownerField = 'username')),
+              ..provider = AuthProvider.BY_USER_POOLS
+              ..ownerField = 'username'),
           );
         });
       });
@@ -106,9 +106,12 @@ void main() {
           final authRule = parseAuthRules(schema).single;
           expect(
             authRule,
-            equals(AuthRule((b) => b
-              ..allow = AuthStrategy.groups
-              ..groupsField = 'my-group')),
+            equals(AuthRule()
+              ..allow = AuthStrategy.ALLOW_GROUPS
+              ..provider = AuthProvider.BY_USER_POOLS
+              ..groupsField = 'my-group'
+              ..operations.addAll(ModelOperationX.values)
+              ..groupClaim = 'cognito:groups'),
           );
         });
 
@@ -121,12 +124,13 @@ void main() {
           final authRule = parseAuthRules(schema).single;
           expect(
             authRule,
-            equals(AuthRule((b) => b
-              ..allow = AuthStrategy.groups
-              ..provider = AuthProvider.oidc
+            equals(AuthRule()
+              ..allow = AuthStrategy.ALLOW_GROUPS
+              ..provider = AuthProvider.BY_OIDC
               ..groups.add('Foo')
-              ..operations.add(ModelOperation.update)
-              ..groupClaim = 'cognito:groups')),
+              ..operations.add(ModelOperation.OP_UPDATE)
+              ..groupClaim = 'cognito:groups'
+              ..groupsField = 'groups'),
           );
         });
 
@@ -139,12 +143,13 @@ void main() {
           final authRule = parseAuthRules(schema).single;
           expect(
             authRule,
-            equals(AuthRule((b) => b
-              ..allow = AuthStrategy.groups
-              ..provider = AuthProvider.userPools
+            equals(AuthRule()
+              ..allow = AuthStrategy.ALLOW_GROUPS
+              ..provider = AuthProvider.BY_USER_POOLS
               ..groupClaim = 'my:groups'
               ..groups.add('Foo')
-              ..operations.add(ModelOperation.update))),
+              ..operations.add(ModelOperation.OP_UPDATE)
+              ..groupsField = 'groups'),
           );
         });
 
@@ -157,12 +162,13 @@ void main() {
           final authRule = parseAuthRules(schema).single;
           expect(
             authRule,
-            equals(AuthRule((b) => b
-              ..allow = AuthStrategy.groups
-              ..provider = AuthProvider.userPools
+            equals(AuthRule()
+              ..allow = AuthStrategy.ALLOW_GROUPS
+              ..provider = AuthProvider.BY_USER_POOLS
               ..groupClaim = 'my:groups'
               ..groups.add('Foo')
-              ..operations.addAll(ModelOperation.values))),
+              ..operations.addAll(ModelOperationX.values)
+              ..groupsField = 'groups'),
           );
         });
       });

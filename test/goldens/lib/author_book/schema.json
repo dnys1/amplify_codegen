@@ -1,0 +1,78 @@
+{
+  "authorBook": {
+    "name": "authorBook",
+    "fields": [
+      {
+        "name": "id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true
+        },
+        "isPrimaryKey": true,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "author_id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "book_id",
+        "type": {
+          "graphqlType": "TYPE_ID",
+          "isRequired": true
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "author",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "book",
+        "type": {
+          "graphqlType": "TYPE_STRING",
+          "isRequired": false
+        },
+        "isPrimaryKey": false,
+        "isReadOnly": false,
+        "isSynthetic": false
+      },
+      {
+        "name": "createdAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      },
+      {
+        "name": "updatedAt",
+        "type": {
+          "graphqlType": "TYPE_AWS_DATE_TIME",
+          "isRequired": false,
+          "isArray": false
+        },
+        "isReadOnly": true,
+        "isSynthetic": false
+      }
+    ],
+    "isCustom": false
+  }
+}

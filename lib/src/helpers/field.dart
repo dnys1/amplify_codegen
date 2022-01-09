@@ -65,7 +65,7 @@ extension ModelFieldTypes on ModelField {
 extension FieldHelpers on FieldDefinitionNode {
   /// Whether this field represents the primary key, or ID field.
   bool get isPrimaryKey =>
-      (name.value == 'id' && type.awsType == AWSType.ID) ||
+      (name.value == 'id' && type.graphqlType == GraphQLType.TYPE_ID) ||
       directives.any((directive) => directive.name.value == 'primaryKey');
 
   /// Whether this field has a directive named [directiveName].
@@ -172,15 +172,23 @@ extension AuthRules on List<DirectiveNode> {
     final rulesArg = directive.arguments.single.value as ListValueNode;
     final ruleValues = rulesArg.values.cast<ObjectValueNode>();
     for (var ruleValue in ruleValues) {
-      final rule = AuthRuleBuilder();
+      final rule = AuthRule();
       for (var field in ruleValue.fields) {
         final node = field.value;
         switch (field.name.value) {
           case 'allow':
-            rule.allow = AuthStrategy.deserialize(node.stringValue)!;
+            rule.allow = AuthStrategyX.valueOf(
+              node.stringValue,
+              orElse: () => throw StateError(
+                  'No strategy for ALLOW_${node.stringValue.constantCase}'),
+            );
             break;
           case 'provider':
-            rule.provider = AuthProvider.deserialize(node.stringValue)!;
+            rule.provider = AuthProviderX.valueOf(
+              node.stringValue,
+              orElse: () => throw StateError(
+                  'No provider for BY_${node.stringValue.constantCase}'),
+            );
             break;
           case 'ownerField':
             rule.ownerField = node.stringValue;
@@ -198,15 +206,59 @@ extension AuthRules on List<DirectiveNode> {
             rule.groupsField = node.stringValue;
             break;
           case 'operations':
-            rule.operations.addAll(node.listValue
-                .map(ModelOperation.deserialize)
-                .whereType<ModelOperation>());
+            rule.operations.addAll(
+              node.listValue.map(
+                (value) => ModelOperationX.valueOf(value,
+                    orElse: () => throw StateError(
+                        'No operation for OP_${value.constantCase}')),
+              ),
+            );
             break;
           default:
             throw StateError('Unknown key: ${field.name.value}');
         }
       }
-      yield rule.build();
+
+      // Set default values for missing attributes.
+      if (!rule.hasProvider()) {
+        rule.provider = rule.allow.defaultProvider;
+      }
+      if (rule.operations.isEmpty) {
+        rule.operations.addAll(ModelOperationX.values);
+      }
+
+      switch (rule.allow) {
+        case AuthStrategy.ALLOW_GROUPS:
+          if (!rule.hasGroupClaim()) {
+            rule.groupClaim = 'cognito:groups';
+          }
+          if (rule.groups.isNotEmpty && rule.hasGroupsField()) {
+            throw ArgumentError.value(
+              rule.groups,
+              'Groups',
+              'cannot use both static and dynamic group authorization',
+            );
+          }
+          if (!rule.hasGroupsField()) {
+            rule.groupsField = 'groups';
+          }
+          break;
+        case AuthStrategy.ALLOW_OWNER:
+          if (!rule.hasOwnerField()) {
+            rule.ownerField = 'owner';
+          }
+          if (!rule.hasIdentityClaim()) {
+            rule.identityClaim = 'cognito:username';
+          }
+          break;
+        case AuthStrategy.ALLOW_PRIVATE:
+        case AuthStrategy.ALLOW_PUBLIC:
+        case AuthStrategy.ALLOW_CUSTOM:
+        case AuthStrategy.ALLOW_UNSPECIFIED:
+          break;
+      }
+
+      yield rule;
     }
   }
 }

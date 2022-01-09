@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+// import "google/protobuf/wrappers.proto";
+
+enum AuthStrategy {
+    ALLOW_UNSPECIFIED = 0;
+    ALLOW_PUBLIC = 1;
+    ALLOW_PRIVATE = 2;
+    ALLOW_OWNER = 3;
+    ALLOW_GROUPS = 4;
+    ALLOW_CUSTOM = 5;
+}
+
+enum AuthProvider {
+    BY_UNSPECIFIED = 0;
+    BY_API_KEY = 1;
+    BY_IAM = 2;
+    BY_USER_POOLS = 3;
+    BY_OIDC = 4;
+    BY_LAMBDA = 5;
+}
+
+enum ModelOperation {
+    OP_UNSPECIFIED = 0;
+    OP_READ = 1;
+    OP_CREATE = 2;
+    OP_UPDATE = 3;
+    OP_DELETE = 4;
+}
+
+message AuthRule {
+    AuthStrategy allow = 1;
+    AuthProvider provider = 2;
+    string owner_field = 3;
+    string identity_claim = 4;
+    string group_claim = 5;
+    repeated string groups = 6;
+    string groups_field = 7;
+    repeated ModelOperation operations = 8;
+}
+
+enum GraphQLType {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_ID = 1;
+    TYPE_STRING = 2;
+    TYPE_INT = 3;
+    TYPE_FLOAT = 4;
+    TYPE_BOOLEAN = 5;
+    TYPE_AWS_DATE = 6;
+    TYPE_AWS_TIME = 7;
+    TYPE_AWS_DATE_TIME = 8;
+    TYPE_AWS_TIMESTAMP = 9;
+    TYPE_AWS_EMAIL = 10;
+    TYPE_AWS_JSON = 11;
+    TYPE_AWS_PHONE = 12;
+    TYPE_AWS_URL = 13;
+    TYPE_AWS_IP_ADDRESS = 14;
+    TYPE_MODEL = 15;
+}
+
+enum ModelAssociation {
+    IS_UNSPECIFIED = 0;
+    IS_HAS_ONE = 1;
+    IS_HAS_MANY = 2;
+    IS_BELONGS_TO = 3;
+    IS_MANY_TO_MANY = 4;
+}
+
+message BoolValue {
+    bool value = 1;
+}
+
+message ModelField {
+    message TypeInfo {
+        GraphQLType graphql_type = 1;
+        bool is_required = 2;
+        bool is_array = 3;
+        TypeInfo array_type = 4;
+        string model_name = 5;
+        bool is_enum = 6;
+    }
+    string name = 1;
+    TypeInfo type = 2;
+    bool is_primary_key = 3;
+    bool is_read_only = 4;
+    repeated AuthRule auth_rules = 5;
+    ModelAssociation association = 6;
+    string target_name = 7;
+    string associated_name = 8;
+    string associated_type = 9;
+    bool is_synthetic = 10;
+}
+
+message Model {
+    string name = 1;
+    repeated ModelField fields = 2;
+    repeated AuthRule auth_rules = 3;
+    bool is_custom = 4;
+}

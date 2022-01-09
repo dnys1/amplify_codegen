@@ -18,7 +18,8 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
 
   final Map<String, Model> allModels;
   late final Model model = allModels[wireName]!;
-  late final Iterable<ModelField> fields = model.fields.where((f) => !f.ignore);
+  late final Iterable<ModelField> fields =
+      model.fields.where((f) => !f.isSynthetic);
 
   String get modelName => wireName.pascalCase;
   String get modelTypeName => '_${modelName}ModelType';
@@ -333,12 +334,12 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
   /// Gets the constructor assignment expression for [field].
   Expression _assignmentFor(ModelField field) {
     final name = field.dartName;
-    if (field.isPrimaryKey && field.type.awsType == AWSType.ID) {
+    if (field.isPrimaryKey && field.type.graphqlType == GraphQLType.TYPE_ID) {
       return refer(name).ifNullThen(
         refer('UUID', datastoreUri).property('getUUID').call([]),
       );
     }
-    if (field.type.isList) {
+    if (field.type.isArray) {
       return refer('$name != null').conditional(
         refer('List').newInstanceNamed('unmodifiable', [refer(name)]),
         literalNull,
@@ -358,7 +359,8 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
                 final name = field.dartName;
                 final type = field.typeReference.rebuild(
                   (t) => t.isNullable = !field.type.isRequired ||
-                      (field.isPrimaryKey && field.type.awsType == AWSType.ID),
+                      (field.isPrimaryKey &&
+                          field.type.graphqlType == GraphQLType.TYPE_ID),
                 );
                 p
                   ..name = name
@@ -407,20 +409,20 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
   /// Generates the expression to serialize the field named [name] to JSON.
   Expression _serialize(
     String name,
-    TypeInfo type, [
+    ModelField_TypeInfo type, [
     int depth = 0,
   ]) {
     // All fields are null at depth=0 (on the model). Null checks ensure that
     // fields in `map` expressions are non-null.
     final isNullable = depth == 0 || !type.isRequired;
-    if (type.isList) {
+    if (type.isArray) {
       final reference = refer(name);
       final closure = Method(
         (m) => m
           ..requiredParameters.add(Parameter((p) => p..name = 'el'))
           ..body = _serialize(
             'el',
-            type.listType!,
+            type.arrayType,
             depth + 1,
           ).code,
       ).closure;
@@ -446,16 +448,16 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           ? refer(name).nullSafeProperty('value')
           : refer(name).property('value');
     } else {
-      final awsType = type.awsType!;
+      final graphqlType = type.graphqlType;
       final ref = refer(name);
-      switch (awsType) {
-        case AWSType.AWSDate:
-        case AWSType.AWSDateTime:
-        case AWSType.AWSTime:
+      switch (graphqlType) {
+        case GraphQLType.TYPE_AWS_DATE:
+        case GraphQLType.TYPE_AWS_DATE_TIME:
+        case GraphQLType.TYPE_AWS_TIME:
           return isNullable
               ? ref.nullSafeProperty('format').call([])
               : ref.property('format').call([]);
-        case AWSType.AWSTimestamp:
+        case GraphQLType.TYPE_AWS_TIMESTAMP:
           return isNullable
               ? ref.nullSafeProperty('toSeconds').call([])
               : ref.property('toSeconds').call([]);
@@ -468,7 +470,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
   /// Generates the expression to deserialize [ref] from JSON.
   Expression _deserialize(
     Expression ref,
-    TypeInfo type, {
+    ModelField_TypeInfo type, {
     bool isPrimaryKey = false,
     int depth = 0,
   }) {
@@ -483,11 +485,11 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     final isNullable =
         !type.isRequired || !isPrimaryKey && depth == 0; // !type.isRequired
     final isRequired = !isNullable;
-    if (type.isList) {
+    if (type.isArray) {
       final list = ref.asA(TypeReference((t) => t
         ..symbol = 'List'
         ..isNullable = isNullable));
-      final listType = type.listType!;
+      final listType = type.arrayType;
       final List<Reference> castArgs = [listType.wireTypeReference];
       final newInst = Method((m) => m
         ..lambda = true
@@ -523,7 +525,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
       }
     } else if (type.isModel) {
       final map = refer('Map');
-      final newInst = refer(type.modelName!).newInstanceNamed('fromJson', [
+      final newInst = refer(type.modelName).newInstanceNamed('fromJson', [
         (isDynamic || isNullable ? ref.asA(map) : ref)
             .index(literalString('serializedData'))
             .asA(map)
@@ -541,7 +543,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
           ? newInst
           : ref.notEqualTo(literalNull).conditional(newInst, literalNull);
     } else if (type.isEnum) {
-      final byValue = refer(type.modelName!)
+      final byValue = refer(type.modelName)
           .property('values')
           .property('byValue')
           .call([isDynamic ? ref.asA(refer('String').nullable) : ref]);
@@ -552,15 +554,16 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
       if (isNullable) {
         wireType = wireType.nullable;
       }
-      final awsType = type.awsType;
+      final graphqlType = type.graphqlType;
       final castRef = isDynamic ? ref.asA(wireType) : ref;
-      switch (awsType!) {
-        case AWSType.AWSDate:
-        case AWSType.AWSDateTime:
-        case AWSType.AWSTime:
-        case AWSType.AWSTimestamp:
-          final ctorName =
-              awsType == AWSType.AWSTimestamp ? 'fromSeconds' : 'fromString';
+      switch (graphqlType) {
+        case GraphQLType.TYPE_AWS_DATE:
+        case GraphQLType.TYPE_AWS_DATE_TIME:
+        case GraphQLType.TYPE_AWS_TIME:
+        case GraphQLType.TYPE_AWS_TIMESTAMP:
+          final ctorName = graphqlType == GraphQLType.TYPE_AWS_TIMESTAMP
+              ? 'fromSeconds'
+              : 'fromString';
           final decode = refer(typeName).newInstanceNamed(ctorName, [
             // At depth == 0, refs are null checked below.
             // At depth > 1, refs have already been cast.
@@ -596,7 +599,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
               'fieldName': field.name == 'id'
                   ? literalString('${model.name.camelCase}.id')
                   : literalString(field.name),
-              if (field.isHasOne || field.isBelongsTo || field.isHasMany)
+              if (field.association != ModelAssociation.IS_UNSPECIFIED)
                 'fieldType': refer('ModelFieldType').newInstance([
                   refer('ModelFieldTypeEnum').property(modelFieldType.name),
                 ], {
@@ -625,28 +628,28 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
       if (field.isReadOnly) 'isReadOnly': literalBool(true),
     };
     final Map<String, Expression> modelTypeProperies = {};
-    if (field.isHasOne) {
+    if (field.association == ModelAssociation.IS_HAS_ONE) {
       definitionCtor = 'hasOne';
       properties.addAll({
         'key': refer(queryFieldName(field.dartName)),
-        'ofModelName': literalString(field.type.modelName!),
-        'associatedKey': refer(field.type.modelName!)
-            .property(queryFieldName(field.associatedName!)),
+        'ofModelName': literalString(field.type.modelName),
+        'associatedKey': refer(field.type.modelName)
+            .property(queryFieldName(field.associatedName)),
       });
-    } else if (field.isBelongsTo) {
+    } else if (field.association == ModelAssociation.IS_BELONGS_TO) {
       definitionCtor = 'belongsTo';
       properties.addAll({
         'key': refer(queryFieldName(field.dartName)),
-        'ofModelName': literalString(field.type.modelName!),
-        'targetName': literalString(field.targetName!),
+        'ofModelName': literalString(field.type.modelName),
+        'targetName': literalString(field.targetName),
       });
-    } else if (field.isHasMany) {
+    } else if (field.association == ModelAssociation.IS_HAS_MANY) {
       definitionCtor = 'hasMany';
       properties.addAll({
         'key': refer(queryFieldName(field.dartName)),
-        'ofModelName': literalString(field.type.modelName!),
-        'associatedKey': refer(field.type.modelName!)
-            .property(queryFieldName(field.associatedName!)),
+        'ofModelName': literalString(field.type.modelName),
+        'associatedKey': refer(field.type.modelName)
+            .property(queryFieldName(field.associatedName)),
       });
     } else if (field.isPrimaryKey) {
       definitionCtor = 'id';
@@ -679,7 +682,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
         case ModelFieldType.embeddedCollection:
           properties['fieldName'] = literalString(field.name);
           definitionCtor = 'embedded';
-          final customTypeName = field.type.modelName!;
+          final customTypeName = field.type.modelName;
           modelTypeProperies['ofCustomTypeName'] =
               literalString(customTypeName);
           break;
@@ -687,7 +690,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     }
 
     if (modelFieldType == ModelFieldType.collection) {
-      final baseType = field.type.listType!.modelFieldType(
+      final baseType = field.type.arrayType.modelFieldType(
         isCustom: model.isCustom,
         models: allModels,
       );
@@ -701,7 +704,7 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
       properties['ofType'] = refer('ModelFieldType').constInstance([
         refer('ModelFieldTypeEnum').property(modelFieldType.name),
       ], modelTypeProperies);
-      properties['isArray'] = literalBool(field.type.isList);
+      properties['isArray'] = literalBool(field.type.isArray);
     }
 
     // TODO: Support all constructors
@@ -725,15 +728,18 @@ class ModelGenerator extends LibraryGenerator<ObjectTypeDefinitionNode> {
     final groupClaim = authRule.groupClaim;
     final groups = authRule.groups;
     return refer('AuthRule', datastoreUri).constInstance([], {
-      'authStrategy': refer('AuthStrategy', datastoreUri)
-          .property(authRule.allow.name.constantCase),
-      if (groupClaim != null) 'groupClaim': literalString(groupClaim),
+      'authStrategy':
+          refer('AuthStrategy', datastoreUri).property(authRule.allow.dartName),
+      if (authRule.hasGroupClaim()) 'groupClaim': literalString(groupClaim),
       if (groups.isNotEmpty) 'groups': literalList(groups),
-      'operations': literalList(authRule.operations.map((op) =>
-          refer('ModelOperation', datastoreUri)
-              .property(op.name.constantCase))),
-      if (ownerField != null) 'ownerField': literalString(ownerField),
-      if (identityClaim != null) 'identityClaim': literalString(identityClaim),
+      'operations': literalList(authRule.operations.map(
+          (op) => refer('ModelOperation', datastoreUri).property(op.dartName))),
+      if (authRule.hasOwnerField()) 'ownerField': literalString(ownerField),
+      if (authRule.hasIdentityClaim())
+        'identityClaim': literalString(identityClaim),
+      if (authRule.hasProvider())
+        'provider': refer('AuthRuleProvider', datastoreUri)
+            .property(authRule.provider.dartName),
     });
   }
 

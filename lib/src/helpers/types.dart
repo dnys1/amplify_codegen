@@ -26,7 +26,7 @@ TypeReference listOf(Reference ref) {
 }
 
 extension TypeHelpers on TypeNode {
-  bool get isList => this is ListTypeNode;
+  bool get isArray => this is ListTypeNode;
 
   ListTypeNode get asList => this as ListTypeNode;
 
@@ -40,9 +40,9 @@ extension TypeHelpers on TypeNode {
   }
 
   /// The type of model field this represents.
-  AWSType get awsType => AWSType.values.firstWhere(
-        (type) => type.name == typeName,
-        orElse: () => AWSType.Model,
+  GraphQLType get graphqlType => GraphQLTypeX.valueOf(
+        typeName,
+        orElse: () => GraphQLType.TYPE_MODEL,
       );
 }
 
@@ -61,23 +61,23 @@ extension ReferenceHelpers on Reference {
   }
 }
 
-extension TypeInfoHelpers on TypeInfo {
+extension TypeInfoHelpers on ModelField_TypeInfo {
   /// Whether this type represents a Model.
-  bool get isModel => modelName != null && !isEnum;
+  bool get isModel => modelName.isNotEmpty && !isEnum;
 
   /// The model's identifier in Dart.
-  String? get dartModelName => modelName?.pascalCase;
+  String? get dartModelName => modelName.isEmpty ? null : modelName.pascalCase;
 
   /// Whether this type represents a s
   bool get isPrimitive {
     if (isModel || isEnum) return false;
-    if (isList) return listType!.isPrimitive;
+    if (isArray) return arrayType.isPrimitive;
 
-    switch (awsType!) {
-      case AWSType.AWSDate:
-      case AWSType.AWSTime:
-      case AWSType.AWSDateTime:
-      case AWSType.AWSTimestamp:
+    switch (graphqlType) {
+      case GraphQLType.TYPE_AWS_DATE:
+      case GraphQLType.TYPE_AWS_TIME:
+      case GraphQLType.TYPE_AWS_DATE_TIME:
+      case GraphQLType.TYPE_AWS_TIMESTAMP:
         return false;
       default:
         return true;
@@ -85,7 +85,7 @@ extension TypeInfoHelpers on TypeInfo {
   }
 
   TypeReference get wireTypeReference {
-    if (isList) {
+    if (isArray) {
       return TypeReference((t) => t
         ..symbol = 'List'
         ..isNullable = !isRequired);
@@ -101,34 +101,36 @@ extension TypeInfoHelpers on TypeInfo {
         ..isNullable = !isRequired);
     }
 
-    final TypeReference baseType;
-    switch (awsType!) {
-      case AWSType.ID:
-      case AWSType.String:
-      case AWSType.AWSEmail:
-      case AWSType.AWSJSON:
-      case AWSType.AWSPhone:
-      case AWSType.AWSURL:
-      case AWSType.AWSIPAddress:
-      case AWSType.AWSDate:
-      case AWSType.AWSTime:
-      case AWSType.AWSDateTime:
+    late TypeReference baseType;
+    switch (graphqlType) {
+      case GraphQLType.TYPE_UNSPECIFIED:
+        throw ArgumentError('Unknown type: $graphqlType');
+      case GraphQLType.TYPE_ID:
+      case GraphQLType.TYPE_STRING:
+      case GraphQLType.TYPE_AWS_EMAIL:
+      case GraphQLType.TYPE_AWS_JSON:
+      case GraphQLType.TYPE_AWS_PHONE:
+      case GraphQLType.TYPE_AWS_URL:
+      case GraphQLType.TYPE_AWS_IP_ADDRESS:
+      case GraphQLType.TYPE_AWS_DATE:
+      case GraphQLType.TYPE_AWS_TIME:
+      case GraphQLType.TYPE_AWS_DATE_TIME:
         baseType = const Reference('String').typeRef;
         break;
-      case AWSType.AWSTimestamp:
-      case AWSType.Int:
+      case GraphQLType.TYPE_AWS_TIMESTAMP:
+      case GraphQLType.TYPE_INT:
         baseType = const Reference('int').typeRef;
         break;
-      case AWSType.Float:
+      case GraphQLType.TYPE_FLOAT:
         baseType = const Reference('double').typeRef;
         break;
-      case AWSType.Boolean:
+      case GraphQLType.TYPE_BOOLEAN:
         baseType = const Reference('bool').typeRef;
         break;
-      case AWSType.Model:
+      case GraphQLType.TYPE_MODEL:
         baseType = Reference(
-          modelName!,
-          modelName!.snakeCase + '.dart',
+          modelName,
+          modelName.snakeCase + '.dart',
         ).typeRef;
         break;
     }
@@ -137,51 +139,53 @@ extension TypeInfoHelpers on TypeInfo {
   }
 
   TypeReference get typeReference {
-    if (isList) {
+    if (isArray) {
       return TypeReference(
         (t) => t
           ..symbol = 'List'
           ..isNullable = !isRequired
-          ..types.add(listType!.typeReference),
+          ..types.add(arrayType.typeReference),
       );
     }
 
-    final TypeReference baseType;
-    switch (awsType!) {
-      case AWSType.ID:
-      case AWSType.String:
-      case AWSType.AWSEmail:
-      case AWSType.AWSJSON:
-      case AWSType.AWSPhone:
-      case AWSType.AWSURL:
-      case AWSType.AWSIPAddress:
+    late TypeReference baseType;
+    switch (graphqlType) {
+      case GraphQLType.TYPE_UNSPECIFIED:
+        throw ArgumentError('Unknown type: $graphqlType');
+      case GraphQLType.TYPE_ID:
+      case GraphQLType.TYPE_STRING:
+      case GraphQLType.TYPE_AWS_EMAIL:
+      case GraphQLType.TYPE_AWS_JSON:
+      case GraphQLType.TYPE_AWS_PHONE:
+      case GraphQLType.TYPE_AWS_URL:
+      case GraphQLType.TYPE_AWS_IP_ADDRESS:
         baseType = const Reference('String').typeRef;
         break;
-      case AWSType.Int:
+      case GraphQLType.TYPE_INT:
         baseType = const Reference('int').typeRef;
         break;
-      case AWSType.Float:
+      case GraphQLType.TYPE_FLOAT:
         baseType = const Reference('double').typeRef;
         break;
-      case AWSType.Boolean:
+      case GraphQLType.TYPE_BOOLEAN:
         baseType = const Reference('bool').typeRef;
         break;
-      case AWSType.AWSDate:
+      case GraphQLType.TYPE_AWS_DATE:
         baseType = const Reference('TemporalDate', datastoreUri).typeRef;
         break;
-      case AWSType.AWSTime:
+      case GraphQLType.TYPE_AWS_TIME:
         baseType = const Reference('TemporalTime', datastoreUri).typeRef;
         break;
-      case AWSType.AWSDateTime:
+      case GraphQLType.TYPE_AWS_DATE_TIME:
         baseType = const Reference('TemporalDateTime', datastoreUri).typeRef;
         break;
-      case AWSType.AWSTimestamp:
+      case GraphQLType.TYPE_AWS_TIMESTAMP:
         baseType = const Reference('TemporalTimestamp', datastoreUri).typeRef;
         break;
-      case AWSType.Model:
+      case GraphQLType.TYPE_MODEL:
         baseType = Reference(
-          modelName!,
-          modelName!.snakeCase + '.dart',
+          modelName,
+          modelName.snakeCase + '.dart',
         ).typeRef;
         break;
     }
@@ -193,44 +197,46 @@ extension TypeInfoHelpers on TypeInfo {
     required bool isCustom,
     required Map<String, Model> models,
   }) {
-    if (isList) {
+    if (isArray) {
       final baseType =
-          listType!.modelFieldType(isCustom: isCustom, models: models);
+          arrayType.modelFieldType(isCustom: isCustom, models: models);
       return (baseType == ModelFieldType.model ||
                   baseType == ModelFieldType.embedded) &&
-              models[listType!.modelName!]!.isCustom
+              models[arrayType.modelName]!.isCustom
           ? ModelFieldType.embeddedCollection
           : ModelFieldType.collection;
     }
 
-    switch (awsType!) {
-      case AWSType.ID:
-      case AWSType.AWSEmail:
-      case AWSType.AWSJSON:
-      case AWSType.AWSPhone:
-      case AWSType.AWSURL:
-      case AWSType.AWSIPAddress:
-      case AWSType.String:
+    switch (graphqlType) {
+      case GraphQLType.TYPE_UNSPECIFIED:
+        throw ArgumentError('Unknown type: $graphqlType');
+      case GraphQLType.TYPE_ID:
+      case GraphQLType.TYPE_AWS_EMAIL:
+      case GraphQLType.TYPE_AWS_JSON:
+      case GraphQLType.TYPE_AWS_PHONE:
+      case GraphQLType.TYPE_AWS_URL:
+      case GraphQLType.TYPE_AWS_IP_ADDRESS:
+      case GraphQLType.TYPE_STRING:
         return ModelFieldType.string;
-      case AWSType.Int:
+      case GraphQLType.TYPE_INT:
         return ModelFieldType.int;
-      case AWSType.Float:
+      case GraphQLType.TYPE_FLOAT:
         return ModelFieldType.double;
-      case AWSType.Boolean:
+      case GraphQLType.TYPE_BOOLEAN:
         return ModelFieldType.bool;
-      case AWSType.AWSDate:
+      case GraphQLType.TYPE_AWS_DATE:
         return ModelFieldType.date;
-      case AWSType.AWSTime:
+      case GraphQLType.TYPE_AWS_TIME:
         return ModelFieldType.time;
-      case AWSType.AWSDateTime:
+      case GraphQLType.TYPE_AWS_DATE_TIME:
         return ModelFieldType.dateTime;
-      case AWSType.AWSTimestamp:
+      case GraphQLType.TYPE_AWS_TIMESTAMP:
         return ModelFieldType.timestamp;
-      case AWSType.Model:
+      case GraphQLType.TYPE_MODEL:
         break;
     }
 
-    final model = models[modelName!];
+    final model = models[modelName];
     if (model != null) {
       return model.isCustom ? ModelFieldType.embedded : ModelFieldType.model;
     }

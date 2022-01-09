@@ -65,7 +65,7 @@ class ModelProvider extends ModelProviderInterface {
   static final instance = ModelProvider();
 
   @override
-  String get version => '61478bb586e13346f18045b9bdc9c47825d85c91';
+  String get version => '85d5ec8b8d2c095455215c69937767390e409b99';
   @override
   List<ModelSchema> get modelSchemas => [
         BidiComment.schema,

@@ -1,4 +1,4 @@
-import 'package:amplify_codegen/src/models/model.dart';
+import 'package:amplify_codegen/amplify_codegen.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:gql/ast.dart';
 

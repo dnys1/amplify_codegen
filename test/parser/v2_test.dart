@@ -44,14 +44,14 @@ void main() {
             () {
           final postField = v2Models['Comment']!.fieldNamed('post');
 
-          expect(postField.isBelongsTo, isTrue);
+          expect(postField.association, ModelAssociation.IS_BELONGS_TO);
           expect(postField.targetName, equals('postID'));
         });
 
         test('should support connection with @primaryKey on HAS_MANY side', () {
           final commentsField = v2Models['Post']!.fieldNamed('comments');
 
-          expect(commentsField.isHasMany, isTrue);
+          expect(commentsField.association, ModelAssociation.IS_HAS_MANY);
           expect(commentsField.associatedType, equals('Comment'));
           expect(commentsField.associatedName, equals('post'));
         });
@@ -59,7 +59,7 @@ void main() {
         test('Should support connection with @index on BELONGS_TO side', () {
           final commentsField = v2IndexedModels['Post']!.fieldNamed('comments');
 
-          expect(commentsField.isHasMany, isTrue);
+          expect(commentsField.association, ModelAssociation.IS_HAS_MANY);
           expect(commentsField.associatedType, equals('Comment'));
           expect(commentsField.associatedName, equals('postID'));
         });
@@ -102,7 +102,7 @@ void main() {
           final powerSourceField =
               noFields['BatteryCharger']!.fieldNamed('powerSource');
 
-          expect(powerSourceField.isHasOne, isTrue);
+          expect(powerSourceField.association, ModelAssociation.IS_HAS_ONE);
           expect(powerSourceField.associatedType, equals('PowerSource'));
           expect(powerSourceField.associatedName, equals('id'));
         });
@@ -111,7 +111,7 @@ void main() {
           final powerSourceField =
               withFields['BatteryCharger']!.fieldNamed('powerSource');
 
-          expect(powerSourceField.isHasOne, isTrue);
+          expect(powerSourceField.association, ModelAssociation.IS_HAS_ONE);
           expect(powerSourceField.associatedType, equals('PowerSource'));
           expect(powerSourceField.associatedName, equals('sourceID'));
         });
@@ -140,7 +140,7 @@ void main() {
         test('Should support belongsTo and detect connected field', () {
           final projectField = modelMap['Team2']!.fieldNamed('project');
 
-          expect(projectField.isBelongsTo, isTrue);
+          expect(projectField.association, ModelAssociation.IS_BELONGS_TO);
           expect(projectField.targetName,
               equals(makeConnectionAttributeName('Team2', 'project')));
         });
@@ -176,7 +176,7 @@ void main() {
         test('Should detect first has many', () {
           final postsField = modelMap['Blog']!.fieldNamed('posts');
 
-          expect(postsField.isHasMany, isTrue);
+          expect(postsField.association, ModelAssociation.IS_HAS_MANY);
           expect(postsField.associatedType, equals('Post'));
           expect(postsField.associatedName, equals('blog'));
         });
@@ -184,7 +184,7 @@ void main() {
         test('Should detect second has many', () {
           final commentsField = modelMap['Post']!.fieldNamed('comments');
 
-          expect(commentsField.isHasMany, isTrue);
+          expect(commentsField.association, ModelAssociation.IS_HAS_MANY);
           expect(commentsField.associatedType, equals('Comment'));
           expect(commentsField.associatedName, equals('post'));
         });
@@ -192,7 +192,7 @@ void main() {
         test('Should detect first belongsTo', () {
           final blogField = modelMap['Post']!.fieldNamed('blog');
 
-          expect(blogField.isBelongsTo, isTrue);
+          expect(blogField.association, ModelAssociation.IS_BELONGS_TO);
           expect(blogField.targetName,
               equals(makeConnectionAttributeName('Post', 'blog')));
         });
@@ -200,7 +200,7 @@ void main() {
         test('Should detect second belongsTo', () {
           final blogField = modelMap['Comment']!.fieldNamed('post');
 
-          expect(blogField.isBelongsTo, isTrue);
+          expect(blogField.association, ModelAssociation.IS_BELONGS_TO);
           expect(blogField.targetName,
               equals(makeConnectionAttributeName('Comment', 'post')));
         });

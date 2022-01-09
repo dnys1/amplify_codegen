@@ -58,7 +58,9 @@ class ModelProviderGenerator extends Generator<Library> {
   /// Generate a consistent hash for [schema]. This will be consistent across
   /// transformer version changes as well as semantic-only schema updates.
   List<int> get _schemaHash {
-    return sha1.convert(jsonEncode(models).codeUnits).bytes;
+    return sha1
+        .convert(models.expand((model) => model.writeToBuffer()).toList())
+        .bytes;
   }
 
   Iterable<Method> get _methods sync* {
