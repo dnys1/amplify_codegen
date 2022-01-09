@@ -1,0 +1,7 @@
+coverage:
+  status:
+    patch: off
+
+ignore:
+  # Generated Protobuf definitions
+  - "lib/src/model"
