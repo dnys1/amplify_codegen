@@ -95,39 +95,29 @@ final $typed_data.Uint8List modelAssociationDescriptor = $convert.base64Decode('
 const AuthRule$json = const {
   '1': 'AuthRule',
   '2': const [
-    const {'1': 'allow', '3': 1, '4': 1, '5': 14, '6': '.AuthStrategy', '10': 'allow'},
-    const {'1': 'provider', '3': 2, '4': 1, '5': 14, '6': '.AuthProvider', '10': 'provider'},
+    const {'1': 'allow', '3': 1, '4': 1, '5': 14, '6': '.amplify.model.AuthStrategy', '10': 'allow'},
+    const {'1': 'provider', '3': 2, '4': 1, '5': 14, '6': '.amplify.model.AuthProvider', '10': 'provider'},
     const {'1': 'owner_field', '3': 3, '4': 1, '5': 9, '10': 'ownerField'},
     const {'1': 'identity_claim', '3': 4, '4': 1, '5': 9, '10': 'identityClaim'},
     const {'1': 'group_claim', '3': 5, '4': 1, '5': 9, '10': 'groupClaim'},
     const {'1': 'groups', '3': 6, '4': 3, '5': 9, '10': 'groups'},
     const {'1': 'groups_field', '3': 7, '4': 1, '5': 9, '10': 'groupsField'},
-    const {'1': 'operations', '3': 8, '4': 3, '5': 14, '6': '.ModelOperation', '10': 'operations'},
+    const {'1': 'operations', '3': 8, '4': 3, '5': 14, '6': '.amplify.model.ModelOperation', '10': 'operations'},
   ],
 };
 
 /// Descriptor for `AuthRule`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List authRuleDescriptor = $convert.base64Decode('CghBdXRoUnVsZRIjCgVhbGxvdxgBIAEoDjINLkF1dGhTdHJhdGVneVIFYWxsb3cSKQoIcHJvdmlkZXIYAiABKA4yDS5BdXRoUHJvdmlkZXJSCHByb3ZpZGVyEh8KC293bmVyX2ZpZWxkGAMgASgJUgpvd25lckZpZWxkEiUKDmlkZW50aXR5X2NsYWltGAQgASgJUg1pZGVudGl0eUNsYWltEh8KC2dyb3VwX2NsYWltGAUgASgJUgpncm91cENsYWltEhYKBmdyb3VwcxgGIAMoCVIGZ3JvdXBzEiEKDGdyb3Vwc19maWVsZBgHIAEoCVILZ3JvdXBzRmllbGQSLwoKb3BlcmF0aW9ucxgIIAMoDjIPLk1vZGVsT3BlcmF0aW9uUgpvcGVyYXRpb25z');
-@$core.Deprecated('Use boolValueDescriptor instead')
-const BoolValue$json = const {
-  '1': 'BoolValue',
-  '2': const [
-    const {'1': 'value', '3': 1, '4': 1, '5': 8, '10': 'value'},
-  ],
-};
-
-/// Descriptor for `BoolValue`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List boolValueDescriptor = $convert.base64Decode('CglCb29sVmFsdWUSFAoFdmFsdWUYASABKAhSBXZhbHVl');
+final $typed_data.Uint8List authRuleDescriptor = $convert.base64Decode('CghBdXRoUnVsZRIxCgVhbGxvdxgBIAEoDjIbLmFtcGxpZnkubW9kZWwuQXV0aFN0cmF0ZWd5UgVhbGxvdxI3Cghwcm92aWRlchgCIAEoDjIbLmFtcGxpZnkubW9kZWwuQXV0aFByb3ZpZGVyUghwcm92aWRlchIfCgtvd25lcl9maWVsZBgDIAEoCVIKb3duZXJGaWVsZBIlCg5pZGVudGl0eV9jbGFpbRgEIAEoCVINaWRlbnRpdHlDbGFpbRIfCgtncm91cF9jbGFpbRgFIAEoCVIKZ3JvdXBDbGFpbRIWCgZncm91cHMYBiADKAlSBmdyb3VwcxIhCgxncm91cHNfZmllbGQYByABKAlSC2dyb3Vwc0ZpZWxkEj0KCm9wZXJhdGlvbnMYCCADKA4yHS5hbXBsaWZ5Lm1vZGVsLk1vZGVsT3BlcmF0aW9uUgpvcGVyYXRpb25z');
 @$core.Deprecated('Use modelFieldDescriptor instead')
 const ModelField$json = const {
   '1': 'ModelField',
   '2': const [
     const {'1': 'name', '3': 1, '4': 1, '5': 9, '10': 'name'},
-    const {'1': 'type', '3': 2, '4': 1, '5': 11, '6': '.ModelField.TypeInfo', '10': 'type'},
+    const {'1': 'type', '3': 2, '4': 1, '5': 11, '6': '.amplify.model.ModelField.TypeInfo', '10': 'type'},
     const {'1': 'is_primary_key', '3': 3, '4': 1, '5': 8, '10': 'isPrimaryKey'},
     const {'1': 'is_read_only', '3': 4, '4': 1, '5': 8, '10': 'isReadOnly'},
-    const {'1': 'auth_rules', '3': 5, '4': 3, '5': 11, '6': '.AuthRule', '10': 'authRules'},
-    const {'1': 'association', '3': 6, '4': 1, '5': 14, '6': '.ModelAssociation', '10': 'association'},
+    const {'1': 'auth_rules', '3': 5, '4': 3, '5': 11, '6': '.amplify.model.AuthRule', '10': 'authRules'},
+    const {'1': 'association', '3': 6, '4': 1, '5': 14, '6': '.amplify.model.ModelAssociation', '10': 'association'},
     const {'1': 'target_name', '3': 7, '4': 1, '5': 9, '10': 'targetName'},
     const {'1': 'associated_name', '3': 8, '4': 1, '5': 9, '10': 'associatedName'},
     const {'1': 'associated_type', '3': 9, '4': 1, '5': 9, '10': 'associatedType'},
@@ -140,27 +130,27 @@ const ModelField$json = const {
 const ModelField_TypeInfo$json = const {
   '1': 'TypeInfo',
   '2': const [
-    const {'1': 'graphql_type', '3': 1, '4': 1, '5': 14, '6': '.GraphQLType', '10': 'graphqlType'},
+    const {'1': 'graphql_type', '3': 1, '4': 1, '5': 14, '6': '.amplify.model.GraphQLType', '10': 'graphqlType'},
     const {'1': 'is_required', '3': 2, '4': 1, '5': 8, '10': 'isRequired'},
     const {'1': 'is_array', '3': 3, '4': 1, '5': 8, '10': 'isArray'},
-    const {'1': 'array_type', '3': 4, '4': 1, '5': 11, '6': '.ModelField.TypeInfo', '10': 'arrayType'},
+    const {'1': 'array_type', '3': 4, '4': 1, '5': 11, '6': '.amplify.model.ModelField.TypeInfo', '10': 'arrayType'},
     const {'1': 'model_name', '3': 5, '4': 1, '5': 9, '10': 'modelName'},
     const {'1': 'is_enum', '3': 6, '4': 1, '5': 8, '10': 'isEnum'},
   ],
 };
 
 /// Descriptor for `ModelField`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List modelFieldDescriptor = $convert.base64Decode('CgpNb2RlbEZpZWxkEhIKBG5hbWUYASABKAlSBG5hbWUSKAoEdHlwZRgCIAEoCzIULk1vZGVsRmllbGQuVHlwZUluZm9SBHR5cGUSJAoOaXNfcHJpbWFyeV9rZXkYAyABKAhSDGlzUHJpbWFyeUtleRIgCgxpc19yZWFkX29ubHkYBCABKAhSCmlzUmVhZE9ubHkSKAoKYXV0aF9ydWxlcxgFIAMoCzIJLkF1dGhSdWxlUglhdXRoUnVsZXMSMwoLYXNzb2NpYXRpb24YBiABKA4yES5Nb2RlbEFzc29jaWF0aW9uUgthc3NvY2lhdGlvbhIfCgt0YXJnZXRfbmFtZRgHIAEoCVIKdGFyZ2V0TmFtZRInCg9hc3NvY2lhdGVkX25hbWUYCCABKAlSDmFzc29jaWF0ZWROYW1lEicKD2Fzc29jaWF0ZWRfdHlwZRgJIAEoCVIOYXNzb2NpYXRlZFR5cGUSIQoMaXNfc3ludGhldGljGAogASgIUgtpc1N5bnRoZXRpYxrkAQoIVHlwZUluZm8SLwoMZ3JhcGhxbF90eXBlGAEgASgOMgwuR3JhcGhRTFR5cGVSC2dyYXBocWxUeXBlEh8KC2lzX3JlcXVpcmVkGAIgASgIUgppc1JlcXVpcmVkEhkKCGlzX2FycmF5GAMgASgIUgdpc0FycmF5EjMKCmFycmF5X3R5cGUYBCABKAsyFC5Nb2RlbEZpZWxkLlR5cGVJbmZvUglhcnJheVR5cGUSHQoKbW9kZWxfbmFtZRgFIAEoCVIJbW9kZWxOYW1lEhcKB2lzX2VudW0YBiABKAhSBmlzRW51bQ==');
+final $typed_data.Uint8List modelFieldDescriptor = $convert.base64Decode('CgpNb2RlbEZpZWxkEhIKBG5hbWUYASABKAlSBG5hbWUSNgoEdHlwZRgCIAEoCzIiLmFtcGxpZnkubW9kZWwuTW9kZWxGaWVsZC5UeXBlSW5mb1IEdHlwZRIkCg5pc19wcmltYXJ5X2tleRgDIAEoCFIMaXNQcmltYXJ5S2V5EiAKDGlzX3JlYWRfb25seRgEIAEoCFIKaXNSZWFkT25seRI2CgphdXRoX3J1bGVzGAUgAygLMhcuYW1wbGlmeS5tb2RlbC5BdXRoUnVsZVIJYXV0aFJ1bGVzEkEKC2Fzc29jaWF0aW9uGAYgASgOMh8uYW1wbGlmeS5tb2RlbC5Nb2RlbEFzc29jaWF0aW9uUgthc3NvY2lhdGlvbhIfCgt0YXJnZXRfbmFtZRgHIAEoCVIKdGFyZ2V0TmFtZRInCg9hc3NvY2lhdGVkX25hbWUYCCABKAlSDmFzc29jaWF0ZWROYW1lEicKD2Fzc29jaWF0ZWRfdHlwZRgJIAEoCVIOYXNzb2NpYXRlZFR5cGUSIQoMaXNfc3ludGhldGljGAogASgIUgtpc1N5bnRoZXRpYxqAAgoIVHlwZUluZm8SPQoMZ3JhcGhxbF90eXBlGAEgASgOMhouYW1wbGlmeS5tb2RlbC5HcmFwaFFMVHlwZVILZ3JhcGhxbFR5cGUSHwoLaXNfcmVxdWlyZWQYAiABKAhSCmlzUmVxdWlyZWQSGQoIaXNfYXJyYXkYAyABKAhSB2lzQXJyYXkSQQoKYXJyYXlfdHlwZRgEIAEoCzIiLmFtcGxpZnkubW9kZWwuTW9kZWxGaWVsZC5UeXBlSW5mb1IJYXJyYXlUeXBlEh0KCm1vZGVsX25hbWUYBSABKAlSCW1vZGVsTmFtZRIXCgdpc19lbnVtGAYgASgIUgZpc0VudW0=');
 @$core.Deprecated('Use modelDescriptor instead')
 const Model$json = const {
   '1': 'Model',
   '2': const [
     const {'1': 'name', '3': 1, '4': 1, '5': 9, '10': 'name'},
-    const {'1': 'fields', '3': 2, '4': 3, '5': 11, '6': '.ModelField', '10': 'fields'},
-    const {'1': 'auth_rules', '3': 3, '4': 3, '5': 11, '6': '.AuthRule', '10': 'authRules'},
+    const {'1': 'fields', '3': 2, '4': 3, '5': 11, '6': '.amplify.model.ModelField', '10': 'fields'},
+    const {'1': 'auth_rules', '3': 3, '4': 3, '5': 11, '6': '.amplify.model.AuthRule', '10': 'authRules'},
     const {'1': 'is_custom', '3': 4, '4': 1, '5': 8, '10': 'isCustom'},
   ],
 };
 
 /// Descriptor for `Model`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List modelDescriptor = $convert.base64Decode('CgVNb2RlbBISCgRuYW1lGAEgASgJUgRuYW1lEiMKBmZpZWxkcxgCIAMoCzILLk1vZGVsRmllbGRSBmZpZWxkcxIoCgphdXRoX3J1bGVzGAMgAygLMgkuQXV0aFJ1bGVSCWF1dGhSdWxlcxIbCglpc19jdXN0b20YBCABKAhSCGlzQ3VzdG9t');
+final $typed_data.Uint8List modelDescriptor = $convert.base64Decode('CgVNb2RlbBISCgRuYW1lGAEgASgJUgRuYW1lEjEKBmZpZWxkcxgCIAMoCzIZLmFtcGxpZnkubW9kZWwuTW9kZWxGaWVsZFIGZmllbGRzEjYKCmF1dGhfcnVsZXMYAyADKAsyFy5hbXBsaWZ5Lm1vZGVsLkF1dGhSdWxlUglhdXRoUnVsZXMSGwoJaXNfY3VzdG9tGAQgASgIUghpc0N1c3RvbQ==');

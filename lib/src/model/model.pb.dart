@@ -14,7 +14,7 @@ import 'model.pbenum.dart';
 export 'model.pbenum.dart';
 
 class AuthRule extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'AuthRule', createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'AuthRule', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'amplify.model'), createEmptyInstance: create)
     ..e<AuthStrategy>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'allow', $pb.PbFieldType.OE, defaultOrMaker: AuthStrategy.ALLOW_UNSPECIFIED, valueOf: AuthStrategy.valueOf, enumValues: AuthStrategy.values)
     ..e<AuthProvider>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'provider', $pb.PbFieldType.OE, defaultOrMaker: AuthProvider.BY_UNSPECIFIED, valueOf: AuthProvider.valueOf, enumValues: AuthProvider.values)
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ownerField')
@@ -146,55 +146,8 @@ class AuthRule extends $pb.GeneratedMessage {
   $core.List<ModelOperation> get operations => $_getList(7);
 }
 
-class BoolValue extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'BoolValue', createEmptyInstance: create)
-    ..aOB(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'value')
-    ..hasRequiredFields = false
-  ;
-
-  BoolValue._() : super();
-  factory BoolValue({
-    $core.bool? value,
-  }) {
-    final _result = create();
-    if (value != null) {
-      _result.value = value;
-    }
-    return _result;
-  }
-  factory BoolValue.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory BoolValue.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  BoolValue clone() => BoolValue()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  BoolValue copyWith(void Function(BoolValue) updates) => super.copyWith((message) => updates(message as BoolValue)) as BoolValue; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static BoolValue create() => BoolValue._();
-  BoolValue createEmptyInstance() => create();
-  static $pb.PbList<BoolValue> createRepeated() => $pb.PbList<BoolValue>();
-  @$core.pragma('dart2js:noInline')
-  static BoolValue getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BoolValue>(create);
-  static BoolValue? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.bool get value => $_getBF(0);
-  @$pb.TagNumber(1)
-  set value($core.bool v) { $_setBool(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasValue() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearValue() => clearField(1);
-}
-
 class ModelField_TypeInfo extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ModelField.TypeInfo', createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ModelField.TypeInfo', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'amplify.model'), createEmptyInstance: create)
     ..e<GraphQLType>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'graphqlType', $pb.PbFieldType.OE, defaultOrMaker: GraphQLType.TYPE_UNSPECIFIED, valueOf: GraphQLType.valueOf, enumValues: GraphQLType.values)
     ..aOB(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isRequired')
     ..aOB(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isArray')
@@ -313,7 +266,7 @@ class ModelField_TypeInfo extends $pb.GeneratedMessage {
 }
 
 class ModelField extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ModelField', createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ModelField', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'amplify.model'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'name')
     ..aOM<ModelField_TypeInfo>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'type', subBuilder: ModelField_TypeInfo.create)
     ..aOB(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isPrimaryKey')
@@ -482,7 +435,7 @@ class ModelField extends $pb.GeneratedMessage {
 }
 
 class Model extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Model', createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Model', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'amplify.model'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'name')
     ..pc<ModelField>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fields', $pb.PbFieldType.PM, subBuilder: ModelField.create)
     ..pc<AuthRule>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authRules', $pb.PbFieldType.PM, subBuilder: AuthRule.create)

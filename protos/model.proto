@@ -1,16 +1,38 @@
 syntax = "proto3";
 
-// import "google/protobuf/wrappers.proto";
+package amplify.model;
 
+// The different strategies for authorizing a user. The strategy
+// determines how the subscriptions will be constructed, whether
+// an auth plugin is needed, etc.
 enum AuthStrategy {
     ALLOW_UNSPECIFIED = 0;
+
+    // Public, or unauthorized, access. The user does not need to
+    // be signed in to access, however, they may need an access
+    // token still, as is the case with provider: IAM.
     ALLOW_PUBLIC = 1;
+
+    // Private, or authorized, access. Any user who has a valid
+    // token is allowed access. The token depends on the provider
+    // chosen.
     ALLOW_PRIVATE = 2;
+
+    // The owner auth strategy type. Uses the currently signed-in
+    // user to authenticate the request.
     ALLOW_OWNER = 3;
+
+    // Group-based authorization (static or dynamic). Uses groups
+    // attached to the signed-in user's JWT token to authorize
+    // the request.
     ALLOW_GROUPS = 4;
+
+    // Authorization is handled using a custom lambda, written and
+    // defined by the developer.
     ALLOW_CUSTOM = 5;
 }
 
+// The provider for an `@auth` rule.
 enum AuthProvider {
     BY_UNSPECIFIED = 0;
     BY_API_KEY = 1;
@@ -20,6 +42,8 @@ enum AuthProvider {
     BY_LAMBDA = 5;
 }
 
+// An operation performed on a model, used to specify the allowed
+// operations for an `@auth` rule.
 enum ModelOperation {
     OP_UNSPECIFIED = 0;
     OP_READ = 1;
@@ -28,6 +52,7 @@ enum ModelOperation {
     OP_DELETE = 4;
 }
 
+// Defines an `@auth` rule on a model or field.
 message AuthRule {
     AuthStrategy allow = 1;
     AuthProvider provider = 2;
@@ -64,10 +89,6 @@ enum ModelAssociation {
     IS_HAS_MANY = 2;
     IS_BELONGS_TO = 3;
     IS_MANY_TO_MANY = 4;
-}
-
-message BoolValue {
-    bool value = 1;
 }
 
 message ModelField {
