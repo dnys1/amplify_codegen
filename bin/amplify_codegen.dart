@@ -31,7 +31,7 @@ void main(List<String> args) {
   }
   final schema =
       File.fromUri(schemaDir.uri.resolve('schema.graphql')).readAsStringSync();
-  final generated = generateForSchema(schema);
+  final generated = generateForSchema(schema, options: options);
 
   final modelsDir = workingDir.resolve('lib/models/');
   Directory.fromUri(modelsDir).createSync();
