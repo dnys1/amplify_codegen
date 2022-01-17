@@ -118,3 +118,7 @@ message Model {
     repeated AuthRule auth_rules = 3;
     bool is_custom = 4;
 }
+
+message Schema {
+    repeated Model models = 1;
+}

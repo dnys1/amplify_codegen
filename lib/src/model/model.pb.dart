@@ -511,3 +511,44 @@ class Model extends $pb.GeneratedMessage {
   void clearIsCustom() => clearField(4);
 }
 
+class Schema extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Schema', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'amplify.model'), createEmptyInstance: create)
+    ..pc<Model>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'models', $pb.PbFieldType.PM, subBuilder: Model.create)
+    ..hasRequiredFields = false
+  ;
+
+  Schema._() : super();
+  factory Schema({
+    $core.Iterable<Model>? models,
+  }) {
+    final _result = create();
+    if (models != null) {
+      _result.models.addAll(models);
+    }
+    return _result;
+  }
+  factory Schema.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Schema.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Schema clone() => Schema()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Schema copyWith(void Function(Schema) updates) => super.copyWith((message) => updates(message as Schema)) as Schema; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static Schema create() => Schema._();
+  Schema createEmptyInstance() => create();
+  static $pb.PbList<Schema> createRepeated() => $pb.PbList<Schema>();
+  @$core.pragma('dart2js:noInline')
+  static Schema getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Schema>(create);
+  static Schema? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<Model> get models => $_getList(0);
+}
+

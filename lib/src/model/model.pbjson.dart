@@ -154,3 +154,13 @@ const Model$json = const {
 
 /// Descriptor for `Model`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List modelDescriptor = $convert.base64Decode('CgVNb2RlbBISCgRuYW1lGAEgASgJUgRuYW1lEjEKBmZpZWxkcxgCIAMoCzIZLmFtcGxpZnkubW9kZWwuTW9kZWxGaWVsZFIGZmllbGRzEjYKCmF1dGhfcnVsZXMYAyADKAsyFy5hbXBsaWZ5Lm1vZGVsLkF1dGhSdWxlUglhdXRoUnVsZXMSGwoJaXNfY3VzdG9tGAQgASgIUghpc0N1c3RvbQ==');
+@$core.Deprecated('Use schemaDescriptor instead')
+const Schema$json = const {
+  '1': 'Schema',
+  '2': const [
+    const {'1': 'models', '3': 1, '4': 3, '5': 11, '6': '.amplify.model.Model', '10': 'models'},
+  ],
+};
+
+/// Descriptor for `Schema`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List schemaDescriptor = $convert.base64Decode('CgZTY2hlbWESLAoGbW9kZWxzGAEgAygLMhQuYW1wbGlmeS5tb2RlbC5Nb2RlbFIGbW9kZWxz');
